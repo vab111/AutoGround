@@ -55,7 +55,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             canvas = this.getHolder().lockCanvas();
             if (canvas == null)
                 return;
-            canvas.drawColor(Color.GRAY);
+            canvas.drawColor(Color.WHITE);
             canvas.translate(Moved.x,Moved.y);
             canvas.scale(scale,scale);
 
@@ -107,8 +107,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
                     //TODO 添加平移操作
                     if (ismoving) {
-                        Moved.x += (int) (motionEvent.getX() - moveOrigin.x) * scale;
-                        Moved.y += (int) (motionEvent.getY() - moveOrigin.y) * scale;
+                        Moved.x -= (int) (motionEvent.getX() - moveOrigin.x) * scale;
+                        Moved.y -= (int) (motionEvent.getY() - moveOrigin.y) * scale;
                         moveOrigin.x = (int) motionEvent.getX();
                         moveOrigin.y = (int) motionEvent.getY();
 
