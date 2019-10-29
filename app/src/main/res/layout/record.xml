@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/recorditem"
+        android:layout_width="match_parent"
+        android:layout_height="76dp">
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:text=" 作业名称"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_toEndOf="@+id/textView18"
+            android:text="作业类型"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/editText10"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_toEndOf="@+id/textView19"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="作业面积"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/editText11"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/editText10"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="作业时间"
+            android:textAlignment="center" />
+    </RelativeLayout>
+</LinearLayout>
