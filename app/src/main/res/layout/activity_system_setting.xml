@@ -36,6 +36,7 @@
         android:layout_height="100dp"
         android:layout_marginStart="100dp"
         android:background="@drawable/nongji"
+        android:onClick="NJsetting"
         app:layout_constraintStart_toEndOf="@+id/button"
         app:layout_constraintTop_toTopOf="@+id/button" />
 

@@ -40,4 +40,10 @@ public class SystemSetting extends BaseActivity {
         startActivity(intent);
 
     }
+
+    public void NJsetting(View view) {
+        Intent intent = new Intent();
+        intent.setClass(SystemSetting.this, NJNJsetting.class);
+        startActivity(intent);
+    }
 }

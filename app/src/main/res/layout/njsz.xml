@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView28"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="62dp"
+        android:text="类型" />
+
+    <EditText
+        android:id="@+id/editText20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView28"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="-12dp"
+        android:layout_toEndOf="@+id/textView28"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView28"
+        android:layout_marginStart="105dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/editText20"
+        android:text="品牌" />
+
+    <EditText
+        android:id="@+id/editText21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editText20"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/textView29"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView28"
+        android:layout_alignStart="@+id/textView28"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="85dp"
+        android:text="型号" />
+
+    <EditText
+        android:id="@+id/editText22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText20"
+        android:layout_alignBottom="@+id/textView30"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="-12dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView29"
+        android:layout_alignBottom="@+id/textView30"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:text="年份" />
+
+    <EditText
+        android:id="@+id/editText23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText21"
+        android:layout_alignBottom="@+id/editText22"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView30"
+        android:layout_alignStart="@+id/textView30"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="57dp"
+        android:text="作业宽度" />
+
+    <EditText
+        android:id="@+id/editText24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText22"
+        android:layout_alignBottom="@+id/textView32"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="-12dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView31"
+        android:layout_alignBottom="@+id/textView32"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:text="后轮距" />
+
+    <EditText
+        android:id="@+id/editText25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText23"
+        android:layout_alignBottom="@+id/editText24"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/textView34"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView32"
+        android:layout_alignStart="@+id/textView32"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="102dp"
+        android:text="左右偏移" />
+
+    <EditText
+        android:id="@+id/editText26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText24"
+        android:layout_alignBottom="@+id/textView34"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="-12dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <RadioButton
+        android:id="@+id/radioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editText26"
+        android:layout_marginStart="77dp"
+        android:layout_marginBottom="3dp"
+        android:layout_toEndOf="@+id/editText26"
+        android:text="左" />
+
+    <RadioButton
+        android:id="@+id/radioButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/radioButton"
+        android:layout_marginStart="1dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/radioButton"
+        android:text="右" />
+
+</RelativeLayout>
