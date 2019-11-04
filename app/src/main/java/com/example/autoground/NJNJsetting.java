@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 
 public class NJNJsetting extends BaseActivity {
-    private Fragment clszFragment;
-    private Fragment njszFragment;
-    private Fragment txszFragment;
+    private clFragment clszFragment;
+    private njFragment njszFragment;
+    private txFragment txszFragment;
     private Toolbar toolbar;
 
     @Override
@@ -200,5 +200,13 @@ public class NJNJsetting extends BaseActivity {
 
     public void txSetting(View view) {
         initFragment3();
+    }
+
+    public void leftSelected(View view) {
+        njszFragment.leftSelected();
+    }
+
+    public void rightSelected(View view) {
+        njszFragment.rightSelected();
     }
 }

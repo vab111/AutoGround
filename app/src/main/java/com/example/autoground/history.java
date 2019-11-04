@@ -3,9 +3,13 @@ package com.example.autoground;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +33,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class history extends BaseActivity {
+public class history extends BaseActivity  {
+    private static final String TAG_SERVICE = "history";
     private List fileList;
     private ListView listView;
     private int width;
@@ -41,12 +46,23 @@ public class history extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         toolbar = findViewById(R.id.historybar);
-        listView = findViewById(R.id.historylist);
         getRecord();
+        listView = findViewById(R.id.historylist);
         listAdapter = new ArrayAdapter(this,R.layout.record,fileList){
             @Override
-            public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent)
-            {
+            public int getCount() {
+                return fileList.size();
+            }
+            @Override
+            public Object getItem(int position) {
+                return fileList.get(position);
+            }
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+            @Override
+            public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent) {
                 //TODO 添加历史记录条目
                 recorder user = (recorder) fileList.get(position);
                 LayoutInflater inflater = getLayoutInflater();
@@ -62,17 +78,30 @@ public class history extends BaseActivity {
                 return view;
             }
         };
-
         listView.setAdapter(listAdapter);
+        //为ListView添加点击事件
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO 添加点击响应
-
+                Log.e(TAG_SERVICE, "xuanzhong !");
+                if (position>0)
+                    actionRecord(position);
             }
-
         });
-    setToolbar();
+
+        setToolbar();
+    }
+
+    private void actionRecord(int position)
+    {
+        Dialog bottomDialog = new Dialog(this,R.style.BottomDialog);
+        View contentView = LayoutInflater.from(this).inflate(R.layout.recordaction, null);
+        bottomDialog.setContentView(contentView);
+
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        bottomDialog.setCanceledOnTouchOutside(false);
+        bottomDialog.show();
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -102,17 +131,19 @@ public class history extends BaseActivity {
                 header.mianji = "任务面积";
                 header.time = "作业时间";
                 fileList.add(header);
+                fileList.add(header);
+
                 Gson gson = new Gson();
                 String jsonString = gson.toJson(fileList);
-                FileOutputStream fileOut=null;
-                OutputStreamWriter outStream =null;
-                fileOut =new FileOutputStream("Record.json",false);
-                outStream =new OutputStreamWriter(fileOut);
+                FileOutputStream fileOut= openFileOutput("Record.json", Context.MODE_PRIVATE);
+                OutputStreamWriter outStream = new OutputStreamWriter(fileOut);
                 outStream.write(jsonString);
+                fileOut.flush();
                 outStream.flush();
                 outStream.close();
                 fileOut.close();
-                Toast.makeText(history.this,"创建记录成功！",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(history.this,"创建记录成功！",Toast.LENGTH_SHORT).show();
+                Log.e(TAG_SERVICE, "创建记录成功！");
             }
             catch(Exception e)
             {
@@ -121,6 +152,7 @@ public class history extends BaseActivity {
         }
         else
         {
+            Log.e(TAG_SERVICE, "文件访问成功！");
             String result = "";
             try {
                 FileInputStream f = new FileInputStream(fs);
@@ -178,6 +210,9 @@ public class history extends BaseActivity {
             }
         }
     }
+
+
+
     class recorder
     {
         public String taskname;
