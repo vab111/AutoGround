@@ -4,10 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.android.guard.Command;
+import com.android.guard.CommunicationService;
+import com.android.guard.DataType;
 
 public class Azjz extends BaseActivity {
 
@@ -21,6 +26,7 @@ public class Azjz extends BaseActivity {
     private EditText wheelAngle;
     private EditText avgAngle;
     private EditText AngleFix;
+    private CommunicationService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +42,32 @@ public class Azjz extends BaseActivity {
         wheelAngle= findViewById(R.id.editText7);
         avgAngle= findViewById(R.id.editText8);
         AngleFix= findViewById(R.id.editText9);
-//        zxDerection.setEnabled(false);
-//        avgHang.setEnabled(false);
-//        curSpeed.setEnabled(false);
-//        headDerection.setEnabled(false);
-//        avgHead.setEnabled(false);
-//        txxz.setEnabled(false);
-//        wheelAngle.setEnabled(false);
-//        avgAngle.setEnabled(false);
-//        AngleFix.setEnabled(false);
+
         setToolbar();
+        try {
+            mService = CommunicationService.getInstance(this);
+            mService.setShutdownCountTime(12);//setting shutdownCountTime
+            mService.bind();
+            mService.getData(new CommunicationService.IProcessData() {
+                @Override
+                public void process(byte[] bytes, DataType dataType) {
+                    Log.e("CanTest", "收到数据！");
+                    switch (dataType)
+                    {
+                        case TDataCan:
+                            //we get can data
+                            //handle can data
+
+                            handleCanData(bytes);
+                            break;
+
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void setToolbar() {
         TextView text = (TextView) toolbar.getChildAt(0);
@@ -62,5 +84,117 @@ public class Azjz extends BaseActivity {
                 finish();
             }
         });
+    }
+    private void handleCanData(byte[] bytes) {
+        byte[] id = new byte[4];
+        System.arraycopy(bytes, 1, id, 0, id.length);//ID
+        byte[] data = null;
+        int frameFormatType = (id[3] & 0x06);
+        int frameFormat = 0;
+        int frameType = 0;
+        long extendid = 0;
+        switch (frameFormatType) {
+            case 0://标准数据
+                frameFormat = 0;
+                frameType = 0;
+                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>21);//bit31-bit21: 标准ID
+                int dataLength = bytes[5];
+                data = new byte[dataLength];
+                System.arraycopy(bytes, 6, data, 0, dataLength);
+                handle((int) extendid, data);
+                break;
+            case 2://标准远程
+                frameFormat = 0;
+                frameType = 1;
+                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>21);//bit31-bit21: 标准ID
+                break;
+            case 4://扩展数据
+                frameFormat = 1;
+                frameType = 0;
+                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>3);//bit31-bit3: 扩展ID
+                int dataLengthExtra = bytes[5];
+                data = new byte[dataLengthExtra];
+                System.arraycopy(bytes, 6, data, 0, dataLengthExtra);
+                break;
+            case 6://扩展远程
+                frameFormat = 1;
+                frameType = 1;
+                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>3);//bit31-bit3: 扩展ID
+                break;
+        }
+
+    }
+    public void handle(int id,byte[] data)
+    {
+        switch (id) {
+            case 1538:
+                //0x602
+                switch (data[1])
+                {
+                    case 0:
+                        //TODO 天线修正、转角修正
+                        final int txxiuzheng = ((data[4] << 8) | data[5]);
+                        final int zhuanjiaoxiuzheng = ((data[6] << 8) | data[7]);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                float jiaodu1 = (float) txxiuzheng/10;
+                                float jiaodu2 = (float)zhuanjiaoxiuzheng/10;
+                                txxz.setText(String.format("%.1f°", jiaodu1));
+                                AngleFix.setText(String.format("%.1f°", jiaodu2));
+                            }
+                        });
+                        break;
+                    case 1:
+                        //TODO 直线方向、平均航向
+                        final int txxiuzheng1 = ((data[4] << 8) | data[5]);
+                        final int zhuanjiaoxiuzheng1 = ((data[6] << 8) | data[7]);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                float jiaodu1 = (float) txxiuzheng1/10;
+                                float jiaodu2 = (float)zhuanjiaoxiuzheng1/10;
+                                zxDerection.setText(String.format("%.1f°", jiaodu1));
+                                avgHang.setText(String.format("%.1f°", jiaodu2));
+                            }
+                        });
+                        break;
+                    case 2:
+                        //TODO 车头方向、车头平均
+                        final int txxiuzheng2 = ((data[4] << 8) | data[5]);
+                        final int zhuanjiaoxiuzheng2 = ((data[6] << 8) | data[7]);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                float jiaodu1 = (float) txxiuzheng2/10;
+                                float jiaodu2 = (float)zhuanjiaoxiuzheng2/10;
+                                headDerection.setText(String.format("%.1f°", jiaodu1));
+                                avgHead.setText(String.format("%.1f°", jiaodu2));
+                            }
+                        });
+                        break;
+                    case 3:
+                        //TODO 车轮转角、转角平均
+                        final int txxiuzheng3 = ((data[4] << 8) | data[5]);
+                        final int zhuanjiaoxiuzheng3 = ((data[6] << 8) | data[7]);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                float jiaodu1 = (float) txxiuzheng3/10;
+                                float jiaodu2 = (float)zhuanjiaoxiuzheng3/10;
+                                wheelAngle.setText(String.format("%.1f°", jiaodu1));
+                                avgAngle.setText(String.format("%.1f°", jiaodu2));
+                            }
+                        });
+                        break;
+                        default:
+                            break;
+                }
+                break;
+        }
     }
 }

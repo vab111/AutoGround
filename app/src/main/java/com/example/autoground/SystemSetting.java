@@ -47,4 +47,22 @@ public class SystemSetting extends BaseActivity {
         intent.setClass(SystemSetting.this, NJNJsetting.class);
         startActivity(intent);
     }
+
+    public void aboutself(View view) {
+        Intent intent = new Intent();
+        intent.setClass(SystemSetting.this, AboutSelf.class);
+        startActivity(intent);
+    }
+
+    public void cfsetting(View view) {
+        Intent intent = new Intent();
+        intent.setClass(SystemSetting.this, ChafenSetting.class);
+        startActivity(intent);
+    }
+
+    public void terminalsetting(View view) {
+        Intent intent = new Intent();
+        intent.setClass(SystemSetting.this, TerminalSetting.class);
+        startActivity(intent);
+    }
 }

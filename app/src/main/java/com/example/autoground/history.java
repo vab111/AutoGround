@@ -119,40 +119,16 @@ public class history extends BaseActivity  {
         //TODO 获取历史信息
 
         fileList = new ArrayList();
-
-        File fs = new File("Record.json");
-        if (!fs.exists())
-        {
-            try
-            {
-                recorder header = new recorder();
-                header.taskname = "作业名称";
-                header.type = "作业类型";
-                header.mianji = "任务面积";
-                header.time = "作业时间";
-                fileList.add(header);
-                fileList.add(header);
-
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(fileList);
-                FileOutputStream fileOut= openFileOutput("Record.json", Context.MODE_PRIVATE);
-                OutputStreamWriter outStream = new OutputStreamWriter(fileOut);
-                outStream.write(jsonString);
-                fileOut.flush();
-                outStream.flush();
-                outStream.close();
-                fileOut.close();
-                //Toast.makeText(history.this,"创建记录成功！",Toast.LENGTH_SHORT).show();
-                Log.e(TAG_SERVICE, "创建记录成功！");
-            }
-            catch(Exception e)
-            {
-            }
-
+        File appDir = new File(Environment.getExternalStorageDirectory()+"/AutoGround");   //自定义的目录
+        if (!appDir.exists()) {
+            boolean isSuccess = appDir.mkdir();
+            Log.d("MsgId:" ,"----------0------------------"+isSuccess);
         }
         else
-        {
-            Log.e(TAG_SERVICE, "文件访问成功！");
+            Log.d("MsgId:" ,"----------0------------------目录已经存在:"+Environment.getExternalStorageDirectory()+"/AutoGround");
+
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/Record.json");
+        if (fs.exists()) {
             String result = "";
             try {
                 FileInputStream f = new FileInputStream(fs);
@@ -171,9 +147,36 @@ public class history extends BaseActivity  {
                 fileList = gson.fromJson(result, new TypeToken<List<recorder>>() {
                 }.getType());
             }
+        }
+        else {
+            try {
+                FileOutputStream outputStream =new FileOutputStream(fs);
+                OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
+
+                recorder header = new recorder();
+                header.taskname = "作业名称";
+                header.type = "作业类型";
+                header.mianji = "任务面积";
+                header.time = "作业时间";
+                fileList.add(header);
+                Gson gson = new Gson();
+                String jsonString = gson.toJson(fileList);
+                outStream.write(jsonString);
+
+                outputStream.flush();
+                outStream.flush();
+                outputStream.close();
+                outputStream.close();
+                Toast.makeText(getBaseContext(), "File created successfully", Toast.LENGTH_LONG).show();
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
-
     }
     private void saveRecord()
     {
@@ -213,11 +216,5 @@ public class history extends BaseActivity  {
 
 
 
-    class recorder
-    {
-        public String taskname;
-        public String type;
-        public String mianji;
-        public String time;
-    }
+
 }
