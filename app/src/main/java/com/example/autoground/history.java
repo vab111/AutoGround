@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,9 +93,9 @@ public class history extends BaseActivity  {
         setToolbar();
     }
 
-    private void actionRecord(int position)
+    private void actionRecord(final int position)
     {
-        Dialog bottomDialog = new Dialog(this,R.style.BottomDialog);
+        final Dialog bottomDialog = new Dialog(this,R.style.BottomDialog);
         View contentView = LayoutInflater.from(this).inflate(R.layout.recordaction, null);
         bottomDialog.setContentView(contentView);
 
@@ -102,6 +103,19 @@ public class history extends BaseActivity  {
         bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
         bottomDialog.setCanceledOnTouchOutside(false);
         bottomDialog.show();
+        Button del = contentView.findViewById(R.id.button22);
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recorder item = (recorder) fileList.get(position);
+                File appDir = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+item.taskname);
+                appDir.delete();
+                fileList.remove(position);
+                saveRecord();
+                listAdapter.notifyDataSetChanged();
+                bottomDialog.dismiss();
+            }
+        });
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -187,7 +201,7 @@ public class history extends BaseActivity  {
         OutputStreamWriter outStream =null;
         try
         {
-            fileOut =new FileOutputStream("/AutoGround/Record.json",false);
+            fileOut =new FileOutputStream(Environment.getExternalStorageDirectory()+"/AutoGround/Record.json",false);
             outStream =new OutputStreamWriter(fileOut);
             outStream.write(jsonString);
             outStream.flush();
@@ -197,6 +211,7 @@ public class history extends BaseActivity  {
         }
         catch(Exception e)
         {
+            Toast.makeText(history.this,"保存失败！",Toast.LENGTH_SHORT).show();
         }
         finally
         {

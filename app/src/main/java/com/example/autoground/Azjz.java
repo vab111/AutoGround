@@ -4,15 +4,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.guard.Command;
 import com.android.guard.CommunicationService;
 import com.android.guard.DataType;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Azjz extends BaseActivity {
 
@@ -27,7 +42,7 @@ public class Azjz extends BaseActivity {
     private EditText avgAngle;
     private EditText AngleFix;
     private CommunicationService mService;
-
+    private List azjzData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +83,7 @@ public class Azjz extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        loadData();
     }
     private void setToolbar() {
         TextView text = (TextView) toolbar.getChildAt(0);
@@ -126,6 +142,20 @@ public class Azjz extends BaseActivity {
     }
     public void handle(int id,byte[] data)
     {
+        final AzjzData item = (AzjzData) azjzData.get(0);
+        byte[] order = new byte[4];
+        order[0] = -80;
+        order[1] = 64;
+        order[2] = 0x00;
+        order[3] = 0x00;
+        byte[] ACK = new byte[8];
+        ACK[0] = 0x60;
+        ACK[2] = 0x20;
+        ACK[3] = 0x00;
+        ACK[4] = 0x00;
+        ACK[5] = 0x00;
+        ACK[6] = 0x00;
+        ACK[7] = 0x00;
         switch (id) {
             case 1538:
                 //0x602
@@ -133,9 +163,11 @@ public class Azjz extends BaseActivity {
                 {
                     case 0:
                         //TODO 天线修正、转角修正
-                        final int txxiuzheng = ((data[4] << 8) | data[5]);
-                        final int zhuanjiaoxiuzheng = ((data[6] << 8) | data[7]);
 
+                        final int txxiuzheng = ((data[4] << 8) | (0xff&data[5]));
+
+                        final int zhuanjiaoxiuzheng = ((data[6] << 8) | (0xff&data[7]));
+                        ACK[1] = 0x00;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -143,14 +175,16 @@ public class Azjz extends BaseActivity {
                                 float jiaodu2 = (float)zhuanjiaoxiuzheng/10;
                                 txxz.setText(String.format("%.1f°", jiaodu1));
                                 AngleFix.setText(String.format("%.1f°", jiaodu2));
+                                item.txxz = txxiuzheng;
+                                item.AngleFix = zhuanjiaoxiuzheng;
                             }
                         });
                         break;
                     case 1:
                         //TODO 直线方向、平均航向
-                        final int txxiuzheng1 = ((data[4] << 8) | data[5]);
-                        final int zhuanjiaoxiuzheng1 = ((data[6] << 8) | data[7]);
-
+                        final int txxiuzheng1 = ((data[4] << 8) | (0xff&data[5]));
+                        final int zhuanjiaoxiuzheng1 = ((data[6] << 8) | (0xff&data[7]));
+                        ACK[1] = 0x01;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -158,14 +192,16 @@ public class Azjz extends BaseActivity {
                                 float jiaodu2 = (float)zhuanjiaoxiuzheng1/10;
                                 zxDerection.setText(String.format("%.1f°", jiaodu1));
                                 avgHang.setText(String.format("%.1f°", jiaodu2));
+                                item.zxDerection = txxiuzheng1;
+                                item.avgHang = zhuanjiaoxiuzheng1;
                             }
                         });
                         break;
                     case 2:
                         //TODO 车头方向、车头平均
-                        final int txxiuzheng2 = ((data[4] << 8) | data[5]);
-                        final int zhuanjiaoxiuzheng2 = ((data[6] << 8) | data[7]);
-
+                        final int txxiuzheng2 = ((data[4] << 8) | (0xff&data[5]));
+                        final int zhuanjiaoxiuzheng2 = ((data[6] << 8) | (0xff&data[7]));
+                        ACK[1] = 0x02;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -173,14 +209,16 @@ public class Azjz extends BaseActivity {
                                 float jiaodu2 = (float)zhuanjiaoxiuzheng2/10;
                                 headDerection.setText(String.format("%.1f°", jiaodu1));
                                 avgHead.setText(String.format("%.1f°", jiaodu2));
+                                item.headDerection = txxiuzheng2;
+                                item.avgHead = zhuanjiaoxiuzheng2;
                             }
                         });
                         break;
                     case 3:
                         //TODO 车轮转角、转角平均
-                        final int txxiuzheng3 = ((data[4] << 8) | data[5]);
-                        final int zhuanjiaoxiuzheng3 = ((data[6] << 8) | data[7]);
-
+                        final int txxiuzheng3 = ((data[4] << 8) | (0xff&data[5]));
+                        final int zhuanjiaoxiuzheng3 = ((data[6] << 8) | (0xff&data[7]));
+                        ACK[1] = 0x03;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -188,13 +226,106 @@ public class Azjz extends BaseActivity {
                                 float jiaodu2 = (float)zhuanjiaoxiuzheng3/10;
                                 wheelAngle.setText(String.format("%.1f°", jiaodu1));
                                 avgAngle.setText(String.format("%.1f°", jiaodu2));
+                                item.wheelAngle = txxiuzheng3;
+                                item.avgAngle = zhuanjiaoxiuzheng3;
                             }
                         });
                         break;
                         default:
                             break;
                 }
+                mService.sendCan(order, ACK);
                 break;
+        }
+    }
+
+    public void startJZ(View view) {
+        heartData.heart[01]|=0x04;
+        byte[] order = new byte[4];
+        order[0] = -32;
+        order[1] = 64;
+        order[2] = 0x00;
+        order[3] = 0x00;
+        mService.sendCan(order, heartData.heart);
+    }
+
+    public void endJZ(View view) {
+        heartData.heart[01]&=0xfb;
+        byte[] order = new byte[4];
+        order[0] = -32;
+        order[1] = 64;
+        order[2] = 0x00;
+        order[3] = 0x00;
+        mService.sendCan(order, heartData.heart);
+    }
+
+    public void loadData()
+    {
+        azjzData = new ArrayList();
+
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/Azjzdata.json");
+
+            String result = "";
+            try {
+                FileInputStream f = new FileInputStream(fs);
+                BufferedReader bis = new BufferedReader(new InputStreamReader(f));
+                String line = "";
+                while ((line = bis.readLine()) != null) {
+                    result += line;
+                }
+                bis.close();
+                f.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (result.length()>0) {
+                Gson gson = new Gson();
+                azjzData = gson.fromJson(result, new TypeToken<List<AzjzData>>() {
+                }.getType());
+            }
+            AzjzData item = (AzjzData) azjzData.get(0);
+        float jiaodu1 = (float) item.txxz/10;
+        txxz.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.AngleFix/10;
+        AngleFix.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.zxDerection/10;
+        zxDerection.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.avgHang/10;
+        avgHang.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.wheelAngle/10;
+        wheelAngle.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.avgAngle/10;
+        avgAngle.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.headDerection/10;
+        headDerection.setText(String.format("%.1f°", jiaodu1));
+        jiaodu1 = (float) item.avgHead/10;
+        avgHead.setText(String.format("%.1f°", jiaodu1));
+    }
+    private void saveJZ()
+    {
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/Azjzdata.json");
+        try {
+            FileOutputStream outputStream =new FileOutputStream(fs);
+            OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
+
+            AzjzData header = new AzjzData();
+
+            azjzData.add(header);
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(azjzData);
+            outStream.write(jsonString);
+
+            outputStream.flush();
+            outStream.flush();
+            outputStream.close();
+            outputStream.close();
+            Toast.makeText(getBaseContext(), "File created successfully", Toast.LENGTH_LONG).show();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
