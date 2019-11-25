@@ -7,22 +7,25 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.print.PrinterId;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.CollapsibleActionView;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import java.lang.annotation.Target;
-import java.lang.reflect.Modifier;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback,Runnable, View.OnTouchListener {
-    private Point start = new Point(0,0);
+
     private Point moveOrigin = new Point(0,0);
     private Point Moved = new Point(0,0);
     private boolean isScaling = false;
@@ -41,7 +44,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Point pointB = new Point(0,0);
     private Point CurPoint = new Point(0,0);
     private float carDerection;
-    private int ChanWidth = 300;
+    private int ChanWidth = 30;
 
     public boolean isTask = false;
     private Point startP = new Point(0,0);
@@ -52,8 +55,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int mapWidth = width*3;
     private int mapHeight = height*3;
     private int CNM = 5;
-
-
+    private String CurrentTask;
+    private String[] mapbufferFile = new String[9];
+    private String CurName;
     public MysurfaceView(Context context, AttributeSet attrs){
         super(context,attrs);
         this.getHolder().addCallback(this);
@@ -64,7 +68,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         CurPoint.x = 0;
         CurPoint.y = 0;
-
     }
 
     @Override
@@ -94,13 +97,13 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             canvas = this.getHolder().lockCanvas();
             if (canvas == null)
                 return;
-
+            ScreenCaculate();
             canvas.drawColor(Color.WHITE);
             canvas.translate(Moved.x,Moved.y);
             canvas.scale(scale,scale);
 
             drawBg(canvas, this.getWidth(), this.getHeight());
-            drawCar(canvas);
+
 
 
 
@@ -109,13 +112,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 drawHistory(canvas);
                 drawA(canvas);
                 drawB(canvas);
+                drawTrace(canvas);
             }
             else
             {
                 if(isA)
                     drawA(canvas);
             }
-
+            drawCar(canvas);
             this.getHolder().unlockCanvasAndPost(canvas);
             try {
                 Thread.sleep(Math.max(0, 50-(System.currentTimeMillis()-t)));
@@ -190,14 +194,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     {
         //TODO 绘制AB线，红色
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
         Point ap = transform(pointA);
         Point bp = transform(pointB);
 
         double jiaodu = Math.atan2(ap.y-bp.y, bp.x-ap.x);
         int x = (int) (bp.x+(bp.y+Moved.y)/Math.tan(jiaodu));
         int y = (int) (ap.y+(ap.x+Moved.x)*Math.tan(jiaodu));
-        Log.e("ABLine--角度", String.valueOf(jiaodu));
+        Log.e("ABLine-角度", String.valueOf(jiaodu));
 
         Point cur = transform(CurPoint);
         if ((ap.x-bp.x)*(ap.x-bp.x)>(ap.y-bp.y)*(ap.y-bp.y))
@@ -205,29 +209,47 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             paint.setColor(Color.RED);
             paint.setStrokeWidth(1.0f);
             //TODO y方向做等分
-            int jianju = (int) Math.abs(ChanWidth/Math.sin(jiaodu));
-            int cury = (int) (cur.y-Math.tan(jiaodu)*width/2);
-            for (int j=y;j>-Moved.y;j-=jianju) {
-                if (Math.abs(cury-j)<=ChanWidth/2)
+            int jianju = (int) Math.abs(ChanWidth/Math.cos(jiaodu));
+            int cury = (int) (cur.y+Math.tan(jiaodu)*width/2);
+            for (int j=y;j>-Moved.y-Math.abs(Math.tan(jiaodu)*width);j-=jianju) {
+                if (Math.abs(cury-j)<=jianju/2)
                 {
                     paint.setColor(Color.GRAY);
-                    paint.setStrokeWidth(ChanWidth);
-                    canvas.drawLine((float) (-Moved.x-Math.abs(Math.sin(jiaodu)*ChanWidth/2)), (float) (j-Math.abs(Math.cos(jiaodu)*ChanWidth/2)), -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
+                    Path curPath = new Path();
+                    curPath.moveTo(-Moved.x, j-jianju/2);
+                    curPath.lineTo(-Moved.x, j+jianju/2);
+                    curPath.lineTo(-Moved.x + width,(float) (j - width * Math.tan(jiaodu)+jianju/2));
+                    curPath.lineTo(-Moved.x+width, (float) (j - width * Math.tan(jiaodu)-jianju/2));
+                    curPath.close();
+                    canvas.drawPath(curPath, paint);
+
+                    paint.setColor(Color.RED);
+                    paint.setStrokeWidth(2.0f);
+                    canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
                 }
                 paint.setColor(Color.RED);
-                paint.setStrokeWidth(2.0f);
+                paint.setStrokeWidth(1.0f);
                 canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
             }
-            for (int j=y+jianju;j<-Moved.y+height+width*Math.tan(jiaodu);j+=jianju)
+            for (int j=y+jianju;j<-Moved.y+height+Math.abs(width*Math.tan(jiaodu));j+=jianju)
             {
-                if (Math.abs(cury-j)<=ChanWidth/2)
+                if (Math.abs(cury-j)<=jianju/2)
                 {
                     paint.setColor(Color.GRAY);
-                    paint.setStrokeWidth(ChanWidth);
-                    canvas.drawLine((float) (-Moved.x-Math.abs(Math.sin(jiaodu)*ChanWidth/2)), (float) (j-Math.abs(Math.cos(jiaodu)*ChanWidth/2)), -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
+                    Path curPath = new Path();
+                    curPath.moveTo(-Moved.x, j-jianju/2);
+                    curPath.lineTo(-Moved.x, j+jianju/2);
+                    curPath.lineTo(-Moved.x + width,(float) (j - width * Math.tan(jiaodu)+jianju/2));
+                    curPath.lineTo(-Moved.x+width, (float) (j - width * Math.tan(jiaodu)-jianju/2));
+                    curPath.close();
+                    canvas.drawPath(curPath, paint);
+
+                    paint.setColor(Color.RED);
+                    paint.setStrokeWidth(2.0f);
+                    canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
                 }
                 paint.setColor(Color.RED);
-                paint.setStrokeWidth(2.0f);
+                paint.setStrokeWidth(1.0f);
                 canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
             }
 
@@ -238,35 +260,53 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             paint.setColor(Color.RED);
             paint.setStrokeWidth(1.0f);
 
-            int cury = (int) (cur.x+Math.tan(jiaodu)*height/2);
+            int cury = (int) (cur.x+height/(2*Math.tan(jiaodu)));
             //TODO x方向做等分
-            int jianju = (int) Math.abs(ChanWidth/Math.cos(jiaodu));
+            int jianju = (int) Math.abs(ChanWidth/Math.sin(jiaodu));
 
-             for (int j=x;j>-Moved.x;j-=jianju){
-                 if (Math.abs(cury-j)<=ChanWidth/2)
-                 {
-                     paint.setColor(Color.GRAY);
-                     paint.setStrokeWidth(ChanWidth);
+                    for (int j = x; j > -Moved.x+height/Math.tan(jiaodu); j -= jianju) {
+                        if (Math.abs(cury - j) <= jianju/2) {
+                            paint.setColor(Color.GRAY);
+                            Path curPath = new Path();
+                            curPath.moveTo(j - jianju / 2, -Moved.y);
+                            curPath.lineTo(j + jianju / 2, -Moved.y);
+                            curPath.lineTo((float) (j - height / Math.tan(jiaodu)) + jianju / 2, -Moved.y + height);
+                            curPath.lineTo((float) (j - height / Math.tan(jiaodu)) - jianju / 2, -Moved.y + height);
+                            curPath.close();
+                            canvas.drawPath(curPath, paint);
 
-                     canvas.drawLine((float) (j-Math.abs(Math.sin(jiaodu)*ChanWidth/2)), (float) (-Moved.y-Math.abs(Math.cos(jiaodu)*ChanWidth/2)), (float) (j-height/Math.tan(jiaodu)-Math.abs(Math.sin(jiaodu)*ChanWidth/2)), -Moved.y+height, paint);
-                 }
-                paint.setColor(Color.RED);
-                paint.setStrokeWidth(2.0f);
-                canvas.drawLine(j, -Moved.y, (float) (j-height/Math.tan(jiaodu)), -Moved.y+height, paint);
-             }
+                            paint.setColor(Color.RED);
+                            paint.setStrokeWidth(2.0f);
+                            canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
+                        } else {
+                            paint.setColor(Color.RED);
+                            paint.setStrokeWidth(1.0f);
+                            canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
+                        }
+                    }
 
-             for (int j=x+jianju;(float) (j-height/Math.tan(jiaodu))<-Moved.x+width+height/Math.tan(jiaodu);j+=jianju) {
-                 if (Math.abs(cury - j) <= ChanWidth / 2) {
-                     paint.setColor(Color.GRAY);
-                     paint.setStrokeWidth(ChanWidth);
+                    for (int j = x + jianju; (float) (j - height / Math.tan(jiaodu)) < -Moved.x + width + height / Math.tan(jiaodu); j += jianju) {
+                        if (Math.abs(cury - j) <= jianju/2) {
+                            paint.setColor(Color.GRAY);
 
-                     canvas.drawLine((float) (j - Math.abs(Math.sin(jiaodu) * ChanWidth / 2)), (float) (-Moved.y - Math.abs(Math.cos(jiaodu) * ChanWidth / 2)), (float) (j - height / Math.tan(jiaodu) - Math.abs(Math.sin(jiaodu) * ChanWidth / 2)), -Moved.y + height, paint);
-                 }
-                 paint.setColor(Color.RED);
-                 paint.setStrokeWidth(2.0f);
-                 canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
+                            Path curPath = new Path();
+                            curPath.moveTo(j - jianju / 2, -Moved.y);
+                            curPath.lineTo(j + jianju / 2, -Moved.y);
+                            curPath.lineTo((float) (j - height / Math.tan(jiaodu)) + jianju / 2, -Moved.y + height);
+                            curPath.lineTo((float) (j - height / Math.tan(jiaodu)) - jianju / 2, -Moved.y + height);
+                            curPath.close();
+                            canvas.drawPath(curPath, paint);
 
-             }
+                            paint.setColor(Color.RED);
+                            paint.setStrokeWidth(2.0f);
+                            canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
+                        } else {
+                            paint.setColor(Color.RED);
+                            paint.setStrokeWidth(1.0f);
+                            canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
+                        }
+                    }
+
         }
 
 
@@ -281,7 +321,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Point car = transform(CurPoint);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
-        Rect mDestRect = new Rect(car.x-40, car.y-40, car.x+40, car.y+40);
+        Rect mDestRect = new Rect(car.x-15, car.y-15, car.x+65, car.y+65);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) carDerection-90, bmp);
@@ -301,7 +341,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointA);
-        Rect mDestRect = new Rect(ap.x-40, ap.y-40, ap.x+40, ap.y+40);
+        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.adian);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) carDerection-90, bmp);
@@ -320,7 +360,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointB);
-        Rect mDestRect = new Rect(ap.x-40, ap.y-40, ap.x+40, ap.y+40);
+        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bdian);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) carDerection-90, bmp);
@@ -359,7 +399,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (isTask) {
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
-            updateTask();
+
         }
         carDerection = (float) jiaodu;
     }
@@ -403,6 +443,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             isTask = true;
             startP.x = CurPoint.x;
             startP.y = CurPoint.y;
+            endP.x = CurPoint.x;
+            endP.y = CurPoint.y;
         }
     }
     public void updateTask()
@@ -411,9 +453,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(30.0f);
-        canvas.drawLine(startP.x+mapWidth/2, mapHeight/2-startP.y, endP.x+mapWidth/2, mapHeight/2-endP.y, paint);
-        startP.x = endP.x;
-        startP.y = endP.y;
+        canvas.drawLine(0 , 0, width, height, paint);
+
     }
     public void drawHistory(Canvas canvas)
     {
@@ -424,17 +465,616 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
 
-        Rect mDestRect = new Rect(Moved.x, Moved.y, width+Moved.x, height+Moved.y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+        Rect mDestRect = new Rect(-Moved.x, -Moved.y,-Moved.x+ width, -Moved.y+height);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
 
-        	// 设置canvas画布背景为白色	// 定义矩阵对象
-        //Trace = rotaingImageView((int) carDerection-90, Trace);
-//        Matrix matrix = new Matrix();		// 缩放原图
-//        matrix.postScale(10.0f, 10.0f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
-//        Bitmap dstbmp = Bitmap.createBitmap(Trace, CurPoint.x+width/2-width/20, height/2-CurPoint.y-height/20, width/10, height/10,				matrix, true);
+
 
         canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
 
     }
+    public void updateTrace(Point point)
+    {
+        //TODO 装载缓存图片
+        int xiangxian;
+
+        int hor = point.x/width;
+        int ver = point.y/height;
+        if (point.x>0)
+        {
+            if (point.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (point.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        switch (xiangxian)
+        {
+            case 1:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第一象限 （0，0）块，9宫格全4象限
+                        mapbufferFile[0]= "2-0-1";
+                        mapbufferFile[1]="1-0-1";
+                        mapbufferFile[2]= "1-1-1";
+                        mapbufferFile[3]="2-0-0";
+                        mapbufferFile[4] ="1-0-0";
+                        mapbufferFile[5]="1-1-0";
+                        mapbufferFile[6]="3-0-0";
+                        mapbufferFile[7]="4-0-0";
+                        mapbufferFile[8]="4-1-0";
+
+                    }
+                    else
+                    {
+                        //TODO 第一象限，一、二象限
+                        mapbufferFile[0] = String.format("2-0-%d",ver+1 );
+                        mapbufferFile[1] = String.format("1-0-%d",ver+1 );
+                        mapbufferFile[2] = String.format("1-1-%d",ver+1 );
+                        mapbufferFile[3] = String.format("2-0-%d",ver );
+                        mapbufferFile[4] = String.format("1-0-%d",ver );
+                        mapbufferFile[5] = String.format("1-1-%d",ver );
+                        mapbufferFile[6] = String.format("2-0-%d",ver-1 );
+                        mapbufferFile[7] = String.format("1-0-%d",ver-1 );
+                        mapbufferFile[8] = String.format("1-1-%d",ver-1 );
+
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 一、四象限
+
+                        mapbufferFile[0] = String.format("1-%d-1",hor-1 );
+                        mapbufferFile[1] = String.format("1-%d-1",hor );
+                        mapbufferFile[2] = String.format("1-%d-1",hor+1 );
+                        mapbufferFile[3] = String.format("1-%d-0",hor-1 );
+                        mapbufferFile[4] = String.format("1-%d-0",hor );
+                        mapbufferFile[5] = String.format("1-%d-0",hor+1 );
+                        mapbufferFile[6] = String.format("4-%d-0",hor-1 );
+                        mapbufferFile[7] = String.format("4-%d-0",hor );
+                        mapbufferFile[8] = String.format("4-%d-0",hor+1);
+                    }
+                    else
+                    {
+                        //TODO，一象限解决
+
+                        mapbufferFile[0] = String.format("1-%d-%d",hor-1,ver+1 );
+                        mapbufferFile[1] = String.format("1-%d-%d",hor ,ver+1);
+                        mapbufferFile[2] = String.format("1-%d-%d",hor+1,ver+1 );
+                        mapbufferFile[3] = String.format("1-%d-%d",hor-1,ver );
+                        mapbufferFile[4] = String.format("1-%d-%d",hor,ver );
+                        mapbufferFile[5] = String.format("1-%d-%d",hor+1,ver );
+                        mapbufferFile[6] = String.format("1-%d-%d",hor-1,ver-1 );
+                        mapbufferFile[7] = String.format("1-%d-%d",hor,ver-1 );
+                        mapbufferFile[8] = String.format("1-%d-%d",hor+1,ver-1 );
+                    }
+                }
+                break;
+            case 2:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第二象限 （0，0）块，9宫格全4象限
+                        mapbufferFile[0] = "2-1-1";
+                        mapbufferFile[1] = "2-0-1";
+                        mapbufferFile[2] = "1-0-1";
+                        mapbufferFile[3] = "2-1-0";
+                        mapbufferFile[4] = "2-0-0";
+                        mapbufferFile[5] = "1-0-0";
+                        mapbufferFile[6] = "3-1-0";
+                        mapbufferFile[7] = "3-0-0";
+                        mapbufferFile[8] = "4-0-0";
+                    }
+                    else
+                    {
+                        //TODO 第一象限，一、二象限
+                        mapbufferFile[0] = String.format("2-1-%d", ver+1);
+                        mapbufferFile[1] = String.format("2-0-%d", ver+1);
+                        mapbufferFile[2] = String.format("1-0-%d", ver+1);
+                        mapbufferFile[3] = String.format("2-1-%d", ver);
+                        mapbufferFile[4] = String.format("2-0-%d", ver);
+                        mapbufferFile[5] = String.format("1-0-%d", ver);
+                        mapbufferFile[6] = String.format("2-1-%d", ver-1);
+                        mapbufferFile[7] = String.format("2-0-%d", ver-1);
+                        mapbufferFile[8] = String.format("1-0-%d", ver-1);
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 二、三象限
+
+                        mapbufferFile[0] = String.format("2-%d-1", hor+1);
+                        mapbufferFile[1] = String.format("2-%d-1", hor);
+                        mapbufferFile[2] = String.format("2-%d-1", hor+1);
+                        mapbufferFile[3] = String.format("2-%d-0", hor+1);
+                        mapbufferFile[4] = String.format("2-%d-0", hor);
+                        mapbufferFile[5] = String.format("2-%d-0", hor-1);
+                        mapbufferFile[6] = String.format("3-%d-0", hor+1);
+                        mapbufferFile[7] = String.format("3-%d-0", hor);
+                        mapbufferFile[8] = String.format("3-%d-0", hor-1);
+                    }
+                    else
+                    {
+                        //TODO，二象限解决
+                        mapbufferFile[0] = String.format("2-%d-%d",hor+1,ver+1 );
+                        mapbufferFile[1] = String.format("2-%d-%d",hor ,ver+1);
+                        mapbufferFile[2] = String.format("2-%d-%d",hor-1,ver+1 );
+                        mapbufferFile[3] = String.format("2-%d-%d",hor+1,ver );
+                        mapbufferFile[4] = String.format("2-%d-%d",hor,ver );
+                        mapbufferFile[5] = String.format("2-%d-%d",hor-1,ver );
+                        mapbufferFile[6] = String.format("2-%d-%d",hor+1,ver-1 );
+                        mapbufferFile[7] = String.format("2-%d-%d",hor,ver-1 );
+                        mapbufferFile[8] = String.format("2-%d-%d",hor-1,ver-1 );
+                    }
+                }
+                break;
+            case 3:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第三象限 （0，0）块，9宫格全4象限
+                        mapbufferFile[0] ="2-1-0";
+                        mapbufferFile[1] ="2-0-0";
+                        mapbufferFile[2] ="1-0-0";
+                        mapbufferFile[3] ="3-1-0";
+                        mapbufferFile[4] ="3-0-0";
+                        mapbufferFile[5] ="4-0-0";
+                        mapbufferFile[6] ="3-1-1";
+                        mapbufferFile[7] ="4-0-1";
+                        mapbufferFile[8] ="4-0-1";
+                    }
+                    else
+                    {
+                        //TODO 第三象限，三、四象限
+                        mapbufferFile[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFile[1] = String.format("3-0-%d",ver-1);
+                        mapbufferFile[2] = String.format("4-1-%d",ver-1 );
+                        mapbufferFile[3] = String.format("3-0-%d",ver );
+                        mapbufferFile[4] = String.format("3-0-%d",ver );
+                        mapbufferFile[5] = String.format("4-1-%d",ver );
+                        mapbufferFile[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFile[7] = String.format("3-0-%d",ver+1 );
+                        mapbufferFile[8] = String.format("4-1-%d",ver+1 );
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 二、三象限
+                        mapbufferFile[0] = String.format("2-%d-0",hor+1 );
+                        mapbufferFile[1] = String.format("2-%d-0",hor );
+                        mapbufferFile[2] = String.format("2-%d-0",hor-1 );
+                        mapbufferFile[3] = String.format("3-%d-0",hor+1 );
+                        mapbufferFile[4] = String.format("3-%d-0",hor );
+                        mapbufferFile[5] = String.format("3-%d-0",hor-1 );
+                        mapbufferFile[6] = String.format("3-%d-1",hor+1 );
+                        mapbufferFile[7] = String.format("3-%d-1",hor );
+                        mapbufferFile[8] = String.format("3-%d-1",hor-1 );
+                    }
+                    else
+                    {
+                        //TODO，三象限解决
+
+                        mapbufferFile[0] = String.format("3-%d-%d",hor+1,ver-1 );
+                        mapbufferFile[1] = String.format("3-%d-%d",hor ,ver-1);
+                        mapbufferFile[2] = String.format("3-%d-%d",hor-1,ver-1 );
+                        mapbufferFile[3] = String.format("3-%d-%d",hor+1,ver );
+                        mapbufferFile[4] = String.format("3-%d-%d",hor,ver );
+                        mapbufferFile[5] = String.format("3-%d-%d",hor-1,ver );
+                        mapbufferFile[6] = String.format("3-%d-%d",hor+1,ver+1 );
+                        mapbufferFile[7] = String.format("3-%d-%d",hor,ver+1 );
+                        mapbufferFile[8] = String.format("3-%d-%d",hor-1,ver+1 );
+                    }
+                }
+                break;
+            case 4:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第四象限 （0，0）块，9宫格全4象限
+                        mapbufferFile[0] = "2-0-0";
+                        mapbufferFile[0] = "1-0-0";
+                        mapbufferFile[0] = "1-1-0";
+                        mapbufferFile[0] = "3-0-0";
+                        mapbufferFile[0] = "4-0-0";
+                        mapbufferFile[0] = "4-1-0";
+                        mapbufferFile[0] = "3-1-1";
+                        mapbufferFile[0] = "4-0-1";
+                        mapbufferFile[0] = "4-1-1";
+                    }
+                    else
+                    {
+                        //TODO 第一象限，三、四象限
+
+                        mapbufferFile[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFile[1] = String.format("4-0-%d",ver-1 );
+                        mapbufferFile[2] = String.format("4-1-%d",ver-1 );
+                        mapbufferFile[3] = String.format("3-0-%d",ver );
+                        mapbufferFile[4] = String.format("4-0-%d",ver );
+                        mapbufferFile[5] = String.format("4-1-%d",ver );
+                        mapbufferFile[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFile[7] = String.format("4-0-%d",ver+1 );
+                        mapbufferFile[8] = String.format("4-1-%d",ver+1);
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 一、四象限
+
+                        mapbufferFile[0] = String.format("1-%d-0",hor-1 );
+                        mapbufferFile[1] = String.format("1-%d-0",hor );
+                        mapbufferFile[2] = String.format("1-%d-0",hor+1 );
+                        mapbufferFile[3] = String.format("4-%d-0",hor-1 );
+                        mapbufferFile[4] = String.format("4-%d-0",hor );
+                        mapbufferFile[5] = String.format("4-%d-0",hor+1 );
+                        mapbufferFile[6] = String.format("4-%d-1",hor-1 );
+                        mapbufferFile[7] = String.format("4-%d-1",hor );
+                        mapbufferFile[8] = String.format("4-%d-1",hor+1 );
+                    }
+                    else
+                    {
+                        //TODO，四象限解决
+                        mapbufferFile[0] = String.format("4-%d-%d",hor-1,ver-1 );
+                        mapbufferFile[1] = String.format("4-%d-%d",hor ,ver-1);
+                        mapbufferFile[2] = String.format("4-%d-%d",hor+1,ver-1 );
+                        mapbufferFile[3] = String.format("4-%d-%d",hor-1,ver );
+                        mapbufferFile[4] = String.format("4-%d-%d",hor,ver );
+                        mapbufferFile[5] = String.format("4-%d-%d",hor+1,ver );
+                        mapbufferFile[6] = String.format("4-%d-%d",hor-1,ver+1 );
+                        mapbufferFile[7] = String.format("4-%d-%d",hor,ver+1 );
+                        mapbufferFile[8] = String.format("4-%d-%d",hor+1,ver+1 );
+                    }
+                }
+                break;
+                default:
+                    break;
+        }
+
+    }
+    public void loadBuffer()
+    {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        int x = 0,y = 0;
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        paint.setFilterBitmap(true);
+        for (int i=0;i<9;i++) {
+            String filename = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i];
+            File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]);
+            if (fs.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(filename);
+                Rect mSrcRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+                switch (i)
+                {
+                    case 0:
+                        x=0;
+                        y=0;
+                        break;
+                    case 1:
+                        x=width;
+                        y=0;
+                        break;
+                    case 2:
+                        x=width*2;
+                        y=0;
+                        break;
+                    case 3:
+                        x=0;
+                        y=height;
+                        break;
+                    case 4:
+                        x=width;
+                        y=height;
+                        break;
+                    case 5:
+                        x=width*2;
+                        y=height;
+                        break;
+                    case 6:
+                        x=0;
+                        y=height*2;
+                        break;
+                    case 7:
+                        x=width;
+                        y=height*2;
+                        break;
+                    case 8:
+                        x=width*2;
+                        y=height*2;
+                        break;
+
+                }
+                Rect mDestRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+                canvas.drawBitmap(bitmap,mSrcRect,mDestRect,paint);
+            }
+        }
+    }
+
+    public String caculateFileName(Point point)
+    {
+        int xiangxian=0;
+        int hor = 0;
+        int ver = 0;
+        if (point.x>0)
+        {
+            if (point.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (point.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        hor = point.x/width;
+        ver = point.y/height;
+        String name = String.format("%d-%d-%d", xiangxian,hor,ver);
+        return name;
+    }
+
+    public void ScreenCaculate()
+    {
+        Point actrul = new Point();
+        actrul.x = width/2-Moved.x;
+        actrul.y = -(height/2-Moved.y);
+        String name = caculateFileName(actrul);
+        if (name.equals(CurName))
+        {
+            Log.e("中心BITMAP", "相同");
+        }
+        else
+        {
+            Log.e("中心BITMAP", "相同");
+            updateTrace(actrul);
+            loadBuffer();
+        }
+        if ((isTask)&&((startP.x!=endP.x)||(startP.y!=endP.y)))
+            drawBuffer();
+    }
+    public void drawBuffer()//绘制轨迹缓存
+    {
+        Point st = new Point();
+        Point endp = new Point();
+        st.x = startP.y;
+        st.y = startP.x;
+        endp.x = endP.y;
+        endp.y = endP.x;
+        Point start = new Point();
+        Point end = new Point();
+        int xiangxian=0;
+
+        if (endp.x>0)
+        {
+            if (endp.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (endp.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        switch (xiangxian)
+        {
+            case 1:
+                if (endp.x%width == 0){
+                    end.x = width*2;
+                }
+                else {
+                    end.x = endp.x % width + width;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height;
+                }
+                else
+                {
+                    end.y = height*2-endp.y%height;
+                }
+                start.x = end.x-(endp.x-st.x);
+                start.y = end.y-(endp.y-st.y);
+
+                break;
+            case 2:
+                if (endp.x%width == 0){
+                    end.x = width*2;
+                }
+                else {
+                    end.x = endp.x % width + 2*width;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height;
+                }
+                else
+                {
+                    end.y = 2*height-endp.y%height;
+                }
+                start.x = end.x-(endp.x-st.x);
+                start.y = end.y-(endp.y-st.y);
+                break;
+            case 3:
+                if (endp.x%width == 0){
+                    end.x = 2*width;
+                }
+                else {
+                    end.x = endp.x % width + 2*width;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height;
+                }
+                else
+                {
+                    end.y = height-endp.y%height;
+                }
+                start.x = end.x-(endp.x-st.x);
+                start.y = end.y-(endp.y-st.y);
+                break;
+            case 4:
+                if (endp.x%width == 0){
+                    end.x = 2*width;
+                }
+                else {
+                    end.x = endp.x % width + width;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height;
+                }
+                else
+                {
+                    end.y = height-endp.y%height;
+                }
+                start.x = end.x-(endp.x-st.x);
+                start.y = end.y-(endp.y-st.y);
+                break;
+        }
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.YELLOW);
+        paint.setStrokeWidth(1.0f);
+        double jiaodu = Math.toDegrees(Math.atan2(end.x-start.x,end.y-start.y));
+
+        Path curPath = new Path();
+        curPath.moveTo((float) (start.x+Math.sin(jiaodu)*ChanWidth/2), (float) (start.y+Math.cos(jiaodu)*ChanWidth/2));
+        curPath.lineTo((float)(start.x-Math.sin(jiaodu)*ChanWidth/2), (float) (start.y-Math.cos(jiaodu)*ChanWidth/2));
+        curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
+        curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
+        curPath.close();
+        canvas.drawPath(curPath, paint);
 
 
+        startP.x = endP.x;
+        startP.y = endP.y;
+
+
+
+    }
+    public void drawTrace(Canvas canvas)
+    {
+        Point actrul = new Point();
+        actrul.x = width/2-Moved.x;
+        actrul.y = -(height/2-Moved.y);
+        int xiangxian=0;
+        Point endp = new Point();
+        endp.x = actrul.x;
+        endp.y = actrul.y;
+        Point end = new Point();
+        if (endp.x>0)
+        {
+            if (endp.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (endp.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        switch (xiangxian)
+        {
+            case 1:
+                if (endp.x%width == 0){
+                    end.x = 3*width/2;
+                }
+                else {
+                    end.x = endp.x % width + width/2;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height/2;
+                }
+                else
+                {
+                    end.y = 3*height/2-endp.y%height;
+                }
+
+                break;
+            case 2:
+                if (endp.x%width == 0){
+                    end.x = 3*width/2;
+                }
+                else {
+                    end.x = endp.x % width + 3*width/2;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height/2;
+                }
+                else
+                {
+                    end.y = 3*height/2-endp.y%height;
+                }
+                break;
+            case 3:
+                if (endp.x%width == 0){
+                    end.x = 3*width/2;
+                }
+                else {
+                    end.x = endp.x % width + 3*width/2;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height/2;
+                }
+                else
+                {
+                    end.y = height/2-endp.y%height;
+                }
+                break;
+            case 4:
+                if (endp.x%width == 0){
+                    end.x = 3*width/2;
+                }
+                else {
+                    end.x = endp.x % width + width/2;
+                }
+                if (endp.y%height==0)
+                {
+                    end.y = height/2;
+                }
+                else
+                {
+                    end.y = height/2-endp.y%height;
+                }
+                break;
+        }
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        paint.setFilterBitmap(true);
+
+        paint.setDither(true);
+        Rect mSrcRect = new Rect(endp.x, endp.y, endp.x+width, endp.y+height);//第一个Rect 代表要绘制的bitmap 区域
+
+        Rect mDestRect = new Rect(-Moved.x, -Moved.y,-Moved.x+ width, -Moved.y+height);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+
+
+
+        canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+
+
+    }
 }
