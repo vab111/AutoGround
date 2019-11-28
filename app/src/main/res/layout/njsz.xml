@@ -10,7 +10,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="200dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="80dp"
         android:text="类型" />
 
     <EditText
@@ -54,7 +54,7 @@
         android:layout_below="@+id/textView28"
         android:layout_alignStart="@+id/textView28"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="60dp"
         android:text="型号" />
 
     <EditText
@@ -98,7 +98,7 @@
         android:layout_below="@+id/textView30"
         android:layout_alignStart="@+id/textView30"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="60dp"
         android:text="作业宽度" />
 
     <EditText
@@ -142,7 +142,7 @@
         android:layout_below="@+id/textView32"
         android:layout_alignStart="@+id/textView32"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="102dp"
+        android:layout_marginTop="60dp"
         android:text="左右偏移" />
 
     <EditText

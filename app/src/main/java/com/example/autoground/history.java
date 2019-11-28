@@ -108,8 +108,23 @@ public class history extends BaseActivity  {
             @Override
             public void onClick(View view) {
                 recorder item = (recorder) fileList.get(position);
-                File appDir = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+item.taskname);
+                File appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname);
+                if (appDir.exists()) {
+                    File[] files = appDir.listFiles();
+
+                    boolean flag = true;
+                    for (int i = 0; i < files.length; i++) {
+                        // 删除子文件
+                        if (files[i].isFile()) {
+                            flag = deleteFile(files[i].getAbsolutePath());
+                            if (!flag)
+                                break;
+                        }
+
+                    }
+
                 appDir.delete();
+                }
                 fileList.remove(position);
                 saveRecord();
                 listAdapter.notifyDataSetChanged();
@@ -117,6 +132,23 @@ public class history extends BaseActivity  {
             }
         });
     }
+    public boolean deleteFile(String fileName) {
+        File file = new File(fileName);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println("删除单个文件" + fileName + "成功！");
+                return true;
+            } else {
+                System.out.println("删除单个文件" + fileName + "失败！");
+                return false;
+            }
+        } else {
+            System.out.println("删除单个文件失败：" + fileName + "不存在！");
+            return false;
+        }
+    }
+
     private void setToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);//设计隐藏标题

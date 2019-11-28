@@ -10,15 +10,15 @@ import android.widget.RadioButton;
 import androidx.fragment.app.Fragment;
 
 public class njFragment extends Fragment {
-    private EditText leixing;
-    private EditText pinpai;
-    private EditText xinghao;
-    private EditText nianfen;
-    private EditText width;
-    private EditText back;
-    private EditText pianyi;
-    private RadioButton leftBtn;
-    private RadioButton rightBtn;
+    public EditText leixing;
+    public EditText pinpai;
+    public EditText xinghao;
+    public EditText nianfen;
+    public EditText width;
+    public EditText back;
+    public EditText pianyi;
+    public RadioButton leftBtn;
+    public RadioButton rightBtn;
 
 
     @Override

@@ -9,14 +9,14 @@ import android.widget.EditText;
 import androidx.fragment.app.Fragment;
 
 public class clFragment extends Fragment {
-    private EditText pinpai;
-    private EditText xinghao;
-    private EditText nianfen;
-    private EditText chepai;
-    private EditText front;
-    private EditText back;
-    private EditText zhouju;
-    private EditText chegao;
+    public EditText pinpai;
+    public EditText xinghao;
+    public EditText nianfen;
+    public EditText chepai;
+    public EditText front;
+    public EditText back;
+    public EditText zhouju;
+    public EditText chegao;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.clsz, container, false);

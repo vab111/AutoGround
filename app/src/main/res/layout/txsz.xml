@@ -57,7 +57,7 @@
         android:layout_below="@+id/textView35"
         android:layout_alignStart="@+id/textView35"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="103dp"
+        android:layout_marginTop="60dp"
         android:text="到中线距离" />
 
     <EditText

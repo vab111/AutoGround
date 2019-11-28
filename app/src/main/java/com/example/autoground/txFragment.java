@@ -10,9 +10,9 @@ import android.widget.EditText;
 import androidx.fragment.app.Fragment;
 
 public class txFragment extends Fragment {
-    private EditText toGround;
-    private EditText toBack;
-    private EditText toMid;
+    public EditText toGround;
+    public EditText toBack;
+    public EditText toMid;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.txsz, container, false);
