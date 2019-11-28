@@ -412,7 +412,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (isTask) {
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
-            ScreenCaculate(curPoint);
             drawBuffer();
         }
         if (isB)
@@ -449,6 +448,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         pointB.y = pointcur.y;
         updateTrace(pointB);
         bufferstate = 1;
+        updateEXP(pointcur);
 
     }
     public void setTaskOn()
@@ -739,6 +739,278 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
     }
+    public void updateTraceBack(Point point)
+    {
+        //TODO 装载缓存图片
+        int xiangxian;
+
+        int hor = -point.y/width;
+        int ver = -point.x/height;
+        if (-point.x>0)
+        {
+            if (-point.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (-point.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        switch (xiangxian)
+        {
+            case 1:
+                if (-point.x/width == 0)
+                {
+                    if (-point.y/height==0)
+                    {
+                        //TODO 第一象限 （0，0）块，9宫格全4象限
+                        mapbufferFileBack[0]= "2-0-1";
+                        mapbufferFileBack[1]="1-0-1";
+                        mapbufferFileBack[2]= "1-1-1";
+                        mapbufferFileBack[3]="2-0-0";
+                        mapbufferFileBack[4] ="1-0-0";
+                        mapbufferFileBack[5]="1-1-0";
+                        mapbufferFileBack[6]="3-0-0";
+                        mapbufferFileBack[7]="4-0-0";
+                        mapbufferFileBack[8]="4-1-0";
+
+                    }
+                    else
+                    {
+                        //TODO 第一象限，一、二象限
+                        mapbufferFileBack[0] = String.format("2-0-%d",ver+1 );
+                        mapbufferFileBack[1] = String.format("1-0-%d",ver+1 );
+                        mapbufferFileBack[2] = String.format("1-1-%d",ver+1 );
+                        mapbufferFileBack[3] = String.format("2-0-%d",ver );
+                        mapbufferFileBack[4] = String.format("1-0-%d",ver );
+                        mapbufferFileBack[5] = String.format("1-1-%d",ver );
+                        mapbufferFileBack[6] = String.format("2-0-%d",ver-1 );
+                        mapbufferFileBack[7] = String.format("1-0-%d",ver-1 );
+                        mapbufferFileBack[8] = String.format("1-1-%d",ver-1 );
+
+                    }
+                }
+                else
+                {
+                    if (-point.y/height == 0)
+                    {//TODO 一、四象限
+
+                        mapbufferFileBack[0] = String.format("1-%d-1",hor-1 );
+                        mapbufferFileBack[1] = String.format("1-%d-1",hor );
+                        mapbufferFileBack[2] = String.format("1-%d-1",hor+1 );
+                        mapbufferFileBack[3] = String.format("1-%d-0",hor-1 );
+                        mapbufferFileBack[4] = String.format("1-%d-0",hor );
+                        mapbufferFileBack[5] = String.format("1-%d-0",hor+1 );
+                        mapbufferFileBack[6] = String.format("4-%d-0",hor-1 );
+                        mapbufferFileBack[7] = String.format("4-%d-0",hor );
+                        mapbufferFileBack[8] = String.format("4-%d-0",hor+1);
+                    }
+                    else
+                    {
+                        //TODO，一象限解决
+
+                        mapbufferFileBack[0] = String.format("1-%d-%d",hor-1,ver+1 );
+                        mapbufferFileBack[1] = String.format("1-%d-%d",hor ,ver+1);
+                        mapbufferFileBack[2] = String.format("1-%d-%d",hor+1,ver+1 );
+                        mapbufferFileBack[3] = String.format("1-%d-%d",hor-1,ver );
+                        mapbufferFileBack[4] = String.format("1-%d-%d",hor,ver );
+                        mapbufferFileBack[5] = String.format("1-%d-%d",hor+1,ver );
+                        mapbufferFileBack[6] = String.format("1-%d-%d",hor-1,ver-1 );
+                        mapbufferFileBack[7] = String.format("1-%d-%d",hor,ver-1 );
+                        mapbufferFileBack[8] = String.format("1-%d-%d",hor+1,ver-1 );
+                    }
+                }
+                break;
+            case 2:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第二象限 （0，0）块，9宫格全4象限
+                        mapbufferFileBack[0] = "2-1-1";
+                        mapbufferFileBack[1] = "2-0-1";
+                        mapbufferFileBack[2] = "1-0-1";
+                        mapbufferFileBack[3] = "2-1-0";
+                        mapbufferFileBack[4] = "2-0-0";
+                        mapbufferFileBack[5] = "1-0-0";
+                        mapbufferFileBack[6] = "3-1-0";
+                        mapbufferFileBack[7] = "3-0-0";
+                        mapbufferFileBack[8] = "4-0-0";
+                    }
+                    else
+                    {
+                        //TODO 第一象限，一、二象限
+                        mapbufferFileBack[0] = String.format("2-1-%d", ver+1);
+                        mapbufferFileBack[1] = String.format("2-0-%d", ver+1);
+                        mapbufferFileBack[2] = String.format("1-0-%d", ver+1);
+                        mapbufferFileBack[3] = String.format("2-1-%d", ver);
+                        mapbufferFileBack[4] = String.format("2-0-%d", ver);
+                        mapbufferFileBack[5] = String.format("1-0-%d", ver);
+                        mapbufferFileBack[6] = String.format("2-1-%d", ver-1);
+                        mapbufferFileBack[7] = String.format("2-0-%d", ver-1);
+                        mapbufferFileBack[8] = String.format("1-0-%d", ver-1);
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 二、三象限
+
+                        mapbufferFileBack[0] = String.format("2-%d-1", hor+1);
+                        mapbufferFileBack[1] = String.format("2-%d-1", hor);
+                        mapbufferFileBack[2] = String.format("2-%d-1", hor+1);
+                        mapbufferFileBack[3] = String.format("2-%d-0", hor+1);
+                        mapbufferFileBack[4] = String.format("2-%d-0", hor);
+                        mapbufferFileBack[5] = String.format("2-%d-0", hor-1);
+                        mapbufferFileBack[6] = String.format("3-%d-0", hor+1);
+                        mapbufferFileBack[7] = String.format("3-%d-0", hor);
+                        mapbufferFileBack[8] = String.format("3-%d-0", hor-1);
+                    }
+                    else
+                    {
+                        //TODO，二象限解决
+                        mapbufferFileBack[0] = String.format("2-%d-%d",hor+1,ver+1 );
+                        mapbufferFileBack[1] = String.format("2-%d-%d",hor ,ver+1);
+                        mapbufferFileBack[2] = String.format("2-%d-%d",hor-1,ver+1 );
+                        mapbufferFileBack[3] = String.format("2-%d-%d",hor+1,ver );
+                        mapbufferFileBack[4] = String.format("2-%d-%d",hor,ver );
+                        mapbufferFileBack[5] = String.format("2-%d-%d",hor-1,ver );
+                        mapbufferFileBack[6] = String.format("2-%d-%d",hor+1,ver-1 );
+                        mapbufferFileBack[7] = String.format("2-%d-%d",hor,ver-1 );
+                        mapbufferFileBack[8] = String.format("2-%d-%d",hor-1,ver-1 );
+                    }
+                }
+                break;
+            case 3:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第三象限 （0，0）块，9宫格全4象限
+                        mapbufferFileBack[0] ="2-1-0";
+                        mapbufferFileBack[1] ="2-0-0";
+                        mapbufferFileBack[2] ="1-0-0";
+                        mapbufferFileBack[3] ="3-1-0";
+                        mapbufferFileBack[4] ="3-0-0";
+                        mapbufferFileBack[5] ="4-0-0";
+                        mapbufferFileBack[6] ="3-1-1";
+                        mapbufferFileBack[7] ="4-0-1";
+                        mapbufferFileBack[8] ="4-0-1";
+                    }
+                    else
+                    {
+                        //TODO 第三象限，三、四象限
+                        mapbufferFileBack[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFileBack[1] = String.format("3-0-%d",ver-1);
+                        mapbufferFileBack[2] = String.format("4-1-%d",ver-1 );
+                        mapbufferFileBack[3] = String.format("3-0-%d",ver );
+                        mapbufferFileBack[4] = String.format("3-0-%d",ver );
+                        mapbufferFileBack[5] = String.format("4-1-%d",ver );
+                        mapbufferFileBack[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFileBack[7] = String.format("3-0-%d",ver+1 );
+                        mapbufferFileBack[8] = String.format("4-1-%d",ver+1 );
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 二、三象限
+                        mapbufferFileBack[0] = String.format("2-%d-0",hor+1 );
+                        mapbufferFileBack[1] = String.format("2-%d-0",hor );
+                        mapbufferFileBack[2] = String.format("2-%d-0",hor-1 );
+                        mapbufferFileBack[3] = String.format("3-%d-0",hor+1 );
+                        mapbufferFileBack[4] = String.format("3-%d-0",hor );
+                        mapbufferFileBack[5] = String.format("3-%d-0",hor-1 );
+                        mapbufferFileBack[6] = String.format("3-%d-1",hor+1 );
+                        mapbufferFileBack[7] = String.format("3-%d-1",hor );
+                        mapbufferFileBack[8] = String.format("3-%d-1",hor-1 );
+                    }
+                    else
+                    {
+                        //TODO，三象限解决
+
+                        mapbufferFileBack[0] = String.format("3-%d-%d",hor+1,ver-1 );
+                        mapbufferFileBack[1] = String.format("3-%d-%d",hor ,ver-1);
+                        mapbufferFileBack[2] = String.format("3-%d-%d",hor-1,ver-1 );
+                        mapbufferFileBack[3] = String.format("3-%d-%d",hor+1,ver );
+                        mapbufferFileBack[4] = String.format("3-%d-%d",hor,ver );
+                        mapbufferFileBack[5] = String.format("3-%d-%d",hor-1,ver );
+                        mapbufferFileBack[6] = String.format("3-%d-%d",hor+1,ver+1 );
+                        mapbufferFileBack[7] = String.format("3-%d-%d",hor,ver+1 );
+                        mapbufferFileBack[8] = String.format("3-%d-%d",hor-1,ver+1 );
+                    }
+                }
+                break;
+            case 4:
+                if (point.x/width == 0)
+                {
+                    if (point.y/height==0)
+                    {
+                        //TODO 第四象限 （0，0）块，9宫格全4象限
+                        mapbufferFileBack[0] = "2-0-0";
+                        mapbufferFileBack[0] = "1-0-0";
+                        mapbufferFileBack[0] = "1-1-0";
+                        mapbufferFileBack[0] = "3-0-0";
+                        mapbufferFileBack[0] = "4-0-0";
+                        mapbufferFileBack[0] = "4-1-0";
+                        mapbufferFileBack[0] = "3-1-1";
+                        mapbufferFileBack[0] = "4-0-1";
+                        mapbufferFileBack[0] = "4-1-1";
+                    }
+                    else
+                    {
+                        //TODO 第一象限，三、四象限
+
+                        mapbufferFileBack[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFileBack[1] = String.format("4-0-%d",ver-1 );
+                        mapbufferFileBack[2] = String.format("4-1-%d",ver-1 );
+                        mapbufferFileBack[3] = String.format("3-0-%d",ver );
+                        mapbufferFileBack[4] = String.format("4-0-%d",ver );
+                        mapbufferFileBack[5] = String.format("4-1-%d",ver );
+                        mapbufferFileBack[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFileBack[7] = String.format("4-0-%d",ver+1 );
+                        mapbufferFileBack[8] = String.format("4-1-%d",ver+1);
+                    }
+                }
+                else
+                {
+                    if (point.y/height == 0)
+                    {//TODO 一、四象限
+
+                        mapbufferFileBack[0] = String.format("1-%d-0",hor-1 );
+                        mapbufferFileBack[1] = String.format("1-%d-0",hor );
+                        mapbufferFileBack[2] = String.format("1-%d-0",hor+1 );
+                        mapbufferFileBack[3] = String.format("4-%d-0",hor-1 );
+                        mapbufferFileBack[4] = String.format("4-%d-0",hor );
+                        mapbufferFileBack[5] = String.format("4-%d-0",hor+1 );
+                        mapbufferFileBack[6] = String.format("4-%d-1",hor-1 );
+                        mapbufferFileBack[7] = String.format("4-%d-1",hor );
+                        mapbufferFileBack[8] = String.format("4-%d-1",hor+1 );
+                    }
+                    else
+                    {
+                        //TODO，四象限解决
+                        mapbufferFileBack[0] = String.format("4-%d-%d",hor-1,ver-1 );
+                        mapbufferFileBack[1] = String.format("4-%d-%d",hor ,ver-1);
+                        mapbufferFileBack[2] = String.format("4-%d-%d",hor+1,ver-1 );
+                        mapbufferFileBack[3] = String.format("4-%d-%d",hor-1,ver );
+                        mapbufferFileBack[4] = String.format("4-%d-%d",hor,ver );
+                        mapbufferFileBack[5] = String.format("4-%d-%d",hor+1,ver );
+                        mapbufferFileBack[6] = String.format("4-%d-%d",hor-1,ver+1 );
+                        mapbufferFileBack[7] = String.format("4-%d-%d",hor,ver+1 );
+                        mapbufferFileBack[8] = String.format("4-%d-%d",hor+1,ver+1 );
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
     public void loadBuffer()
     {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -795,9 +1067,66 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 canvas.drawBitmap(bitmap,mSrcRect,mDestRect,paint);
             }
         }
-        Change = false;
-    }
 
+    }
+    public void loadBufferBack()
+    {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        int x = 0,y = 0;
+        canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        paint.setFilterBitmap(true);
+        for (int i=0;i<9;i++) {
+            String filename = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
+            File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png");
+            if (fs.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(filename);
+                Rect mSrcRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+                switch (i)
+                {
+                    case 0:
+                        x=0;
+                        y=0;
+                        break;
+                    case 1:
+                        x=width;
+                        y=0;
+                        break;
+                    case 2:
+                        x=width*2;
+                        y=0;
+                        break;
+                    case 3:
+                        x=0;
+                        y=height;
+                        break;
+                    case 4:
+                        x=width;
+                        y=height;
+                        break;
+                    case 5:
+                        x=width*2;
+                        y=height;
+                        break;
+                    case 6:
+                        x=0;
+                        y=height*2;
+                        break;
+                    case 7:
+                        x=width;
+                        y=height*2;
+                        break;
+                    case 8:
+                        x=width*2;
+                        y=height*2;
+                        break;
+
+                }
+                Rect mDestRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+                canvasBack.drawBitmap(bitmap,mSrcRect,mDestRect,paint);
+            }
+        }
+
+    }
     public String caculateFileName(Point point)//笛卡尔坐标系
     {
         int xiangxian=0;
@@ -830,26 +1159,63 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         actrul.x = -point.y;
         actrul.y = -point.x;
         String name = caculateFileName(actrul);
-        if (name.equals(CurName))
+
+        if (bufferstate == 1)
         {
-            Change = false;
+            if (name.equals(CurName))
+            {
+                if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((actrul.y-ex_Point.y)>height*5/2)||((actrul.y-ex_Point.y)<height/2))
+                {
+                    copyBuffer();
+                    updateEXP(point);
+                    bufferstate = 2;
+                    saveBitmap(1);
+
+
+
+                }
+            }
+            else
+            {
+                if (name.equals(NameBack))
+                {
+
+                }
+                else
+                {
+                    NameBack = name;
+                    moveDerection(point);
+                    updateTraceBack(point);
+                    loadBufferBack();
+                }
+            }
         }
         else
         {
-            if (actrul.x>0)
-                ex_Point.x = (actrul.x/width-1)*width;
-            else
-                ex_Point.x = actrul.x / width * width - width*2;
-            if (actrul.y>0)
-                ex_Point.y = (actrul.y/height+2)*height;
-            else
-                ex_Point.y = actrul.y/height+height;
+            if (name.equals(NameBack))
+            {
+                if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((actrul.y-ex_Point.y)>height*5/2)||((actrul.y-ex_Point.y)<height/2))
+                {
 
+                    copyBuffer();
+                    updateEXP(point);
+                    bufferstate = 1;
+                    saveBitmap(2);
+                }
+            }
+            else
+            {
+                if (name.equals(CurName))
+                {
 
-            saveBitmap();
-            updateTrace(CurPoint);
-            loadBuffer();
-            CurName = name;
+                }
+                else {
+                    CurName = name;
+                    moveDerection(point);
+                    updateTrace(point);
+                    loadBuffer();
+                }
+            }
         }
 
     }
@@ -865,21 +1231,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Point start = new Point();
         Point end = new Point();
 
-        if (st.x>0)
-            start.x = st.x%width+width;
-        else
-            start.x = st.x%width+width*2;
-        if (st.x%width == 0)
-            start.x = width*2;
-        if (st.y>0)
-            start.y = height*2-st.y%height;
-        else
-            start.y = height-st.y%height;
-        if (st.y%height==0)
-            start.y = height;
+        start.x = st.x-ex_Point.x;
+        start.y = ex_Point.y-st.y;
 
-        end.x = start.x+(endp.x-st.x);
-        end.y = start.y-(endp.y-st.y);
+
+        end.x = endp.x - ex_Point.x;
+        end.y = ex_Point.y-endp.y;
 
 
 
@@ -895,9 +1252,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
         curPath.close();
-        canvas.drawPath(curPath, paint);
+        switch (bufferstate) {
+            case 1:
+                canvas.drawPath(curPath, paint);
+                break;
+            case 2:
+                canvasBack.drawPath(curPath, paint);
 
-
+        }
         startP.x = endP.x;
         startP.y = endP.y;
 
@@ -906,52 +1268,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
     public void drawTrace(Canvas canvas)
     {
-        Point actrul = new Point();
-        actrul.x = -CurPoint.y;
-        actrul.y = -CurPoint.x;
-        int xiangxian=0;
-        Point endp = new Point();
-        endp.x = actrul.x;
-        endp.y = actrul.y;
-        Point end = new Point();
-        if (endp.x>0)
-        {
-            if (endp.y>0)
-                xiangxian =1;
-            else
-                xiangxian = 4;
-        }
-        else
-        {
-            if (endp.y>0)
-                xiangxian = 2;
-            else
-                xiangxian = 3;
-        }
-        switch (xiangxian)
-        {
-            case 1:
-                    end.x = (endp.x/width-1)*width;
 
-
-                    end.y = -(endp.y/height+2)*height;
-
-
-                break;
-            case 2:
-                    end.x = -(-endp.x/width+2)*width;
-                    end.y = -(endp.y/height+2)*height;
-                break;
-            case 3:
-                end.x = -(-endp.x/width+2)*width;
-                end.y = (endp.y/height-1)*height;
-                break;
-            case 4:
-
-                end.x = (endp.x/width-1)*width;
-                end.y = (endp.y/height-1)*height;
-                break;
-        }
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         paint.setFilterBitmap(true);
@@ -959,21 +1276,141 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, width*3, height*3);//第一个Rect 代表要绘制的bitmap 区域
 
-        Rect mDestRect = new Rect(end.x, end.y,end.x+width*3, end.y+height*3);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+        Rect mDestRect = new Rect(ex_Point.x, -ex_Point.y,ex_Point.x+width*3, -ex_Point.y+height*3);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+        switch (bufferstate)
+        {
+            case 1:
 
-        canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                break;
+            case 2:
+
+                canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+                break;
+        }
 
 
     }
 
     @SuppressLint("WrongThread")
-    public void saveBitmap()
+    public void saveBitmap(int state)
     {   int x = 0,y = 0;
         Canvas canvas = new Canvas();
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setFilterBitmap(true);
-        for (int i=0;i<9;i++) {
+        int[] saved = new int[0];
+        switch (moveDerection)
+        {
+            case 0:
+                saved = new int[]{2, 5, 6, 7, 8};
+                break;
+            case 1:
+                saved = new int[]{ 6, 7, 8};
+                break;
+            case 2:
+                saved = new int[]{0,3, 6, 7, 8};
+                break;
+            case 3:
+                saved = new int[]{2, 5,  8};
+                break;
+            case 5:
+                saved = new int[]{0,3,6};
+                break;
+            case 6:
+                saved = new int[]{0,1,2,5,8};
+                break;
+            case 7:
+                saved = new int[]{0,1,2};
+                break;
+            case 8:
+                saved = new int[]{0,1,2,3,6};
+                break;
+        }
+
+        for (int i=0;i<saved.length;i++) {
             String fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
+            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (saved[i])
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
+
+            }
+            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+            switch (state)
+            {
+                case 1:
+                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                    break;
+                case 2:
+                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+                    break;
+            }
+            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @SuppressLint("WrongThread")
+    public void saveTask()
+    {   int x = 0,y = 0;
+        Canvas canvas = new Canvas();
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setFilterBitmap(true);
+
+        for (int i=0;i<9;i++) {
+            String fileName = null;
+            switch (bufferstate)
+            {
+                case 1:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
+                    break;
+                case 2:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
+            }
             Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
             canvas.setBitmap(mBitmap);
             switch (i)
@@ -1018,6 +1455,15 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
             Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
             Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+            switch (bufferstate)
+            {
+                case 1:
+                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                    break;
+                case 2:
+                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+                    break;
+            }
             canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
             try {
                 File file = new File(fileName);
@@ -1030,68 +1476,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
     }
-    public void drawTraceBack(Canvas canvas)
-    {
-        Point actrul = new Point();
-        actrul.x = width/2-Moved.x;
-        actrul.y = -(height/2-Moved.y);
-        int xiangxian=0;
-        Point endp = new Point();
-        endp.x = actrul.x;
-        endp.y = actrul.y;
-        Point end = new Point();
-        if (endp.x>0)
-        {
-            if (endp.y>0)
-                xiangxian =1;
-            else
-                xiangxian = 4;
-        }
-        else
-        {
-            if (endp.y>0)
-                xiangxian = 2;
-            else
-                xiangxian = 3;
-        }
-        switch (xiangxian)
-        {
-            case 1:
-                end.x = (endp.x/width-1)*width;
-
-
-                end.y = -(endp.y/height+2)*height;
-
-
-                break;
-            case 2:
-                end.x = -(-endp.x/width+2)*width;
-                end.y = -(endp.y/height+2)*height;
-                break;
-            case 3:
-                end.x = -(-endp.x/width+2)*width;
-                end.y = (-endp.y/height-1)*height;
-                break;
-            case 4:
-
-                end.x = (endp.x/width-1)*width;
-                end.y = (-endp.y/height-1)*height;
-                break;
-        }
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        paint.setFilterBitmap(true);
-
-        paint.setDither(true);
-        Rect mSrcRect = new Rect(0, 0, width*3, height*3);//第一个Rect 代表要绘制的bitmap 区域
-
-        Rect mDestRect = new Rect(end.x, end.y,end.x+width*3, end.y+height*3);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
-
-        canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
-
-
-    }
-    public void copyTrace(Point point)
+    public void copyBuffer()
     {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
@@ -1148,11 +1533,23 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 break;
         }
 
-        Change = true;
+
     }
     public void moveDerection(Point point)
     {
 
         moveDerection = (point.x-ex_Point.x)/width+(ex_Point.y-point.y)/height*3;
+    }
+    public void updateEXP(Point point)
+    {
+        Point diker = new Point(-point.y,-point.x);
+        if (diker.x>0)
+            ex_Point.x = (diker.x/width-1)*width;
+        else
+            ex_Point.x = (diker.x/width-2)*width;
+        if (diker.y>0)
+            ex_Point.y = (diker.y/height+2)*height;
+        else
+            ex_Point.y = (diker.y/height+1)*height;
     }
 }
