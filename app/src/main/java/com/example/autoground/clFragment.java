@@ -19,15 +19,29 @@ public class clFragment extends Fragment {
     public EditText chegao;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.clsz, container, false);
-        pinpai = view.findViewById(R.id.editText12);
-        xinghao = view.findViewById(R.id.editText13);
-        nianfen = view.findViewById(R.id.editText14);
-        chepai = view.findViewById(R.id.editText15);
-        front = view.findViewById(R.id.editText16);
-        back = view.findViewById(R.id.editText17);
-        zhouju = view.findViewById(R.id.editText18);
-        chegao = view.findViewById(R.id.editText19);
+
         return view;
     }
-}
+    @Override
+    public void onStart() {
+        super.onStart();
+        pinpai = getActivity().findViewById(R.id.editText12);
+        xinghao = getActivity().findViewById(R.id.editText13);
+        nianfen = getActivity().findViewById(R.id.editText14);
+        chepai = getActivity().findViewById(R.id.editText15);
+        front = getActivity().findViewById(R.id.editText16);
+        back = getActivity().findViewById(R.id.editText17);
+        zhouju = getActivity().findViewById(R.id.editText18);
+        chegao = getActivity().findViewById(R.id.editText19);
+        registerForContextMenu(pinpai);
+        registerForContextMenu(xinghao);
+        registerForContextMenu(nianfen);
+        registerForContextMenu(chegao);
+        registerForContextMenu(chepai);
+        registerForContextMenu(front);
+        registerForContextMenu(back);
+        registerForContextMenu(zhouju);
+    }
+    }

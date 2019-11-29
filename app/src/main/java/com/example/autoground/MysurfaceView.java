@@ -449,7 +449,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         updateTrace(pointB);
         bufferstate = 1;
         updateEXP(pointcur);
-
+        Point dika = new Point(-pointcur.y,-pointcur.x);
+        CurName = caculateFileName(dika);
     }
     public void setTaskOn()
     {
@@ -1159,32 +1160,35 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         actrul.x = -point.y;
         actrul.y = -point.x;
         String name = caculateFileName(actrul);
-
+        Log.e("绘制轨迹：", String.valueOf(bufferstate));
         if (bufferstate == 1)
         {
             if (name.equals(CurName))
             {
-                if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((actrul.y-ex_Point.y)>height*5/2)||((actrul.y-ex_Point.y)<height/2))
-                {
-                    copyBuffer();
-                    updateEXP(point);
-                    bufferstate = 2;
-                    saveBitmap(1);
 
 
-
-                }
             }
             else
             {
                 if (name.equals(NameBack))
                 {
+                    Log.e("绘制轨迹：", String.format("ex_Point(%d,%d),actrul(%d,%d),x方向=%d，y方向%d" , ex_Point.x,ex_Point.y,actrul.x,actrul.y,actrul.x-ex_Point.x,ex_Point.y-actrul.y));
+                    if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((ex_Point.y-actrul.y)>height*5/2)||((ex_Point.y-actrul.y)<height/2))
+                    {
+                        Log.e("绘制轨迹：", "切换缓存");
+                        copyBuffer();
+                        updateEXP(point);
+                        bufferstate = 2;
+                        saveBitmap(1);
 
+
+
+                    }
                 }
                 else
                 {
                     NameBack = name;
-                    moveDerection(point);
+                    moveDerection(actrul);
                     updateTraceBack(point);
                     loadBufferBack();
                 }
@@ -1194,24 +1198,27 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         {
             if (name.equals(NameBack))
             {
-                if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((actrul.y-ex_Point.y)>height*5/2)||((actrul.y-ex_Point.y)<height/2))
-                {
 
-                    copyBuffer();
-                    updateEXP(point);
-                    bufferstate = 1;
-                    saveBitmap(2);
-                }
+
             }
             else
             {
                 if (name.equals(CurName))
                 {
+                    Log.e("绘制轨迹：", String.format("ex_Point(%d,%d),actrul(%d,%d),x方向=%d，y方向%d" , ex_Point.x,ex_Point.y,actrul.x,actrul.y,actrul.x-ex_Point.x,ex_Point.y-actrul.y));
+                    if (((actrul.x-ex_Point.x)>width*5/2)||((actrul.x-ex_Point.x)<width/2)||((ex_Point.y-actrul.y)>height*5/2)||((ex_Point.y-actrul.y)<height/2))
+                    {
+
+                        copyBuffer();
+                        updateEXP(point);
+                        bufferstate = 1;
+                        saveBitmap(2);
+                    }
 
                 }
                 else {
                     CurName = name;
-                    moveDerection(point);
+                    moveDerection(actrul);
                     updateTrace(point);
                     loadBuffer();
                 }
@@ -1244,8 +1251,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(1.0f);
-        double jiaodu = Math.toDegrees(Math.atan2(start.y-end.y,end.x-start.x));
-        Log.e("路径角度", String.valueOf(jiaodu));
+
+        double jiaodu = Math.atan2(endp.y-st.y,endp.x-st.x);
+
+
+
+        Log.e("路径角度", String.format("%f",jiaodu));
         Path curPath = new Path();
         curPath.moveTo((float) (start.x-Math.sin(jiaodu)*ChanWidth/2), (float) (start.y-Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(start.x+Math.sin(jiaodu)*ChanWidth/2), (float) (start.y+Math.cos(jiaodu)*ChanWidth/2));
@@ -1479,8 +1490,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public void copyBuffer()
     {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        canvasBack.drawPaint(paint);
+
+
+
         paint.setFilterBitmap(true);
 
         paint.setDither(true);
@@ -1491,34 +1503,34 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         {
             case 0:
                 mSrcRect = new Rect(0, 0, width*2, height*2);
-                mDestRect = new Rect(width, height,width*2, height*2);
+                mDestRect = new Rect(width, height,width*3, height*3);
                 break;
             case 1:
                 mSrcRect = new Rect(0, 0, width*3, height*2);
-                mDestRect = new Rect(0, height,width*3, height*2);
+                mDestRect = new Rect(0, height,width*3, height*3);
                 break;
             case 2:
-                mSrcRect = new Rect(width, 0, width*2, height*2);
-                mDestRect = new Rect(0, height,width*2, height*2);
+                mSrcRect = new Rect(width, 0, width*3, height*2);
+                mDestRect = new Rect(0, height,width*2, height*3);
                 break;
             case 3:
                 mSrcRect = new Rect(0, 0, width*2, height*3);
-                mDestRect = new Rect(width, 0,width*2, height*3);
+                mDestRect = new Rect(width, 0,width*3, height*3);
                 break;
             case 5:
-                mSrcRect = new Rect(width, 0, width*2, height*3);
-                mDestRect = new Rect(0, height,width*2, height*3);
+                mSrcRect = new Rect(width, 0, width*3, height*3);
+                mDestRect = new Rect(0, 0,width*2, height*3);
                 break;
             case 6:
-                mSrcRect = new Rect(0, height, width*2, height*2);
-                mDestRect = new Rect(width, 0,width*2, height*2);
+                mSrcRect = new Rect(0, height, width*2, height*3);
+                mDestRect = new Rect(width, 0,width*3, height*2);
                 break;
             case 7:
-                mSrcRect = new Rect(0, height, width*3, height*2);
+                mSrcRect = new Rect(0, height, width*3, height*3);
                 mDestRect = new Rect(0, 0,width*3, height*2);
                 break;
             case 8:
-                mSrcRect = new Rect(width, height, width*2, height*2);
+                mSrcRect = new Rect(width, height, width*3, height*3);
                 mDestRect = new Rect(0, 0,width*2, height*2);
                 break;
         }

@@ -21,4 +21,14 @@ public class txFragment extends Fragment {
         toMid = view.findViewById(R.id.editText29);
         return view;
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        toGround = getActivity().findViewById(R.id.editText27);
+        toBack = getActivity().findViewById(R.id.editText28);
+        toMid = getActivity().findViewById(R.id.editText29);
+        registerForContextMenu(toBack);
+        registerForContextMenu(toGround);
+        registerForContextMenu(toMid);
+    }
 }

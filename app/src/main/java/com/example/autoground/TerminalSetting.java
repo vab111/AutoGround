@@ -115,5 +115,20 @@ public class TerminalSetting extends BaseActivity {
     public void linking(View view) {
         mService = CommunicationService.getInstance(this);
         //TODO 发送车辆信息
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = 0x00;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x00;
+        order[2] = 0x20;
+        order[3] = 0x00;
+
+
+
+        mService.sendCan(id,order);
+
     }
 }
