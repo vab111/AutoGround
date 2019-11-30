@@ -83,85 +83,9 @@ public class NJNJsetting extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mService.getData(new CommunicationService.IProcessData() {
-            @Override
-            public void process(byte[] bytes, DataType dataType) {
-//                    Log.e("CanTest", "收到数据！");
-//                    byte[] order = new byte[4];
-//                    order[0] = -64;
-//                    order[1] = 32;
-//                    order[2] = 0x00;
-//                    order[3] = 0x00;
-//                    mService.sendCan(order, heartData.heart);
-                switch (dataType)
-                {
-                    case TDataCan:
-                        //we get can data
-                        //handle can data
-
-                        handleCanData(bytes);
-                        break;
-
-                }
-            }
-        });
-    }
-    private void handleCanData(byte[] bytes) {
-        byte[] id = new byte[4];
-        System.arraycopy(bytes, 1, id, 0, id.length);//ID
-        byte[] data = null;
-        int frameFormatType = (id[3] & 0x06);
-        int frameFormat = 0;
-        int frameType = 0;
-        long extendid = 0;
-        switch (frameFormatType) {
-            case 0://标准数据
-                frameFormat = 0;
-                frameType = 0;
-                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>21);//bit31-bit21: 标准ID
-                int dataLength = bytes[5];
-                data = new byte[dataLength];
-                System.arraycopy(bytes, 6, data, 0, dataLength);
-                handle((int) extendid, data);
-                break;
-            case 2://标准远程
-                frameFormat = 0;
-                frameType = 1;
-                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>21);//bit31-bit21: 标准ID
-                break;
-            case 4://扩展数据
-                frameFormat = 1;
-                frameType = 0;
-                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>3);//bit31-bit3: 扩展ID
-                int dataLengthExtra = bytes[5];
-                data = new byte[dataLengthExtra];
-                System.arraycopy(bytes, 6, data, 0, dataLengthExtra);
-                break;
-            case 6://扩展远程
-                frameFormat = 1;
-                frameType = 1;
-                extendid = (((((id[0]&0xff)<<24)|((id[1]&0xff)<<16)|((id[2]&0xff)<<8)|((id[3]&0xff)))&0xFFFFFFFFl)>>3);//bit31-bit3: 扩展ID
-                break;
-        }
 
     }
-    public void handle(int id,byte[] data)
-    {
-        switch (id) {
-            case 1793:
-                //0x602
 
-                final int txxiuzheng = ((data[3] << 8) | (0xff&data[4]));
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //piancha.setText(String.format("%d", txxiuzheng));
-                    }
-                });
-                break;
-        }
-    }
     private void setToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);//设计隐藏标题
@@ -468,4 +392,67 @@ public class NJNJsetting extends BaseActivity {
 
 
     }
+    public void sendCarInfor()
+    {
+        //TODO 添加下位机同步车辆信息
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = 0x00;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x00;
+        order[2] = 0x20;
+        order[3] = 0x00;
+
+        order[4] = (byte) ((car.Frontwheel/256)&0xff);
+        order[5] = (byte) ((car.Frontwheel%256)&0xff);
+        order[6] = (byte) ((car.Backwheel/256)&0xff);
+        order[7] = (byte) ((car.Backwheel%256)&0xff);
+
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        order[4] = (byte) ((car.Zhou/256)&0xff);
+        order[5] = (byte) ((car.Zhou%256)&0xff);
+        order[6] = (byte) ((car.height/256)&0xff);
+        order[7] = (byte) ((car.height%256)&0xff);
+        mService.sendCan(id,order);
+
+        order[1] = 0x01;
+        order[3] = 0x00;
+        order[4] = (byte) ((car.NJWidth/256)&0xff);
+        order[5] = (byte) ((car.NJWidth%256)&0xff);
+        order[6] = (byte) ((car.NJBackdis/256)&0xff);
+        order[7] = (byte) ((car.NJBackdis%256)&0xff);
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        order[4] = (byte) ((car.pianyi/256)&0xff);
+        order[5] = (byte) ((car.pianyi%256)&0xff);
+        order[6] = 0x00;
+        if (car.leftright)
+            order[7] = 0x00;
+        else
+            order[7] = 0x01;
+        mService.sendCan(id,order);
+
+        order[1] = 0x02;
+        order[3] = 0x00;
+        order[4] = (byte) ((car.TXHeight/256)&0xff);
+        order[5] = (byte) ((car.TXHeight%256)&0xff);
+        order[6] = (byte) ((car.TXBackdis/256)&0xff);
+        order[7] = (byte) ((car.TXBackdis%256)&0xff);
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        order[4] = (byte) ((car.TXMiddis/256)&0xff);
+        order[5] = (byte) ((car.TXMiddis%256)&0xff);
+        order[6] = 0x00;
+        order[7] = 0x00;
+        mService.sendCan(id,order);
+
+    }
 }
+
