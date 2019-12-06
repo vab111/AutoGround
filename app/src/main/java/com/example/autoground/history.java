@@ -125,9 +125,38 @@ public class history extends BaseActivity  {
 
                 appDir.delete();
                 }
+                String abline = Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname+".json";
+                deleteFile(abline);
                 fileList.remove(position);
                 saveRecord();
                 listAdapter.notifyDataSetChanged();
+                bottomDialog.dismiss();
+            }
+        });
+        Button useHistory = contentView.findViewById(R.id.button21);
+        Button viewHistory = contentView.findViewById(R.id.button20);
+        useHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recorder item = (recorder) fileList.get(position);
+                Intent intent = new Intent();
+                intent.putExtra("taskname",item.taskname);
+                setResult(RESULT_OK,intent);
+                bottomDialog.dismiss();
+                finish();
+
+
+            }
+        });
+        viewHistory.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                recorder item = (recorder) fileList.get(position);
+                Intent intent = new Intent();
+                intent.setClass(history.this, TaskHistory.class);
+                intent.putExtra("filename",item.taskname);
+                startActivity(intent);
                 bottomDialog.dismiss();
             }
         });

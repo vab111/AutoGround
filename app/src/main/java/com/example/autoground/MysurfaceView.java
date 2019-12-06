@@ -21,8 +21,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.google.gson.Gson;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +76,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Point ex_Point=new Point(0,0);
     private boolean Change = false;
     private int moveDerection;
+    private Point traceleft = new Point(0,0);
+    private Point traceright = new Point(0,0);
     public MysurfaceView(Context context, AttributeSet attrs){
         super(context,attrs);
         this.getHolder().addCallback(this);
@@ -225,7 +232,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             paint.setStrokeWidth(1.0f);
             //TODO y方向做等分
             int jianju = (int) Math.abs(ChanWidth/Math.cos(jiaodu));
-            int cury = (int) (cur.y+Math.tan(jiaodu)*(width-cur.x+Moved.x));
+            int cury = (int) (cur.y+Math.tan(jiaodu)*(width/2));
             for (int j=y;j>-Moved.y-Math.abs(Math.tan(jiaodu)*width);j-=jianju) {
                 if (Math.abs(cury-j)<=jianju/2)
                 {
@@ -275,7 +282,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             paint.setColor(Color.RED);
             paint.setStrokeWidth(1.0f);
 
-            int cury = (int) (cur.x+(cur.y+Moved.y)/Math.tan(jiaodu));
+            int cury = (int) (cur.x+(height/2)/Math.tan(jiaodu));
             //TODO x方向做等分
             int jianju = (int) Math.abs(ChanWidth/Math.sin(jiaodu));
 
@@ -336,12 +343,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Point car = transform(CurPoint);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
-        Rect mDestRect = new Rect(car.x-15, car.y-15, car.x+65, car.y+65);
+        Rect mDestRect = new Rect(car.x-15, car.y-15, car.x+15, car.y+15);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) carDerection-90, bmp);
         Matrix matrix = new Matrix();		// 缩放原图
-        matrix.postScale(0.4f, 0.4f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
+        matrix.postScale(0.8f, 0.8f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
         Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
 
         canvas.drawBitmap(dstbmp,mSrcRect,mDestRect,paint);
@@ -356,15 +363,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointA);
-        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
+        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+15, ap.y+15);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.adian);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) carDerection-90, bmp);
-        Matrix matrix = new Matrix();		// 缩放原图
-        matrix.postScale(0.4f, 0.4f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
-        Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
 
-        canvas.drawBitmap(dstbmp,mSrcRect,mDestRect,paint);
+
+        canvas.drawBitmap(bmp,mSrcRect,mDestRect,paint);
     }
     public void drawB(Canvas canvas)
     {
@@ -375,15 +379,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointB);
-        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
+        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+15, ap.y+15);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bdian);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) carDerection-90, bmp);
-        Matrix matrix = new Matrix();		// 缩放原图
-        matrix.postScale(0.4f, 0.4f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
-        Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
 
-        canvas.drawBitmap(dstbmp,mSrcRect,mDestRect,paint);
+
+        canvas.drawBitmap(bmp,mSrcRect,mDestRect,paint);
     }
     public Point transform(Point curPoint)
     {
@@ -451,12 +452,18 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         updateEXP(pointcur);
         Point dika = new Point(-pointcur.y,-pointcur.x);
         CurName = caculateFileName(dika);
+
+
+
+
     }
     public void setTaskOn()
     {
         if (isTask)
         {
             isTask = false;
+
+
         }
         else
         {
@@ -465,6 +472,15 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             startP.y = CurPoint.y;
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
+            Point start = new Point();
+            start.x = -CurPoint.y-ex_Point.x;
+            start.y = ex_Point.y+CurPoint.x;
+
+            double jiaodu = Math.atan2(pointA.x-pointB.x,pointA.y-pointB.y);
+            traceleft.x = (int) (start.x-Math.sin(jiaodu)*ChanWidth/2);
+            traceleft.y = (int) (start.y-Math.cos(jiaodu)*ChanWidth/2);
+            traceright.x = (int) (start.x+Math.sin(jiaodu)*ChanWidth/2);
+            traceright.y = (int) (start.y+Math.sin(jiaodu)*ChanWidth/2);
         }
     }
 
@@ -1258,8 +1274,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         Log.e("路径角度", String.format("%f",jiaodu));
         Path curPath = new Path();
-        curPath.moveTo((float) (start.x-Math.sin(jiaodu)*ChanWidth/2), (float) (start.y-Math.cos(jiaodu)*ChanWidth/2));
-        curPath.lineTo((float)(start.x+Math.sin(jiaodu)*ChanWidth/2), (float) (start.y+Math.cos(jiaodu)*ChanWidth/2));
+        curPath.moveTo(traceleft.x,traceleft.y);
+        curPath.lineTo(traceright.x,traceright.y);
         curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
         curPath.close();
@@ -1274,6 +1290,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         startP.x = endP.x;
         startP.y = endP.y;
 
+        traceleft.x = (int) (end.x-Math.sin(jiaodu)*ChanWidth/2);
+        traceleft.y = (int) (end.y-Math.cos(jiaodu)*ChanWidth/2);
+        traceright.x = (int) (end.x+Math.sin(jiaodu)*ChanWidth/2);
+        traceright.y = (int) (end.y+Math.cos(jiaodu)*ChanWidth/2);
 
 
     }
@@ -1305,7 +1325,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @SuppressLint("WrongThread")
     public void saveBitmap(int state)
-    {   int x = 0,y = 0;
+    {
+
+        int x = 0,y = 0;
         Canvas canvas = new Canvas();
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setFilterBitmap(true);
@@ -1407,7 +1429,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
     @SuppressLint("WrongThread")
     public void saveTask()
-    {   int x = 0,y = 0;
+    {
+        saveABLine();
+        int x = 0,y = 0;
         Canvas canvas = new Canvas();
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setFilterBitmap(true);
@@ -1504,34 +1528,58 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             case 0:
                 mSrcRect = new Rect(0, 0, width*2, height*2);
                 mDestRect = new Rect(width, height,width*3, height*3);
+                traceleft.x+=width;
+                traceleft.y+=height;
+                traceright.x +=width;
+                traceright.y +=height;
                 break;
             case 1:
                 mSrcRect = new Rect(0, 0, width*3, height*2);
                 mDestRect = new Rect(0, height,width*3, height*3);
+                traceright.y+=height;
+                traceleft.y +=height;
                 break;
             case 2:
                 mSrcRect = new Rect(width, 0, width*3, height*2);
                 mDestRect = new Rect(0, height,width*2, height*3);
+                traceleft.x-=width;
+                traceleft.y+=height;
+                traceright.x-=width;
+                traceright.y+=height;
                 break;
             case 3:
                 mSrcRect = new Rect(0, 0, width*2, height*3);
                 mDestRect = new Rect(width, 0,width*3, height*3);
+                traceright.x+=width;
+                traceleft.x+=width;
                 break;
             case 5:
                 mSrcRect = new Rect(width, 0, width*3, height*3);
                 mDestRect = new Rect(0, 0,width*2, height*3);
+                traceleft.x-=width;
+                traceright.x-=width;
                 break;
             case 6:
                 mSrcRect = new Rect(0, height, width*2, height*3);
                 mDestRect = new Rect(width, 0,width*3, height*2);
+                traceright.x+=width;
+                traceright.y-=height;
+                traceleft.x+=width;
+                traceleft.y-=height;
                 break;
             case 7:
                 mSrcRect = new Rect(0, height, width*3, height*3);
                 mDestRect = new Rect(0, 0,width*3, height*2);
+                traceleft.y-=height;
+                traceright.y-=height;
                 break;
             case 8:
                 mSrcRect = new Rect(width, height, width*3, height*3);
                 mDestRect = new Rect(0, 0,width*2, height*2);
+                traceright.x-=width;
+                traceright.y-=height;
+                traceleft.x-=width;
+                traceleft.y-=height;
                 break;
         }
 
@@ -1563,5 +1611,40 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             ex_Point.y = (diker.y/height+2)*height;
         else
             ex_Point.y = (diker.y/height+1)*height;
+    }
+    public void saveABLine()
+    {
+        RecordInfor recordInfor = new RecordInfor();
+        recordInfor.isA = isA;
+        recordInfor.isB = isB;
+        if (isA)
+            recordInfor.pointA = pointA;
+        if (isB)
+            recordInfor.pointB = pointB;
+        recordInfor.Kuan = ChanWidth;
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+".json");
+        List fileList = new ArrayList();
+        try {
+            FileOutputStream outputStream =new FileOutputStream(fs);
+            OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
+
+
+            fileList.add(recordInfor);
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(fileList);
+            outStream.write(jsonString);
+
+            outputStream.flush();
+            outStream.flush();
+            outputStream.close();
+            outputStream.close();
+
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

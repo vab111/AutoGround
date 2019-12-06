@@ -66,7 +66,6 @@
         android:layout_marginStart="108dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintBottom_toBottomOf="@+id/textView39"
         app:layout_constraintStart_toEndOf="@+id/textView39" />
 
@@ -76,7 +75,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="播种"
         app:layout_constraintBottom_toBottomOf="@+id/textView40"
         app:layout_constraintStart_toStartOf="@+id/editText30" />
 
@@ -94,8 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:inputType="number|textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/textView41"
         app:layout_constraintStart_toStartOf="@+id/editText31" />
 
