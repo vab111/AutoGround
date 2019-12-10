@@ -42,7 +42,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private float xMid=0.0f;
     private float yMid=0.0f;
     private double beginDistance;
-    private float scale = 1.0f;
+    public float scale = 1.0f;
     private float zoomscale = 1.0f;
     private float mapDerection = 0.0f;//地图本身方向角，正北为0，顺时针增长
     private boolean ismoving=false;
