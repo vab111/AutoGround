@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView86"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="最大限制"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText101"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView86"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView87"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="最大误差"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView86"
+        app:layout_constraintStart_toEndOf="@+id/editText101" />
+
+    <EditText
+        android:id="@+id/editText102"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText101"
+        app:layout_constraintStart_toEndOf="@+id/textView87" />
+
+    <TextView
+        android:id="@+id/textView88"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="最大输出"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView87"
+        app:layout_constraintStart_toEndOf="@+id/editText102" />
+
+    <EditText
+        android:id="@+id/editText103"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText102"
+        app:layout_constraintStart_toEndOf="@+id/textView88" />
+
+    <TextView
+        android:id="@+id/textView89"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="死区"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView88"
+        app:layout_constraintStart_toEndOf="@+id/editText103" />
+
+    <EditText
+        android:id="@+id/editText104"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText103"
+        app:layout_constraintStart_toEndOf="@+id/textView89" />
+
+    <TextView
+        android:id="@+id/textView90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:text="比例系数P"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView86"
+        app:layout_constraintTop_toBottomOf="@+id/textView86" />
+
+    <EditText
+        android:id="@+id/editText105"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editText101"
+        app:layout_constraintTop_toBottomOf="@+id/editText101" />
+
+    <TextView
+        android:id="@+id/textView91"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="积分系数I"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView90"
+        app:layout_constraintStart_toStartOf="@+id/textView87" />
+
+    <EditText
+        android:id="@+id/editText106"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText105"
+        app:layout_constraintStart_toStartOf="@+id/editText102" />
+
+    <TextView
+        android:id="@+id/textView92"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微分系数D"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView91"
+        app:layout_constraintStart_toStartOf="@+id/textView88" />
+
+    <EditText
+        android:id="@+id/editText107"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText106"
+        app:layout_constraintStart_toStartOf="@+id/editText103" />
+
+    <Button
+        android:id="@+id/button58"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:text="发送"
+        app:layout_constraintStart_toStartOf="@+id/textView89"
+        app:layout_constraintTop_toBottomOf="@+id/editText104" />
+
+    <Button
+        android:id="@+id/button59"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="63dp"
+        android:text="获取"
+        app:layout_constraintBottom_toBottomOf="@+id/button58"
+        app:layout_constraintStart_toEndOf="@+id/button58" />
+
+    <View
+        android:id="@+id/divider8"
+        android:layout_width="1278dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button58" />
+
+    <TextView
+        android:id="@+id/textView93"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="实际电流"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView90"
+        app:layout_constraintTop_toBottomOf="@+id/divider8" />
+
+    <EditText
+        android:id="@+id/editText108"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editText105"
+        app:layout_constraintTop_toBottomOf="@+id/divider8" />
+
+    <TextView
+        android:id="@+id/textView94"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="电流误差"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView93"
+        app:layout_constraintStart_toStartOf="@+id/textView91" />
+
+    <EditText
+        android:id="@+id/editText109"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/editText108"
+        app:layout_constraintStart_toStartOf="@+id/editText106" />
+
+    <Button
+        android:id="@+id/button60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:text="测试"
+        app:layout_constraintBottom_toBottomOf="@+id/button64"
+        app:layout_constraintStart_toEndOf="@+id/button64" />
+
+    <TextView
+        android:id="@+id/textView80"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:text="记录A点"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView93"
+        app:layout_constraintTop_toBottomOf="@+id/textView93" />
+
+    <Button
+        android:id="@+id/button63"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="记录"
+        app:layout_constraintBottom_toBottomOf="@+id/textView80"
+        app:layout_constraintStart_toStartOf="@+id/editText108" />
+
+    <TextView
+        android:id="@+id/textView81"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="记录B点"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView80"
+        app:layout_constraintStart_toStartOf="@+id/textView94" />
+
+    <Button
+        android:id="@+id/button64"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="记录"
+        app:layout_constraintBottom_toBottomOf="@+id/textView81"
+        app:layout_constraintStart_toStartOf="@+id/editText109" />
+</androidx.constraintlayout.widget.ConstraintLayout>

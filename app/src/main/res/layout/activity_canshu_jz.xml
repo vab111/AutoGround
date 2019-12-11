@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CanshuJZ">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/canshubar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="参数校准" />
+
+    <Button
+        android:id="@+id/button44"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="36dp"
+        android:text="左电流"
+        android:onClick="zdl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/canshubar" />
+
+    <Button
+        android:id="@+id/button45"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="右电流"
+        android:onClick="ydl"
+        app:layout_constraintStart_toEndOf="@+id/button44"
+        app:layout_constraintTop_toTopOf="@+id/button44" />
+
+    <Button
+        android:id="@+id/button46"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="转速环"
+        android:onClick="zsh"
+        app:layout_constraintStart_toEndOf="@+id/button45"
+        app:layout_constraintTop_toTopOf="@+id/button45" />
+
+    <Button
+        android:id="@+id/button47"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="转角环"
+        android:onClick="zjh"
+        app:layout_constraintStart_toEndOf="@+id/button46"
+        app:layout_constraintTop_toTopOf="@+id/button46" />
+
+    <Button
+        android:id="@+id/button48"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="航向环"
+        android:onClick="hxh"
+        app:layout_constraintStart_toEndOf="@+id/button47"
+        app:layout_constraintTop_toTopOf="@+id/button47" />
+
+    <Button
+        android:id="@+id/button49"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="距离环"
+        android:onClick="jlh"
+        app:layout_constraintStart_toEndOf="@+id/button48"
+        app:layout_constraintTop_toTopOf="@+id/button48" />
+
+    <Button
+        android:id="@+id/button50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="限流环"
+        android:onClick="xlh"
+        app:layout_constraintStart_toEndOf="@+id/button49"
+        app:layout_constraintTop_toTopOf="@+id/button49" />
+
+    <Button
+        android:id="@+id/button51"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="速度环"
+        android:onClick="sdh"
+        app:layout_constraintStart_toEndOf="@+id/button50"
+        app:layout_constraintTop_toTopOf="@+id/button50" />
+
+    <FrameLayout
+        android:id="@+id/canshu_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button44">
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
