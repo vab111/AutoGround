@@ -2,6 +2,7 @@ package com.example.autoground;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mImmersionBar = ImmersionBar.with(this);
         statusBarColor();
+        hideBottomUIMenu();
     }
     /**
      * [页面跳转]
@@ -48,4 +50,23 @@ public class BaseActivity extends AppCompatActivity {
       mImmersionBar.statusBarColor(R.color.mediumaquamarine)
               .init();
   }
+    protected void hideBottomUIMenu() {
+
+        //隐藏虚拟按键，并且全屏
+
+
+
+        //for new api versions.
+
+        View decorView = getWindow().getDecorView();
+
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+
+        decorView.setSystemUiVisibility(uiOptions);
+
+
+
+    }
 }

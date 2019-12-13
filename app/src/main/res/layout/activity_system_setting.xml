@@ -10,7 +10,6 @@
         android:id="@+id/settingbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -57,6 +56,7 @@
         android:layout_height="100dp"
         android:layout_marginStart="100dp"
         android:background="@drawable/qingchu"
+        android:onClick="deleteAll"
         app:layout_constraintStart_toEndOf="@+id/button3"
         app:layout_constraintTop_toTopOf="@+id/button3" />
 

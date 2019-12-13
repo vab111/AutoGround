@@ -1,11 +1,15 @@
 package com.example.autoground;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SystemSetting extends BaseActivity {
 
@@ -155,5 +171,132 @@ public class SystemSetting extends BaseActivity {
 
 
         });
+    }
+
+    public void deleteAll(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("提示")//这里是表头的内容
+                .setMessage("确定删除所有记录？")//这里是中间显示的具体信息
+                .setPositiveButton("取消",//这个string是设置左边按钮的文字
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })//setPositiveButton里面的onClick执行的是左边按钮
+                .setNegativeButton("确定",//这个string是设置右边按钮的文字
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                deleteAllRecord();
+                            }
+                        })//setNegativeButton里面的onClick执行的是右边的按钮的操作
+                .show();
+    }
+    public boolean deleteFile(String fileName) {
+        File file = new File(fileName);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                System.out.println("删除单个文件" + fileName + "成功！");
+                return true;
+            } else {
+                System.out.println("删除单个文件" + fileName + "失败！");
+                return false;
+            }
+        } else {
+            System.out.println("删除单个文件失败：" + fileName + "不存在！");
+            return false;
+        }
+    }
+    public void deleteAllRecord()
+    {
+        List fileList = new ArrayList();
+        File appDir = new File(Environment.getExternalStorageDirectory()+"/AutoGround");   //自定义的目录
+        if (!appDir.exists()) {
+            boolean isSuccess = appDir.mkdir();
+            Log.d("MsgId:" ,"----------0------------------"+isSuccess);
+        }
+        else
+            Log.d("MsgId:" ,"----------0------------------目录已经存在:"+Environment.getExternalStorageDirectory()+"/AutoGround");
+
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/Record.json");
+
+            String result = "";
+            try {
+                FileInputStream f = new FileInputStream(fs);
+                BufferedReader bis = new BufferedReader(new InputStreamReader(f));
+                String line = "";
+                while ((line = bis.readLine()) != null) {
+                    result += line;
+                }
+                bis.close();
+                f.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (result.length()>0) {
+                Gson gson = new Gson();
+                fileList = gson.fromJson(result, new TypeToken<List<recorder>>() {
+                }.getType());
+            }
+
+        for (int j=1;j<fileList.size();j++) {
+            recorder item = (recorder) fileList.get(j);
+            appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname);
+            if (appDir.exists()) {
+                File[] files = appDir.listFiles();
+
+                boolean flag = true;
+                for (int i = 0; i < files.length; i++) {
+                    // 删除子文件
+                    if (files[i].isFile()) {
+                        flag = deleteFile(files[i].getAbsolutePath());
+                        if (!flag)
+                            break;
+                    }
+
+                }
+
+                appDir.delete();
+            }
+            String abline = Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname + ".json";
+            deleteFile(abline);
+            fileList.remove(j);
+        }
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(fileList);
+
+        FileOutputStream fileOut=null;
+        OutputStreamWriter outStream =null;
+        try
+        {
+            fileOut =new FileOutputStream(Environment.getExternalStorageDirectory()+"/AutoGround/Record.json",false);
+            outStream =new OutputStreamWriter(fileOut);
+            outStream.write(jsonString);
+            outStream.flush();
+            outStream.close();
+            fileOut.close();
+            Toast.makeText(SystemSetting.this,"删除成功！",Toast.LENGTH_SHORT).show();
+        }
+        catch(Exception e)
+        {
+            Toast.makeText(SystemSetting.this,"删除失败！",Toast.LENGTH_SHORT).show();
+        }
+        finally
+        {
+            try
+            {
+                if(null!=outStream)
+                    outStream.close();
+
+                if(null!=fileOut)
+                    fileOut.close();
+            }
+            catch(Exception e)
+            {
+            }
+        }
     }
 }

@@ -185,7 +185,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="实际电流"
+        android:text="实际距离"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/textView90"
         app:layout_constraintTop_toBottomOf="@+id/divider8" />
@@ -205,7 +205,7 @@
         android:id="@+id/textView94"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="电流误差"
+        android:text="距离误差"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView93"
         app:layout_constraintStart_toStartOf="@+id/textView91" />
@@ -226,6 +226,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
         android:text="测试"
+        android:onClick="jlhTest"
         app:layout_constraintBottom_toBottomOf="@+id/button64"
         app:layout_constraintStart_toEndOf="@+id/button64" />
 

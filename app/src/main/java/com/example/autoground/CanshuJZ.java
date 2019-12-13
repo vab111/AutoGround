@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 
 import com.android.guard.CommunicationService;
 import com.android.guard.DataType;
@@ -39,11 +42,27 @@ public class CanshuJZ extends AppCompatActivity {
     private CanshuInfo canshuInfo;
     private CommunicationService mService;
     private boolean aniu = false;
+    private Button zdlBtn;
+    private Button ydlBtn;
+    private Button zshBtn;
+    private Button zjhBtn;
+    private Button hxhBtn;
+    private Button jlhBtn;
+    private Button xlhBtn;
+    private Button sdhBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_canshu_jz);
         toolbar = findViewById(R.id.canshubar);
+        zdlBtn= findViewById(R.id.button44);
+        ydlBtn= findViewById(R.id.button45);
+        zshBtn= findViewById(R.id.button46);
+        zjhBtn= findViewById(R.id.button47);
+        hxhBtn= findViewById(R.id.button48);
+        jlhBtn= findViewById(R.id.button49);
+        xlhBtn= findViewById(R.id.button50);
+        sdhBtn = findViewById(R.id.button51);
         setToolbar();
         getRecord();
         initFragment2();
@@ -54,6 +73,8 @@ public class CanshuJZ extends AppCompatActivity {
         initFragment7();
         initFragment8();
         initFragment1();
+        btnGray();
+        zdlBtn.setBackgroundColor(Color.GREEN);
     }
     public void onStart()
     {
@@ -372,34 +393,63 @@ public class CanshuJZ extends AppCompatActivity {
 
     public void zdl(View view) {
         initFragment1();
+        btnGray();
+        zdlBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void ydl(View view) {
         initFragment2();
+        btnGray();
+        ydlBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void zsh(View view) {
         initFragment3();
+        btnGray();
+        zshBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void zjh(View view) {
         initFragment4();
+        btnGray();
+        zjhBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void hxh(View view) {
         initFragment5();
+        btnGray();
+        hxhBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void jlh(View view) {
         initFragment6();
+        btnGray();
+        jlhBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void xlh(View view) {
         initFragment7();
+        btnGray();
+        xlhBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void sdh(View view) {
         initFragment8();
+        btnGray();
+        sdhBtn.setBackgroundColor(Color.GREEN);
+    }
+
+    public void btnGray()
+    {
+        zdlBtn.setBackgroundColor(Color.GRAY);
+        ydlBtn.setBackgroundColor(Color.GRAY);
+        zshBtn.setBackgroundColor(Color.GRAY);
+        zjhBtn.setBackgroundColor(Color.GRAY);
+        hxhBtn.setBackgroundColor(Color.GRAY);
+        jlhBtn.setBackgroundColor(Color.GRAY);
+        xlhBtn.setBackgroundColor(Color.GRAY);
+        sdhBtn .setBackgroundColor(Color.GRAY);
+
     }
     private void getRecord(){
         //TODO 获取历史信息
@@ -484,13 +534,87 @@ public class CanshuJZ extends AppCompatActivity {
         {
             order[7] = 0x01;
             aniu = true;
+            zjhFragment.testBtn.setText("取消");
         }
         else
         {
             order[7] = 0x00;
             aniu =false;
+
+            zjhFragment.testBtn.setText("测试");
         }
 
         mService.sendCan(id,order);
+        Log.e("转角设置:", String.valueOf(mubiao));
+    }
+
+    public void hxhTest(View view) {
+        mService = CommunicationService.getInstance(this);
+        //TODO 发送车辆信息601
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = 0x00;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x08;
+        order[2] = 0x20;
+        order[3] = 0x02;
+        int mubiao = (int) (100*(Float.parseFloat(hxhFragment.amiDianliu.getText().toString())));
+        order[4] = (byte) ((mubiao/256)&0xff);
+        order[5] = (byte) ((mubiao%256)&0xff);
+        order[6] = 0x00;
+        if (!aniu)
+        {
+            order[7] = 0x01;
+            aniu = true;
+            hxhFragment.testBtn.setText("取消");
+        }
+        else
+        {
+            order[7] = 0x00;
+            aniu =false;
+
+            hxhFragment.testBtn.setText("测试");
+        }
+
+        mService.sendCan(id,order);
+        Log.e("航向设置:", String.valueOf(mubiao));
+    }
+
+    public void jlhTest(View view) {
+        mService = CommunicationService.getInstance(this);
+        //TODO 发送车辆信息601
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = 0x00;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x09;
+        order[2] = 0x20;
+        order[3] = 0x02;
+        int mubiao = (int) (100*(Float.parseFloat(jlhFragment.dianliuWucha.getText().toString())));
+        order[4] = (byte) ((mubiao/256)&0xff);
+        order[5] = (byte) ((mubiao%256)&0xff);
+        order[6] = 0x00;
+        if (!aniu)
+        {
+            order[7] = 0x01;
+            aniu = true;
+            jlhFragment.testBtn.setText("取消");
+        }
+        else
+        {
+            order[7] = 0x00;
+            aniu =false;
+
+            jlhFragment.testBtn.setText("测试");
+        }
+
+        mService.sendCan(id,order);
+        Log.e("转角设置:", String.valueOf(mubiao));
     }
 }

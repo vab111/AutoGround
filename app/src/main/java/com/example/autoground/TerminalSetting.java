@@ -3,15 +3,19 @@ package com.example.autoground;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.guard.CommunicationService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kongqw.serialportlibrary.SerialPortManager;
+import com.kongqw.serialportlibrary.listener.OnSerialPortDataListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,15 +35,32 @@ public class TerminalSetting extends BaseActivity {
     private CarInfor car;
     private AzjzData azjz;
     private List azjzData;
+    private Button linkBtn;
+    private SerialPortManager mSerialPortManager;
+    private boolean issend = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terminal_setting);
         toolbar = findViewById(R.id.terminalbar);
+        linkBtn = findViewById(R.id.button36);
         setToolbar();
         getRecord();
         getAzjz();
+        mSerialPortManager = new SerialPortManager();
+        mSerialPortManager.setOnSerialPortDataListener(new OnSerialPortDataListener() {
+            @Override
+            public void onDataReceived(byte[] bytes) {
+                if (issend)
+                    linkBtn.setText("断开连接");
+            }
+
+            @Override
+            public void onDataSent(byte[] bytes) {
+
+            }
+        });
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -118,6 +139,12 @@ public class TerminalSetting extends BaseActivity {
     }
 
     public void linking(View view) {
+        if (!issend)
+            issend = true;
+        else {
+            issend = false;
+            linkBtn.setText("连接设备");
+        }
         mService = CommunicationService.getInstance(this);
         //TODO 发送车辆信息
         byte[] id = new byte[4];

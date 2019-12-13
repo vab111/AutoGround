@@ -5,11 +5,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -37,18 +39,27 @@ public class NJNJsetting extends BaseActivity {
     private Toolbar toolbar;
     private CarInfor car;
     private CommunicationService mService;
+    private Button clszBtn;
+    private Button njszBtn;
+    private Button txszBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_njnjsetting);
         toolbar = findViewById(R.id.njnjbar);
+        clszBtn = findViewById(R.id.button14);
+        njszBtn = findViewById(R.id.button15);
+        txszBtn = findViewById(R.id.button16);
         setToolbar();
         getRecord();
         initFragment2();
         initFragment3();
         initFragment1();
+        btnGray();
+        clszBtn.setBackgroundColor(Color.GREEN);
     }
+
     @Override
     public void onStart()
     {
@@ -86,6 +97,12 @@ public class NJNJsetting extends BaseActivity {
 
     }
 
+    public void btnGray()
+    {
+        clszBtn.setBackgroundColor(Color.GRAY);
+        njszBtn.setBackgroundColor(Color.GRAY);
+        txszBtn.setBackgroundColor(Color.GRAY);
+    }
     private void setToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);//设计隐藏标题
@@ -260,14 +277,20 @@ public class NJNJsetting extends BaseActivity {
 
     public void clSetting(View view) {
         initFragment1();
+        btnGray();
+        clszBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void njSetting(View view) {
         initFragment2();
+        btnGray();
+        njszBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void txSetting(View view) {
         initFragment3();
+        btnGray();
+        txszBtn.setBackgroundColor(Color.GREEN);
     }
 
     public void leftSelected(View view) {
@@ -389,7 +412,7 @@ public class NJNJsetting extends BaseActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            sendCarInfor();
 
     }
     public void sendCarInfor()

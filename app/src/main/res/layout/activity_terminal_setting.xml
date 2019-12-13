@@ -10,7 +10,6 @@
         android:id="@+id/terminalbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -101,8 +100,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="513dp"
         android:layout_marginTop="16dp"
-        android:text="断开连接"
         android:onClick="linking"
+        android:text="连接设备"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioButton9" />
 
