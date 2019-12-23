@@ -49,7 +49,7 @@ public class rightDianliu extends Fragment {
         amiDianliu = getActivity().findViewById(R.id.editText70);
         sendBtn = getActivity().findViewById(R.id.button58);
         receiveBtn = getActivity().findViewById(R.id.button59);
-        testBtn = getActivity().findViewById(R.id.button60);
+        testBtn = getActivity().findViewById(R.id.button61);
         registerForContextMenu(maxlimit);
         registerForContextMenu(maxwucha);
         registerForContextMenu(maxoutput);

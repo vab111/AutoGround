@@ -49,7 +49,7 @@ public class zhuansuhuan extends Fragment {
         amiDianliu = getActivity().findViewById(R.id.editText80);
         sendBtn = getActivity().findViewById(R.id.button58);
         receiveBtn = getActivity().findViewById(R.id.button59);
-        testBtn = getActivity().findViewById(R.id.button60);
+        testBtn = getActivity().findViewById(R.id.button62);
         registerForContextMenu(maxlimit);
         registerForContextMenu(maxwucha);
         registerForContextMenu(maxoutput);

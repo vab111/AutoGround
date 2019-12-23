@@ -64,28 +64,28 @@ public class NJNJsetting extends BaseActivity {
     public void onStart()
     {
         super.onStart();
-        clszFragment.zhouju.setText(String.valueOf(car.Zhou).toCharArray(), 0, String.valueOf(car.Zhou).length());
-        clszFragment.back.setText(String.valueOf(car.Backwheel).toCharArray(), 0, String.valueOf(car.Backwheel).length());
-        clszFragment.front.setText(String.valueOf(car.Frontwheel).toCharArray(), 0, String.valueOf(car.Frontwheel).length());
-        clszFragment.nianfen.setText(car.year.toCharArray(), 0, car.year.length());
-        clszFragment.xinghao.setText(car.Xinhao.toCharArray(), 0, car.Xinhao.length());
-        clszFragment.pinpai.setText(car.brand.toCharArray(), 0, car.brand.length());
-        clszFragment.chegao.setText(String.valueOf(car.height).toCharArray(), 0, String.valueOf(car.height).length());
-        clszFragment.chepai.setText(car.lisence.toCharArray(), 0, car.lisence.length());
-        njszFragment.pinpai.setText(car.NJBrand.toCharArray(), 0, car.NJBrand.length());
-        njszFragment.leixing.setText(car.NJType.toCharArray(), 0, car.NJType.length());
-        njszFragment.xinghao.setText(car.NJXinhao.toCharArray(), 0, car.NJXinhao.length());
-        njszFragment.nianfen.setText(car.NJyear.toCharArray(), 0, car.NJyear.length());
-        njszFragment.width.setText(String.valueOf(car.NJWidth).toCharArray(), 0, String.valueOf(car.NJWidth).length());
-        njszFragment.back.setText(String.valueOf(car.NJBackdis).toCharArray(), 0, String.valueOf(car.NJBackdis).length());
-        njszFragment.pianyi.setText(String.valueOf(car.pianyi).toCharArray(), 0, String.valueOf(car.pianyi).length());
+        clszFragment.zhouju.setText(String.format("%d", car.Zhou));
+        clszFragment.back.setText(String.format("%d", car.Backwheel));
+        clszFragment.front.setText(String.format("%d", car.Frontwheel));
+        clszFragment.nianfen.setText(car.year);
+        clszFragment.xinghao.setText(car.Xinhao);
+        clszFragment.pinpai.setText(car.brand);
+        clszFragment.chegao.setText(String.format("%d", car.height));
+        clszFragment.chepai.setText(car.lisence);
+        njszFragment.pinpai.setText(car.NJBrand);
+        njszFragment.leixing.setText(car.NJType);
+        njszFragment.xinghao.setText(car.NJXinhao);
+        njszFragment.nianfen.setText(car.NJyear);
+        njszFragment.width.setText(String.format("%d", car.NJWidth));
+        njszFragment.back.setText(String.format("%d",car.NJBackdis));
+        njszFragment.pianyi.setText(String.format("%d", car.pianyi));
         if (car.leftright)
             njszFragment.leftSelected();
         else
             njszFragment.rightSelected();
-        txszFragment.toMid.setText(String.valueOf(car.TXMiddis).toCharArray(), 0, String.valueOf(car.TXMiddis).length());
-        txszFragment.toBack.setText(String.valueOf(car.TXBackdis).toCharArray(), 0, String.valueOf(car.TXBackdis).length());
-        txszFragment.toGround.setText(String.valueOf(car.TXHeight).toCharArray(), 0, String.valueOf(car.TXHeight).length());
+        txszFragment.toMid.setText(String.format("%d", car.TXMiddis));
+        txszFragment.toBack.setText(String.format("%d", car.TXBackdis));
+        txszFragment.toGround.setText(String.format("%d", car.TXHeight));
 
         mService = CommunicationService.getInstance(this);
         mService.setShutdownCountTime(12);//setting shutdownCountTime

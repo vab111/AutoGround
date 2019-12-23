@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Senser extends AppCompatActivity {
     private int state = 1;
@@ -48,7 +46,7 @@ public class Senser extends AppCompatActivity {
         bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
         bottomDialog.setCanceledOnTouchOutside(false);
         bottomDialog.show();
-        Button cancelBtn = contentView.findViewById(R.id.button61);
+        Button cancelBtn = contentView.findViewById(R.id.button60);
         final Button confirmBtn = contentView.findViewById(R.id.button62);
         final TextView stateText = contentView.findViewById(R.id.textView78);
         final TextView discription = contentView.findViewById(R.id.textView79);

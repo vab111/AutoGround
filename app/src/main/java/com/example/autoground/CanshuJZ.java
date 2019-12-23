@@ -75,6 +75,7 @@ public class CanshuJZ extends AppCompatActivity {
         initFragment1();
         btnGray();
         zdlBtn.setBackgroundColor(Color.GREEN);
+
     }
     public void onStart()
     {
@@ -164,6 +165,23 @@ public class CanshuJZ extends AppCompatActivity {
                     @Override
                     public void run() {
                         zjhFragment.actDianliu.setText(String.format("%.2f°", (float)txxiuzheng/100));
+                        if (!zjhFragment.amiDianliu.isFocused()) {
+                            int x = (int) (100 * (Float.parseFloat(zjhFragment.amiDianliu.getText().toString())));
+                            zjhFragment.dianliuWucha.setText(String.format("%.2f°", (float) (txxiuzheng - x) / 100));
+                        }
+
+                    }
+                });
+
+                final int hxCheck = ((data[1] << 8) | (0xff&data[2]));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        hxhFragment.actDianliu.setText(String.format("%.2f°", (float)hxCheck/100));
+                        if (!hxhFragment.amiDianliu.isFocused()) {
+                            int x = (int) (100 * (Float.parseFloat(hxhFragment.amiDianliu.getText().toString())));
+                            hxhFragment.dianliuWucha.setText(String.format("%.2f°", (float) (hxCheck - x) / 100));
+                        }
                     }
                 });
                 break;
@@ -179,6 +197,27 @@ public class CanshuJZ extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // finish();
+
+                //TODO 发送车辆信息601
+                byte[] id = new byte[4];
+                id[0] = -64;
+                id[1] = 32;
+                id[2] = (byte) 0xfe;
+                id[3] = 0x00;
+                byte[] order = new byte[8];
+                order[0] = 0x23;
+                order[1] = 0x07;
+                order[2] = 0x20;
+                order[3] = 0x02;
+                order[4] = 0x00;
+                order[5] = 0x00;
+                order[6] = 0x00;
+                order[7] = 0x00;
+                mService.sendCan(id, order);
+                order[1] = 0x08;
+                mService.sendCan(id, order);
+                order[1] = 0x09;
+                mService.sendCan(id,order);
                 finish();
             }
         });
@@ -519,7 +558,7 @@ public class CanshuJZ extends AppCompatActivity {
         byte[] id = new byte[4];
         id[0] = -64;
         id[1] = 32;
-        id[2] = 0x00;
+        id[2] = (byte) 0xfe;
         id[3] = 0x00;
         byte[] order = new byte[8];
         order[0] = 0x23;
@@ -527,8 +566,15 @@ public class CanshuJZ extends AppCompatActivity {
         order[2] = 0x20;
         order[3] = 0x02;
         int mubiao = (int) (100*(Float.parseFloat(zjhFragment.amiDianliu.getText().toString())));
-        order[4] = (byte) ((mubiao/256)&0xff);
-        order[5] = (byte) ((mubiao%256)&0xff);
+
+        if (mubiao<0)
+            order[4] = (byte) ((mubiao/256-1)&0xff);
+
+        else
+            order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+
         order[6] = 0x00;
         if (!aniu)
         {
@@ -562,8 +608,13 @@ public class CanshuJZ extends AppCompatActivity {
         order[2] = 0x20;
         order[3] = 0x02;
         int mubiao = (int) (100*(Float.parseFloat(hxhFragment.amiDianliu.getText().toString())));
-        order[4] = (byte) ((mubiao/256)&0xff);
-        order[5] = (byte) ((mubiao%256)&0xff);
+        if (mubiao<0)
+            order[4] = (byte) ((mubiao/256-1)&0xff);
+
+        else
+            order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
         order[6] = 0x00;
         if (!aniu)
         {
@@ -597,8 +648,13 @@ public class CanshuJZ extends AppCompatActivity {
         order[2] = 0x20;
         order[3] = 0x02;
         int mubiao = (int) (100*(Float.parseFloat(jlhFragment.dianliuWucha.getText().toString())));
-        order[4] = (byte) ((mubiao/256)&0xff);
-        order[5] = (byte) ((mubiao%256)&0xff);
+        if (mubiao<0)
+            order[4] = (byte) ((mubiao/256-1)&0xff);
+
+        else
+            order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
         order[6] = 0x00;
         if (!aniu)
         {
@@ -616,5 +672,116 @@ public class CanshuJZ extends AppCompatActivity {
 
         mService.sendCan(id,order);
         Log.e("转角设置:", String.valueOf(mubiao));
+    }
+
+    public void zjhSend(View view) {
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = (byte) 0xfe;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x07;
+        order[2] = 0x20;
+        order[3] = 0x00;
+        int mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxlimit.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxwucha.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+
+
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxoutput.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(zjhFragment.percentP.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+        mService.sendCan(id,order);
+    }
+
+    public void hxhSend(View view) {
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = (byte) 0xfe;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x07;
+        order[2] = 0x20;
+        order[3] = 0x00;
+        int mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxlimit.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxwucha.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+
+
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxoutput.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(hxhFragment.percentP.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+        mService.sendCan(id,order);
+    }
+
+    public void jlhSend(View view) {
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = (byte) 0xfe;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x07;
+        order[2] = 0x20;
+        order[3] = 0x00;
+        int mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxlimit.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxwucha.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+
+
+        mService.sendCan(id,order);
+
+        order[3] = 0x01;
+        mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxoutput.getText().toString())));
+
+        order[4] = (byte) ((mubiao/256)&0xff);
+
+        order[5] = (byte) ((mubiao % 256) & 0xff);
+        mubiao = (int) (100*(Float.parseFloat(jlhFragment.percentP.getText().toString())));
+        order[6] = (byte) ((mubiao/256)&0xff);
+
+        order[7] = (byte) ((mubiao % 256) & 0xff);
+        mService.sendCan(id,order);
     }
 }

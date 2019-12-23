@@ -51,7 +51,7 @@ public class julihuan extends Fragment {
         receiveBtn = getActivity().findViewById(R.id.button59);
         testBtn = getActivity().findViewById(R.id.button60);
         recordABtn = getActivity().findViewById(R.id.button63);
-        recordBBtn = getActivity().findViewById(R.id.button64);
+        recordBBtn = getActivity().findViewById(R.id.button65);
         registerForContextMenu(maxlimit);
         registerForContextMenu(maxwucha);
         registerForContextMenu(maxoutput);
