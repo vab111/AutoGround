@@ -97,6 +97,7 @@ public class Azjz extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // finish();
+                saveJZ();
                 finish();
             }
         });
@@ -308,9 +309,7 @@ public class Azjz extends BaseActivity {
             FileOutputStream outputStream =new FileOutputStream(fs);
             OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
 
-            AzjzData header = new AzjzData();
 
-            azjzData.add(header);
             Gson gson = new Gson();
             String jsonString = gson.toJson(azjzData);
             outStream.write(jsonString);
@@ -327,5 +326,28 @@ public class Azjz extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendJZ(View view) {
+        AzjzData item = (AzjzData) azjzData.get(0);
+        mService = CommunicationService.getInstance(this);
+        //TODO 发送车辆信息
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = 0x00;
+        id[3] = 0x00;
+
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x03;
+        order[2] = 0x20;
+        order[3] = 0x00;
+
+        order[4] = (byte) ((item.txxz/256)&0xff);
+        order[5] = (byte) ((item.txxz%256)&0xff);
+        order[6] = (byte) ((item.AngleFix/256)&0xff);
+        order[7] = (byte) ((item.AngleFix%256)&0xff);
+        mService.sendCan(id,order);
     }
 }

@@ -84,17 +84,17 @@ public class CanshuJZ extends AppCompatActivity {
         zjhFragment.maxwucha.setText(String.valueOf(canshuInfo.zjh_maxwucha).toCharArray(), 0, String.valueOf(canshuInfo.zjh_maxwucha).length());
         zjhFragment.maxoutput.setText(String.valueOf(canshuInfo.zjh_max_output).toCharArray(), 0, String.valueOf(canshuInfo.zjh_max_output).length());
         zjhFragment.percentP.setText(String.valueOf(canshuInfo.zjh_biliP).toCharArray(), 0, String.valueOf(canshuInfo.zjh_biliP).length());
-        zjhFragment.amiDianliu.setText(String.valueOf(canshuInfo.zjh_ami).toCharArray(), 0, String.valueOf(canshuInfo.zjh_ami).length());
+        //zjhFragment.amiDianliu.setText(String.valueOf(canshuInfo.zjh_ami).toCharArray(), 0, String.valueOf(canshuInfo.zjh_ami).length());
         hxhFragment.maxlimit.setText(String.valueOf(canshuInfo.hxh_maxlimit).toCharArray(), 0, String.valueOf(canshuInfo.hxh_maxlimit).length());
         hxhFragment.maxwucha.setText(String.valueOf(canshuInfo.hxh_maxwucha).toCharArray(), 0, String.valueOf(canshuInfo.hxh_maxwucha).length());
         hxhFragment.maxoutput.setText(String.valueOf(canshuInfo.hxh_max_output).toCharArray(), 0, String.valueOf(canshuInfo.hxh_max_output).length());
         hxhFragment.percentP.setText(String.valueOf(canshuInfo.hxh_biliP).toCharArray(), 0, String.valueOf(canshuInfo.hxh_biliP).length());
-        hxhFragment.amiDianliu.setText(String.valueOf(canshuInfo.hxh_ami).toCharArray(), 0, String.valueOf(canshuInfo.hxh_ami).length());
+       // hxhFragment.amiDianliu.setText(String.valueOf(canshuInfo.hxh_ami).toCharArray(), 0, String.valueOf(canshuInfo.hxh_ami).length());
         jlhFragment.maxlimit.setText(String.valueOf(canshuInfo.jlh_maxlimit).toCharArray(), 0, String.valueOf(canshuInfo.jlh_maxlimit).length());
         jlhFragment.maxwucha.setText(String.valueOf(canshuInfo.jlh_maxwucha).toCharArray(), 0, String.valueOf(canshuInfo.jlh_maxwucha).length());
         jlhFragment.maxoutput.setText(String.valueOf(canshuInfo.jlh_max_output).toCharArray(), 0, String.valueOf(canshuInfo.jlh_max_output).length());
         jlhFragment.percentP.setText(String.valueOf(canshuInfo.jlh_biliP).toCharArray(), 0, String.valueOf(canshuInfo.jlh_biliP).length());
-        jlhFragment.dianliuWucha.setText(String.valueOf(canshuInfo.jlh_ami).toCharArray(), 0, String.valueOf(canshuInfo.jlh_ami).length());
+       // jlhFragment.dianliuWucha.setText(String.valueOf(canshuInfo.jlh_ami).toCharArray(), 0, String.valueOf(canshuInfo.jlh_ami).length());
         mService = CommunicationService.getInstance(this);
         mService.getData(new CommunicationService.IProcessData() {
             @Override
@@ -551,6 +551,32 @@ public class CanshuJZ extends AppCompatActivity {
         }
         canshuInfo = (CanshuInfo) fileList.get(0);
     }
+    private void saveRecord()
+    {
+        List fileList = new ArrayList();
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarInfor.json");
+        try {
+            FileOutputStream outputStream =new FileOutputStream(fs);
+            OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
+
+            fileList.add(canshuInfo);
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(fileList);
+            outStream.write(jsonString);
+
+            outputStream.flush();
+            outStream.flush();
+            outputStream.close();
+            outputStream.close();
+
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void zjhTest(View view) {
         mService = CommunicationService.getInstance(this);
@@ -686,11 +712,12 @@ public class CanshuJZ extends AppCompatActivity {
         order[2] = 0x20;
         order[3] = 0x00;
         int mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxlimit.getText().toString())));
-
+        canshuInfo.zjh_maxlimit = Float.parseFloat(zjhFragment.maxlimit.getText().toString());
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxwucha.getText().toString())));
+        canshuInfo.zjh_maxwucha = Float.parseFloat(zjhFragment.maxwucha.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
@@ -700,15 +727,17 @@ public class CanshuJZ extends AppCompatActivity {
 
         order[3] = 0x01;
         mubiao = (int) (100*(Float.parseFloat(zjhFragment.maxoutput.getText().toString())));
-
+        canshuInfo.zjh_max_output = Float.parseFloat(zjhFragment.maxoutput.getText().toString());
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(zjhFragment.percentP.getText().toString())));
+        canshuInfo.zjh_biliP = Float.parseFloat(zjhFragment.percentP.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
         mService.sendCan(id,order);
+        saveRecord();
     }
 
     public void hxhSend(View view) {
@@ -719,15 +748,16 @@ public class CanshuJZ extends AppCompatActivity {
         id[3] = 0x00;
         byte[] order = new byte[8];
         order[0] = 0x23;
-        order[1] = 0x07;
+        order[1] = 0x08;
         order[2] = 0x20;
         order[3] = 0x00;
         int mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxlimit.getText().toString())));
-
+        canshuInfo.hxh_maxlimit = Float.parseFloat(hxhFragment.maxlimit.getText().toString());
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxwucha.getText().toString())));
+        canshuInfo.hxh_maxwucha = Float.parseFloat(hxhFragment.maxwucha.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
@@ -737,15 +767,17 @@ public class CanshuJZ extends AppCompatActivity {
 
         order[3] = 0x01;
         mubiao = (int) (100*(Float.parseFloat(hxhFragment.maxoutput.getText().toString())));
-
+        canshuInfo.hxh_max_output = Float.parseFloat(hxhFragment.maxoutput.getText().toString());
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(hxhFragment.percentP.getText().toString())));
+        canshuInfo.hxh_biliP = Float.parseFloat(hxhFragment.percentP.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
         mService.sendCan(id,order);
+        saveRecord();
     }
 
     public void jlhSend(View view) {
@@ -756,15 +788,16 @@ public class CanshuJZ extends AppCompatActivity {
         id[3] = 0x00;
         byte[] order = new byte[8];
         order[0] = 0x23;
-        order[1] = 0x07;
+        order[1] = 0x09;
         order[2] = 0x20;
         order[3] = 0x00;
         int mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxlimit.getText().toString())));
-
+        canshuInfo.jlh_maxlimit = Float.parseFloat(jlhFragment.maxlimit.getText().toString());
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxwucha.getText().toString())));
+        canshuInfo.jlh_maxwucha = Float.parseFloat(jlhFragment.maxwucha.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
@@ -774,14 +807,18 @@ public class CanshuJZ extends AppCompatActivity {
 
         order[3] = 0x01;
         mubiao = (int) (100*(Float.parseFloat(jlhFragment.maxoutput.getText().toString())));
+        canshuInfo.jlh_max_output = Float.parseFloat(jlhFragment.maxoutput.getText().toString());
 
         order[4] = (byte) ((mubiao/256)&0xff);
 
         order[5] = (byte) ((mubiao % 256) & 0xff);
         mubiao = (int) (100*(Float.parseFloat(jlhFragment.percentP.getText().toString())));
+        canshuInfo.jlh_biliP = Float.parseFloat(jlhFragment.percentP.getText().toString());
         order[6] = (byte) ((mubiao/256)&0xff);
 
         order[7] = (byte) ((mubiao % 256) & 0xff);
         mService.sendCan(id,order);
+        saveRecord();
     }
+
 }

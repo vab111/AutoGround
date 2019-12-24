@@ -42,7 +42,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private float xMid=0.0f;
     private float yMid=0.0f;
     private double beginDistance;
-    public float scale = 1.0f;
+    public float scale = 2.0f;
     private float zoomscale = 1.0f;
     private float mapDerection = 0.0f;//地图本身方向角，正北为0，顺时针增长
     private boolean ismoving=false;
@@ -408,8 +408,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     {
 //移动画布，使中心显示
         Point result = transform(curPoint);
-        Moved.x = width/2-result.x;
-        Moved.y = height/2-result.y;
+        Moved.x = (int) (width/(2*scale)-result.x);
+        Moved.y = (int) (height/(2*scale)-result.y);
         CurPoint = curPoint;
         if (isTask) {
             endP.x = CurPoint.x;
@@ -1511,6 +1511,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 e.printStackTrace();
             }
         }
+       this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        this.canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
     public void copyBuffer()
     {
