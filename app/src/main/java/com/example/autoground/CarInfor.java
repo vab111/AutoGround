@@ -20,5 +20,7 @@ public class CarInfor {
     public int TXHeight;
     public int TXBackdis;
     public int TXMiddis;
+    public int signal_type;
+    public int signal_fre;
 
 }

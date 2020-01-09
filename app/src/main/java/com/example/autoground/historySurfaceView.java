@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Environment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -224,6 +225,139 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setFilterBitmap(true);
         File appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + taskname);
+        int centx = -Moved.x+width/2;
+        int centy = Moved.y-height/2;
+        List<String> sdf = new ArrayList();
+        sdf.add(caculateFileName(new Point(centx,centy)));
+        if (centx<0)
+        {
+            if (Math.abs(centx%width)<width/2)
+            {
+                sdf.add(caculateFileName(new Point(centx+width,centy)));
+                if (centy<0)
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+                    }
+                }
+                else
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+                    }
+                }
+
+            }
+            else
+            {
+                sdf.add(caculateFileName(new Point(centx-width,centy)));
+                if (centy<0)
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+                    }
+                }
+                else
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Math.abs(centx%width)<width/2)
+            {
+                sdf.add(caculateFileName(new Point(centx-width,centy)));
+                if (centy<0)
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+                    }
+                }
+                else
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+                    }
+                }
+            }
+            else
+            {
+                sdf.add(caculateFileName(new Point(centx+width,centy)));
+                if (centy<0)
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+                    }
+                }
+                else
+                {
+                    if (Math.abs(centy%height)<height/2)
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+                    }
+                    else
+                    {
+                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+                    }
+                }
+            }
+
+        }
+
         if (appDir.exists()) {
             File[] files = appDir.listFiles();
             int x;
@@ -231,18 +365,19 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
             Rect mSrcRect ;//第一个Rect 代表要绘制的bitmap 区域
             Rect mDestRect ;//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
             boolean flag = true;
-            for (int i = 0; i < files.length; i++) {
+            for (int i = 0; i < 4; i++) {
                 // 删除子文件
-                if (files[i].isFile()) {
+                File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+taskname+"/"+sdf.get(i)+".png");
+                if (fs.isFile()) {
                     //TODO 获取bitmap加载到canvas
-                    String item = files[i].getName();
+                    String item = fs.getName();
                     int dot = item.lastIndexOf('.');
                     String mapname = item.substring(0, dot);
                     String[] strArr = mapname.split("-");
                     int xiangxian = Integer.parseInt(strArr[0]);
                     int hor = Integer.parseInt(strArr[1]);
                     int ver = Integer.parseInt(strArr[2]);
-                    Bitmap bitmap = BitmapFactory.decodeFile(files[i].getAbsolutePath());
+                    Bitmap bitmap = BitmapFactory.decodeFile(fs.getAbsolutePath());
                     switch (xiangxian)
                     {
                         case 1:
@@ -282,9 +417,32 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         }
     }
-
-    public void getTask()
+    public String caculateFileName(Point point)//笛卡尔坐标系
     {
+        int xiangxian=0;
+        int hor = 0;
+        int ver = 0;
+        if (point.x>0)
+        {
+            if (point.y>0)
+                xiangxian =1;
+            else
+                xiangxian = 4;
+        }
+        else
+        {
+            if (point.y>0)
+                xiangxian = 2;
+            else
+                xiangxian = 3;
+        }
+        hor = Math.abs(point.x/width);
+        ver = Math.abs(point.y/height);
+        String name = String.format("%d-%d-%d", xiangxian,hor,ver);
+        Log.e("中心BITMAP", name);
+        return name;
+    }
+    public void getTask() {
         List taskList = new ArrayList();
         File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+taskname+".json");
         if (fs.exists()) {
@@ -308,6 +466,11 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 recordInfor = (RecordInfor) taskList.get(0);
             }
         }
+    }
+    public void getSize() {
+        //TODO 获取屏幕尺寸
+        this.getWidth();
+        this.getHeight();
     }
 }
 

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 import static android.graphics.Bitmap.*;
 
@@ -50,34 +51,32 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int height=552;
     public boolean isA = false;
     public boolean isB = false;
-    private Point pointA = new Point(0,0);
-    private Point pointB = new Point(0,0);
-    private Point CurPoint = new Point(0,0);
-    private float carDerection;
-    private int ChanWidth = 30;
-
+    public Point pointA = new Point(0,0);
+    public Point pointB = new Point(0,0);
+    public Point CurPoint = new Point(0,0);
+    private float carDerection=45.0f;
+    public int ChanWidth = 30;
+    public int ABpiancha = 0;
     public boolean isTask = false;
     private Point startP = new Point(0,0);
     private Point endP = new Point(0,0);
-    private Bitmap Trace;
-    private Bitmap TraceBack;
-    private Paint pain;
-    private Canvas canvas;
-    private Canvas canvasBack;
+    public Bitmap Trace;
+    public Bitmap TraceBack;
+    public Canvas canvas;
+    public Canvas canvasBack;
     private int mapWidth = width*3;
     private int mapHeight = height*3;
-    private int CNM = 5;
     public String CurrentTask;
-    private String[] mapbufferFile = new String[9];
-    private String[] mapbufferFileBack = new String[9];
+    public String[] mapbufferFile = new String[9];
+    public String[] mapbufferFileBack = new String[9];
     private String CurName;
     private String NameBack;
-    private int bufferstate;
+    public int bufferstate;
     private Point ex_Point=new Point(0,0);
-    private boolean Change = false;
     private int moveDerection;
     private Point traceleft = new Point(0,0);
     private Point traceright = new Point(0,0);
+    public boolean isCenter = true;
     public MysurfaceView(Context context, AttributeSet attrs){
         super(context,attrs);
         this.getHolder().addCallback(this);
@@ -120,11 +119,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             canvas = this.getHolder().lockCanvas();
             if (canvas == null)
                 return;
-
+            canvas.save();
             canvas.drawColor(Color.WHITE);
             canvas.translate(Moved.x,Moved.y);
+            canvas.rotate(mapDerection);
             canvas.scale(scale,scale);
-
+            canvas.translate(width/(2*scale), height/(2*scale));
             drawBg(canvas, this.getWidth(), this.getHeight());
 
 
@@ -143,6 +143,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     drawA(canvas);
             }
             drawCar(canvas);
+
             this.getHolder().unlockCanvasAndPost(canvas);
             try {
                 Thread.sleep(Math.max(0, 50-(System.currentTimeMillis()-t)));
@@ -155,9 +156,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public void drawBg(Canvas canvas, int width, int height)
     {
         Paint paint = new Paint();
+        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.GRAY);
-        paint.setStrokeWidth(1.0f);
+        paint.setStrokeWidth(0.5f/scale);
         int startX = (int) (Moved.x/scale);
         int startY = (int) (Moved.y/scale);
         int widthscale = (int) (width/scale);
@@ -171,6 +173,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        isCenter = false;
         switch (motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
                 //TODO 添加item选中判断
@@ -211,26 +214,84 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 break;
         }
 
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if(motionEvent.getPointerCount() == 2) {
+                    float downX1 = motionEvent.getX(0);
+                    float downX2 = motionEvent.getX(1);
+                    float downY1 = motionEvent.getY(0);
+                    float downY2 = motionEvent.getY(1);
+                    float xDistance = Math.abs(downX1-downX2);
+                    float yDistance = Math.abs(downY1-downY2);
+                    double angle = Math.atan2(downY2-downY1, downX2-downX1);
+                    //carDerection+=angle*180/Math.PI;
+                    xMid = (downX1+downX2)/2;
+                    yMid = (downY1+downY2)/2;
+                    beginDistance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
+                    isScaling = true;
+                    ismoving = false;//防止缩放后,双指离开屏幕先后造成误判,产生移动
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if(motionEvent.getPointerCount()==2&&isScaling) { //双指缩放图片
+
+                    float moveX1 = motionEvent.getX(0);
+                    float moveX2 = motionEvent.getX(1);
+                    float moveY1 = motionEvent.getY(0);
+                    float moveY2 = motionEvent.getY(1);
+                    float xDistance2 = Math.abs(moveX1 - moveX2);
+                    float yDistance2 = Math.abs(moveY1 - moveY2);
+                    //移动后两指间的距离
+                    double moveDistance = Math.sqrt(xDistance2 * xDistance2 + yDistance2 * yDistance2);
+                    zoomscale = (float) ((float) moveDistance / beginDistance);
+                    beginDistance = moveDistance;
+                    //控制缩放的最大、最小倍数
+                    if (scale*zoomscale>5 ||scale*zoomscale<2)
+                        zoomscale = 1.0f;
+                    else {
+
+                        Moved.x = (int) (xMid*(1-zoomscale)*scale+Moved.x);
+                        Moved.y = (int) (yMid*(1-zoomscale)*scale+Moved.y);
+                        scale = scale * zoomscale;
+                    }
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                isScaling = false;
+                zoomscale = 1.0f;
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                isScaling = false;
+                zoomscale = 1.0f;
+                break;
+        }
         return true;
     }
     public void drawABlines(Canvas canvas)
     {
         //TODO 绘制AB线，红色
         Paint paint = new Paint();
+        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
         Point ap = transform(pointA);
         Point bp = transform(pointB);
 
         double jiaodu = Math.atan2(ap.y-bp.y, bp.x-ap.x);
-        int x = (int) (bp.x+(bp.y+Moved.y)/Math.tan(jiaodu));
-        int y = (int) (ap.y+(ap.x+Moved.x)*Math.tan(jiaodu));
+        int x = (int) (bp.x+(bp.y+Moved.y)/Math.tan(jiaodu)-ABpiancha/Math.sin(jiaodu));
+        int y = (int) (ap.y+(ap.x+Moved.x)*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu));
         //Log.e("ABLine-角度", String.valueOf(jiaodu));
 
         Point cur = transform(CurPoint);
         if ((ap.x-bp.x)*(ap.x-bp.x)>(ap.y-bp.y)*(ap.y-bp.y))
         {
             paint.setColor(Color.RED);
-            paint.setStrokeWidth(1.0f);
+            paint.setStrokeWidth(1.0f/scale);
             //TODO y方向做等分
             int jianju = (int) Math.abs(ChanWidth/Math.cos(jiaodu));
             int cury = (int) (cur.y+Math.tan(jiaodu)*(width/2));
@@ -247,11 +308,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     canvas.drawPath(curPath, paint);
 
                     paint.setColor(Color.RED);
-                    paint.setStrokeWidth(2.0f);
+                    paint.setStrokeWidth(2.0f/scale);
                     canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
                 }
                 paint.setColor(Color.RED);
-                paint.setStrokeWidth(1.0f);
+                paint.setStrokeWidth(1.0f/scale);
                 canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
             }
             for (int j=y+jianju;j<-Moved.y+height+Math.abs(width*Math.tan(jiaodu));j+=jianju)
@@ -268,11 +329,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     canvas.drawPath(curPath, paint);
 
                     paint.setColor(Color.RED);
-                    paint.setStrokeWidth(2.0f);
+                    paint.setStrokeWidth(2.0f/scale);
                     canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
                 }
                 paint.setColor(Color.RED);
-                paint.setStrokeWidth(1.0f);
+                paint.setStrokeWidth(1.0f/scale);
                 canvas.drawLine(-Moved.x, j, -Moved.x + width, (float) (j - width * Math.tan(jiaodu)), paint);
             }
 
@@ -281,7 +342,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         else
         {
             paint.setColor(Color.RED);
-            paint.setStrokeWidth(1.0f);
+            paint.setStrokeWidth(1.0f/scale);
 
             int cury = (int) (cur.x+(height/2)/Math.tan(jiaodu));
             //TODO x方向做等分
@@ -299,16 +360,16 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             canvas.drawPath(curPath, paint);
 
                             paint.setColor(Color.RED);
-                            paint.setStrokeWidth(2.0f);
+                            paint.setStrokeWidth(2.0f/scale);
                             canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
                         } else {
                             paint.setColor(Color.RED);
-                            paint.setStrokeWidth(1.0f);
+                            paint.setStrokeWidth(1.0f/scale);
                             canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
                         }
                     }
 
-                    for (int j = x + jianju; (float) (j - height / Math.tan(jiaodu)) < -Moved.x + width + height / Math.tan(jiaodu); j += jianju) {
+                    for (int j = x + jianju; (float) (j - height / Math.tan(jiaodu)) < -Moved.x + width + Math.abs(height / Math.tan(jiaodu)); j += jianju) {
                         if (Math.abs(cury - j) <= jianju/2) {
                             paint.setColor(Color.GRAY);
 
@@ -321,11 +382,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             canvas.drawPath(curPath, paint);
 
                             paint.setColor(Color.RED);
-                            paint.setStrokeWidth(2.0f);
+                            paint.setStrokeWidth(2.0f/scale);
                             canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
                         } else {
                             paint.setColor(Color.RED);
-                            paint.setStrokeWidth(1.0f);
+                            paint.setStrokeWidth(1.0f/scale);
                             canvas.drawLine(j, -Moved.y, (float) (j - height / Math.tan(jiaodu)), -Moved.y + height, paint);
                         }
                     }
@@ -334,8 +395,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
 
     }
-    public void drawCar(Canvas canvas)
-    {
+    public void drawCar(Canvas canvas){
         //TODO 绘制车辆当前方向
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -344,7 +404,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Point car = transform(CurPoint);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
-        Rect mDestRect = new Rect(car.x-15, car.y-15, car.x+15, car.y+15);
+        Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) carDerection-90, bmp);
@@ -355,8 +415,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         canvas.drawBitmap(dstbmp,mSrcRect,mDestRect,paint);
 
     }
-    public void drawA(Canvas canvas)
-    {
+    public void drawA(Canvas canvas){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         paint.setFilterBitmap(true);
@@ -364,15 +423,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointA);
-        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+15, ap.y+15);
+        Rect mDestRect = new Rect((int) (ap.x-15/scale), (int) (ap.y-15/scale), (int) (ap.x+15/scale), (int) (ap.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.adian);		// 设置canvas画布背景为白色	// 定义矩阵对象
 
 
         canvas.drawBitmap(bmp,mSrcRect,mDestRect,paint);
     }
-    public void drawB(Canvas canvas)
-    {
+    public void drawB(Canvas canvas){
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         paint.setFilterBitmap(true);
@@ -380,7 +438,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
         Point ap = transform(pointB);
-        Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+15, ap.y+15);
+        Rect mDestRect = new Rect((int) (ap.x-15/scale), (int) (ap.y-15/scale), (int) (ap.x+15/scale), (int) (ap.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bdian);		// 设置canvas画布背景为白色	// 定义矩阵对象
 
@@ -398,8 +456,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         return result;
     }
-    public void getSize()
-    {
+    public void getSize() {
         //TODO 获取屏幕尺寸
         this.getWidth();
         this.getHeight();
@@ -408,8 +465,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     {
 //移动画布，使中心显示
         Point result = transform(curPoint);
-        Moved.x = (int) (width/(2*scale)-result.x);
-        Moved.y = (int) (height/(2*scale)-result.y);
+        if (isCenter){
+            Moved.x = (int) (-result.x*scale);
+            Moved.y = (int) (-result.y*scale);
+        }
         CurPoint = curPoint;
         if (isTask) {
             endP.x = CurPoint.x;
@@ -1164,8 +1223,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             else
                 xiangxian = 3;
         }
-        hor = point.x/width;
-        ver = point.y/height;
+        hor = Math.abs(point.x/width);
+        ver = Math.abs(point.y/height);
         String name = String.format("%d-%d-%d", xiangxian,hor,ver);
         Log.e("中心BITMAP", name);
         return name;
@@ -1196,7 +1255,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         copyBuffer();
                         updateEXP(point);
                         bufferstate = 2;
-                        saveBitmap(1);
+                        //saveBitmap(1);
 
 
 
@@ -1204,6 +1263,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
+                    //
+                    saveToImg();
                     NameBack = name;
                     moveDerection(actrul);
                     updateTraceBack(point);
@@ -1229,11 +1290,13 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         copyBuffer();
                         updateEXP(point);
                         bufferstate = 1;
-                        saveBitmap(2);
+                        //saveBitmap(2);
                     }
 
                 }
                 else {
+                    //
+                    saveToImg();
                     CurName = name;
                     moveDerection(actrul);
                     updateTrace(point);
@@ -1416,7 +1479,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
                     break;
             }
-            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
             try {
                 File file = new File(fileName);
                 FileOutputStream out = new FileOutputStream(file);
@@ -1431,87 +1493,87 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @SuppressLint("WrongThread")
     public void saveTask()
     {
-        saveABLine();
-        int x = 0,y = 0;
-        Canvas canvas = new Canvas();
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setFilterBitmap(true);
 
-        for (int i=0;i<9;i++) {
-            String fileName = null;
-            switch (bufferstate)
-            {
-                case 1:
-                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
-                    break;
-                case 2:
-                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
-            }
-            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
-            canvas.setBitmap(mBitmap);
-            switch (i)
-            {
-                case 0:
-                    x=0;
-                    y=0;
-                    break;
-                case 1:
-                    x=width;
-                    y=0;
-                    break;
-                case 2:
-                    x=width*2;
-                    y=0;
-                    break;
-                case 3:
-                    x=0;
-                    y=height;
-                    break;
-                case 4:
-                    x=width;
-                    y=height;
-                    break;
-                case 5:
-                    x=width*2;
-                    y=height;
-                    break;
-                case 6:
-                    x=0;
-                    y=height*2;
-                    break;
-                case 7:
-                    x=width;
-                    y=height*2;
-                    break;
-                case 8:
-                    x=width*2;
-                    y=height*2;
-                    break;
-
-            }
-            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
-            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
-            switch (bufferstate)
-            {
-                case 1:
-                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
-                    break;
-                case 2:
-                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
-                    break;
-            }
-            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
-            try {
-                File file = new File(fileName);
-                FileOutputStream out = new FileOutputStream(file);
-                mBitmap.compress(CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-       this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+//        int x = 0,y = 0;
+//        Canvas canvas = new Canvas();
+//        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        paint.setFilterBitmap(true);
+//
+//        for (int i=0;i<9;i++) {
+//            String fileName = null;
+//            switch (bufferstate)
+//            {
+//                case 1:
+//                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
+//                    break;
+//                case 2:
+//                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
+//            }
+//            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+//            canvas.setBitmap(mBitmap);
+//            switch (i)
+//            {
+//                case 0:
+//                    x=0;
+//                    y=0;
+//                    break;
+//                case 1:
+//                    x=width;
+//                    y=0;
+//                    break;
+//                case 2:
+//                    x=width*2;
+//                    y=0;
+//                    break;
+//                case 3:
+//                    x=0;
+//                    y=height;
+//                    break;
+//                case 4:
+//                    x=width;
+//                    y=height;
+//                    break;
+//                case 5:
+//                    x=width*2;
+//                    y=height;
+//                    break;
+//                case 6:
+//                    x=0;
+//                    y=height*2;
+//                    break;
+//                case 7:
+//                    x=width;
+//                    y=height*2;
+//                    break;
+//                case 8:
+//                    x=width*2;
+//                    y=height*2;
+//                    break;
+//
+//            }
+//            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+//            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+//            switch (bufferstate)
+//            {
+//                case 1:
+//                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+//                    break;
+//                case 2:
+//                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+//                    break;
+//            }
+//            try {
+//                File file = new File(fileName);
+//                FileOutputStream out = new FileOutputStream(file);
+//                mBitmap.compress(CompressFormat.PNG, 100, out);
+//                out.flush();
+//                out.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+        saveToImg();
+        this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         this.canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
     public void copyBuffer()
@@ -1615,39 +1677,256 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         else
             ex_Point.y = (diker.y/height+1)*height;
     }
-    public void saveABLine()
+    @SuppressLint("WrongThread")
+    public void saveToImg()
     {
-        RecordInfor recordInfor = new RecordInfor();
-        recordInfor.isA = isA;
-        recordInfor.isB = isB;
-        if (isA)
-            recordInfor.pointA = pointA;
-        if (isB)
-            recordInfor.pointB = pointB;
-        recordInfor.Kuan = ChanWidth;
-        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+".json");
-        List fileList = new ArrayList();
-        try {
-            FileOutputStream outputStream =new FileOutputStream(fs);
-            OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
+        int curNum = 0;
+        int backNum = 0;
+        int x = 0,y = 0;
+        Canvas canvas = new Canvas();
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setFilterBitmap(true);
+        if (bufferstate == 1)
+        {
+            for (int i = 0 ;i<9;i++)
+            {
+                if (mapbufferFile[i].equals(CurName))
+                    curNum = i;
+                if (mapbufferFile[i].equals(NameBack))
+                    backNum = i;
+            }
 
+            String fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+CurName+".png";
 
-            fileList.add(recordInfor);
-            Gson gson = new Gson();
-            String jsonString = gson.toJson(fileList);
-            outStream.write(jsonString);
+            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (curNum)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
 
-            outputStream.flush();
-            outStream.flush();
-            outputStream.close();
-            outputStream.close();
+            }
+            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+            Rect mSrcRect = new Rect(x, y, width+x, height+y);
+            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+NameBack+".png";
+            mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (backNum)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
 
+            }
+            mSrcRect = new Rect(x, y, width+x, height+y);
+            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            for (int i = 0 ;i<9;i++)
+            {
+                if (mapbufferFileBack[i].equals(CurName))
+                    curNum = i;
+                if (mapbufferFileBack[i].equals(NameBack))
+                    backNum = i;
+            }
 
+            String fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+CurName+".png";
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (curNum)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
+
+            }
+            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+            Rect mSrcRect = new Rect(x, y, width+x, height+y);
+            canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+NameBack+".png";
+            mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (backNum)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
+
+            }
+            mSrcRect = new Rect(x, y, width+x, height+y);
+            canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

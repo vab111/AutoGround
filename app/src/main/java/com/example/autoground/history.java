@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,8 +37,7 @@ public class history extends BaseActivity  {
     private static final String TAG_SERVICE = "history";
     private List fileList;
     private ListView listView;
-    private int width;
-    private int height;
+
     private Toolbar toolbar;
     private ArrayAdapter listAdapter;
     @Override

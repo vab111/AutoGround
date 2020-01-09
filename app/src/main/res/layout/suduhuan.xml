@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="最大限制"
+        android:text="上线中心"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,136 +28,16 @@
         app:layout_constraintStart_toEndOf="@+id/textView86"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView87"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="最大误差"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView86"
-        app:layout_constraintStart_toEndOf="@+id/editText117" />
-
-    <EditText
-        android:id="@+id/editText118"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="@+id/editText117"
-        app:layout_constraintStart_toEndOf="@+id/textView87" />
-
-    <TextView
-        android:id="@+id/textView88"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="最大输出"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView87"
-        app:layout_constraintStart_toEndOf="@+id/editText118" />
-
-    <EditText
-        android:id="@+id/editText119"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="@+id/editText118"
-        app:layout_constraintStart_toEndOf="@+id/textView88" />
-
-    <TextView
-        android:id="@+id/textView89"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="死区"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView88"
-        app:layout_constraintStart_toEndOf="@+id/editText119" />
-
-    <EditText
-        android:id="@+id/editText120"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="@+id/editText119"
-        app:layout_constraintStart_toEndOf="@+id/textView89" />
-
-    <TextView
-        android:id="@+id/textView90"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="比例系数P"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/textView86"
-        app:layout_constraintTop_toBottomOf="@+id/textView86" />
-
-    <EditText
-        android:id="@+id/editText121"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editText117"
-        app:layout_constraintTop_toBottomOf="@+id/editText117" />
-
-    <TextView
-        android:id="@+id/textView91"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="积分系数I"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView90"
-        app:layout_constraintStart_toStartOf="@+id/textView87" />
-
-    <EditText
-        android:id="@+id/editText122"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="@+id/editText121"
-        app:layout_constraintStart_toStartOf="@+id/editText118" />
-
-    <TextView
-        android:id="@+id/textView92"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="微分系数D"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView91"
-        app:layout_constraintStart_toStartOf="@+id/textView88" />
-
-    <EditText
-        android:id="@+id/editText123"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="0.0"
-        app:layout_constraintBottom_toBottomOf="@+id/editText122"
-        app:layout_constraintStart_toStartOf="@+id/editText119" />
-
     <Button
         android:id="@+id/button58"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
+        android:layout_marginStart="720dp"
+        android:layout_marginTop="133dp"
         android:text="发送"
-        app:layout_constraintStart_toStartOf="@+id/textView89"
-        app:layout_constraintTop_toBottomOf="@+id/editText120" />
+        android:onClick="sdhmid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button59"

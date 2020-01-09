@@ -353,6 +353,14 @@ public class TerminalSetting extends BaseActivity {
         order[6] = (byte) ((mubiao/256)&0xff);
         order[7] = (byte) ((mubiao % 256) & 0xff);
         mService.sendCan(id,order);
+
+        order[1] = 0x06;
+        order[3] = 0x00;
+        order[4] = 0x00;
+        order[5] = (byte) (car.signal_type&0xff);
+        order[6] = 0x00;
+        order[7] = (byte) (car.signal_fre&0xff);
+        mService.sendCan(id, order);
     }
     private void getAzjz(){
         //TODO 获取历史信息

@@ -31,51 +31,53 @@ import java.util.List;
 public class CanshuJZ extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private leftDianliu zdlFragment;
-    private rightDianliu ydlFragment;
-    private zhuansuhuan zshFragment;
     private zhuanjiaohuan zjhFragment;
     private hangxianghuan hxhFragment;
     private julihuan jlhFragment;
-    private xianliuhuan xlhFragment;
     private suduhuan sdhFragment;
     private CanshuInfo canshuInfo;
     private CommunicationService mService;
     private boolean aniu = false;
-    private Button zdlBtn;
-    private Button ydlBtn;
-    private Button zshBtn;
+
     private Button zjhBtn;
     private Button hxhBtn;
     private Button jlhBtn;
-    private Button xlhBtn;
     private Button sdhBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_canshu_jz);
         toolbar = findViewById(R.id.canshubar);
-        zdlBtn= findViewById(R.id.button44);
-        ydlBtn= findViewById(R.id.button45);
-        zshBtn= findViewById(R.id.button46);
         zjhBtn= findViewById(R.id.button47);
         hxhBtn= findViewById(R.id.button48);
         jlhBtn= findViewById(R.id.button49);
-        xlhBtn= findViewById(R.id.button50);
         sdhBtn = findViewById(R.id.button51);
         setToolbar();
         getRecord();
-        initFragment2();
-        initFragment3();
-        initFragment4();
         initFragment5();
         initFragment6();
-        initFragment7();
         initFragment8();
-        initFragment1();
+        initFragment4();
         btnGray();
-        zdlBtn.setBackgroundColor(Color.GREEN);
+        zjhBtn.setBackgroundColor(Color.GREEN);
+        mService = CommunicationService.getInstance(this);
+        mService.getData(new CommunicationService.IProcessData() {
+            @Override
+            public void process(byte[] bytes, DataType dataType) {
+                Log.e("CanshuJZ", "收到数据！");
 
+                switch (dataType)
+                {
+                    case TDataCan:
+                        //we get can data
+                        //handle can data
+
+                        handleCanData(bytes);
+                        break;
+
+                }
+            }
+        });
     }
     public void onStart()
     {
@@ -95,24 +97,8 @@ public class CanshuJZ extends AppCompatActivity {
         jlhFragment.maxoutput.setText(String.valueOf(canshuInfo.jlh_max_output).toCharArray(), 0, String.valueOf(canshuInfo.jlh_max_output).length());
         jlhFragment.percentP.setText(String.valueOf(canshuInfo.jlh_biliP).toCharArray(), 0, String.valueOf(canshuInfo.jlh_biliP).length());
        // jlhFragment.dianliuWucha.setText(String.valueOf(canshuInfo.jlh_ami).toCharArray(), 0, String.valueOf(canshuInfo.jlh_ami).length());
-        mService = CommunicationService.getInstance(this);
-        mService.getData(new CommunicationService.IProcessData() {
-            @Override
-            public void process(byte[] bytes, DataType dataType) {
-                Log.e("CanTest", "收到数据！");
+        sdhFragment.maxlimit.setText(String.valueOf(canshuInfo.sdh_mid).toCharArray(), 0, String.valueOf(canshuInfo.sdh_mid).length());
 
-                switch (dataType)
-                {
-                    case TDataCan:
-                        //we get can data
-                        //handle can data
-
-                        handleCanData(bytes);
-                        break;
-
-                }
-            }
-        });
     }
     private void handleCanData(byte[] bytes) {
         byte[] id = new byte[4];
@@ -222,67 +208,7 @@ public class CanshuJZ extends AppCompatActivity {
             }
         });
     }
-    private void initFragment1(){
 
-        //开启事务，fragment的控制是由事务来实现的
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-
-
-        //第一种方式（add），初始化fragment并添加到事务中，如果为null就new一个
-
-        if(zdlFragment == null){
-
-            zdlFragment = new leftDianliu();
-            transaction.add(R.id.canshu_frame, zdlFragment);
-        }
-        hideFragment(transaction);
-        transaction.show(zdlFragment);
-        transaction.commit();
-
-    }
-
-    private void initFragment2(){
-
-        //开启事务，fragment的控制是由事务来实现的
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-
-
-        //第一种方式（add），初始化fragment并添加到事务中，如果为null就new一个
-
-        if(ydlFragment == null){
-
-            ydlFragment = new rightDianliu();
-            transaction.add(R.id.canshu_frame, ydlFragment);
-        }
-        hideFragment(transaction);
-        transaction.show(ydlFragment);
-        transaction.commit();
-
-    }
-    private void initFragment3(){
-
-        //开启事务，fragment的控制是由事务来实现的
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-
-
-        //第一种方式（add），初始化fragment并添加到事务中，如果为null就new一个
-
-        if(zshFragment == null){
-
-            zshFragment = new zhuansuhuan();
-            transaction.add(R.id.canshu_frame, zshFragment);
-        }
-        hideFragment(transaction);
-        transaction.show(zshFragment);
-        transaction.commit();
-
-    }
     private void initFragment4(){
 
         //开启事务，fragment的控制是由事务来实现的
@@ -343,26 +269,6 @@ public class CanshuJZ extends AppCompatActivity {
         transaction.commit();
 
     }
-    private void initFragment7(){
-
-        //开启事务，fragment的控制是由事务来实现的
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-
-
-        //第一种方式（add），初始化fragment并添加到事务中，如果为null就new一个
-
-        if(xlhFragment == null){
-
-            xlhFragment = new xianliuhuan();
-            transaction.add(R.id.canshu_frame, xlhFragment);
-        }
-        hideFragment(transaction);
-        transaction.show(xlhFragment);
-        transaction.commit();
-
-    }
     private void initFragment8(){
 
         //开启事务，fragment的控制是由事务来实现的
@@ -385,21 +291,6 @@ public class CanshuJZ extends AppCompatActivity {
     }
     private void hideFragment(FragmentTransaction transaction){
 
-        if(zdlFragment != null){
-
-            transaction.hide(zdlFragment);
-
-        }
-        if(ydlFragment != null){
-
-            transaction.hide(ydlFragment);
-
-        }
-        if(zshFragment != null){
-
-            transaction.hide(zshFragment);
-
-        }
         if(zjhFragment != null){
 
             transaction.hide(zjhFragment);
@@ -415,11 +306,6 @@ public class CanshuJZ extends AppCompatActivity {
             transaction.hide(jlhFragment);
 
         }
-        if(xlhFragment != null){
-
-            transaction.hide(xlhFragment);
-
-        }
         if(sdhFragment != null){
 
             transaction.hide(sdhFragment);
@@ -430,23 +316,6 @@ public class CanshuJZ extends AppCompatActivity {
 
     }
 
-    public void zdl(View view) {
-        initFragment1();
-        btnGray();
-        zdlBtn.setBackgroundColor(Color.GREEN);
-    }
-
-    public void ydl(View view) {
-        initFragment2();
-        btnGray();
-        ydlBtn.setBackgroundColor(Color.GREEN);
-    }
-
-    public void zsh(View view) {
-        initFragment3();
-        btnGray();
-        zshBtn.setBackgroundColor(Color.GREEN);
-    }
 
     public void zjh(View view) {
         initFragment4();
@@ -466,12 +335,6 @@ public class CanshuJZ extends AppCompatActivity {
         jlhBtn.setBackgroundColor(Color.GREEN);
     }
 
-    public void xlh(View view) {
-        initFragment7();
-        btnGray();
-        xlhBtn.setBackgroundColor(Color.GREEN);
-    }
-
     public void sdh(View view) {
         initFragment8();
         btnGray();
@@ -480,13 +343,9 @@ public class CanshuJZ extends AppCompatActivity {
 
     public void btnGray()
     {
-        zdlBtn.setBackgroundColor(Color.GRAY);
-        ydlBtn.setBackgroundColor(Color.GRAY);
-        zshBtn.setBackgroundColor(Color.GRAY);
         zjhBtn.setBackgroundColor(Color.GRAY);
         hxhBtn.setBackgroundColor(Color.GRAY);
         jlhBtn.setBackgroundColor(Color.GRAY);
-        xlhBtn.setBackgroundColor(Color.GRAY);
         sdhBtn .setBackgroundColor(Color.GRAY);
 
     }
@@ -579,7 +438,6 @@ public class CanshuJZ extends AppCompatActivity {
     }
 
     public void zjhTest(View view) {
-        mService = CommunicationService.getInstance(this);
         //TODO 发送车辆信息601
         byte[] id = new byte[4];
         id[0] = -64;
@@ -621,7 +479,6 @@ public class CanshuJZ extends AppCompatActivity {
     }
 
     public void hxhTest(View view) {
-        mService = CommunicationService.getInstance(this);
         //TODO 发送车辆信息601
         byte[] id = new byte[4];
         id[0] = -64;
@@ -661,7 +518,6 @@ public class CanshuJZ extends AppCompatActivity {
     }
 
     public void jlhTest(View view) {
-        mService = CommunicationService.getInstance(this);
         //TODO 发送车辆信息601
         byte[] id = new byte[4];
         id[0] = -64;
@@ -821,4 +677,23 @@ public class CanshuJZ extends AppCompatActivity {
         saveRecord();
     }
 
+    public void sdhmid(View view) {
+        float mid = Float.parseFloat(sdhFragment.maxlimit.getText().toString());
+        canshuInfo.sdh_mid = mid;
+        byte[] id = new byte[4];
+        id[0] = -64;
+        id[1] = 32;
+        id[2] = (byte) 0xfe;
+        id[3] = 0x00;
+        byte[] order = new byte[8];
+        order[0] = 0x23;
+        order[1] = 0x0a;
+        order[2] = 0x20;
+        order[3] = 0x02;
+        int num = (int) (mid*10);
+        order[4] = (byte) (num/256&0xff);
+        order[5] = (byte) (num%256&0xff);
+        mService.sendCan(id, order);
+        saveRecord();
+    }
 }

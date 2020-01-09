@@ -18,4 +18,5 @@ public class CanshuInfo {
     public float jlh_max_output = 0;
     public float jlh_biliP = 0;
     public float jlh_ami = 0;
+    public float sdh_mid = 0;
 }

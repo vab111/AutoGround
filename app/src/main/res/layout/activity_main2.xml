@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main2Activity">
+
+    <TextView
+        android:id="@+id/textView156"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="莱赛导航电动盘式拖拉机自动驾驶仪安全使用注意事项："
+        android:textAllCaps="false"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView157"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="146dp"
+        android:text="1、本系统用于拖拉机农田作业，禁止用于其他车辆或非农田作业场合。"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView158"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="2、本系统并非无人驾驶系统，驾驶员不能离开驾驶位置。"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView157" />
+
+    <TextView
+        android:id="@+id/textView159"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="3、拖拉机油门刹车仍然由驾驶员控制，行驶速度不得超过10km/h。"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView158" />
+
+    <TextView
+        android:id="@+id/textView160"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="4、紧急情况下驾驶员用力转动方向盘即可抢夺方向盘控制权。"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView159"
+        app:layout_constraintTop_toBottomOf="@+id/textView159" />
+
+    <TextView
+        android:id="@+id/textView161"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="5、拖拉机熄火后请关闭总开关以免长时间停车导致车辆电瓶耗尽。"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView160"
+        app:layout_constraintTop_toBottomOf="@+id/textView160" />
+
+    <Button
+        android:id="@+id/button44"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="329dp"
+        android:layout_marginTop="57dp"
+        android:text="不同意"
+        android:onClick="disagree"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView161" />
+
+    <Button
+        android:id="@+id/button45"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="228dp"
+        android:text="同意"
+        android:onClick="accept"
+        app:layout_constraintBottom_toBottomOf="@+id/button44"
+        app:layout_constraintStart_toEndOf="@+id/button44" />
+</androidx.constraintlayout.widget.ConstraintLayout>

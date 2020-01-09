@@ -17,7 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
 
     <TextView
         android:id="@+id/textView38"
@@ -69,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/textView39"
         app:layout_constraintStart_toEndOf="@+id/textView39" />
 
-    <EditText
+    <TextView
         android:id="@+id/editText31"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,5 +116,22 @@
         android:text="确定"
         app:layout_constraintBottom_toBottomOf="@+id/button18"
         app:layout_constraintStart_toEndOf="@+id/button18" />
+
+    <Button
+        android:id="@+id/button27"
+        android:layout_width="87dp"
+        android:layout_height="38dp"
+        android:text="选择"
+        app:layout_constraintStart_toEndOf="@+id/editText31"
+        app:layout_constraintTop_toTopOf="@+id/editText31" />
+
+    <TextView
+        android:id="@+id/textView155"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="cm"
+        app:layout_constraintBottom_toBottomOf="@+id/textView41"
+        app:layout_constraintStart_toEndOf="@+id/editText32" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
