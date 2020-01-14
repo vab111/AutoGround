@@ -34,7 +34,7 @@ import java.util.List;
 
 public class NJNJsetting extends BaseActivity {
     private clFragment clszFragment;
-    private njFragment njszFragment;
+    private Farmingtool farmFragment;
     private txFragment txszFragment;
     private Toolbar toolbar;
     private CarInfor car;
@@ -72,17 +72,6 @@ public class NJNJsetting extends BaseActivity {
         clszFragment.pinpai.setText(car.brand);
         clszFragment.chegao.setText(String.format("%d", car.height));
         clszFragment.chepai.setText(car.lisence);
-        njszFragment.pinpai.setText(car.NJBrand);
-        njszFragment.leixing.setText(car.NJType);
-        njszFragment.xinghao.setText(car.NJXinhao);
-        njszFragment.nianfen.setText(car.NJyear);
-        njszFragment.width.setText(String.format("%d", car.NJWidth));
-        njszFragment.back.setText(String.format("%d",car.NJBackdis));
-        njszFragment.pianyi.setText(String.format("%d", car.pianyi));
-        if (car.leftright)
-            njszFragment.leftSelected();
-        else
-            njszFragment.rightSelected();
         txszFragment.toMid.setText(String.format("%d", car.TXMiddis));
         txszFragment.toBack.setText(String.format("%d", car.TXBackdis));
         txszFragment.toGround.setText(String.format("%d", car.TXHeight));
@@ -180,11 +169,11 @@ public class NJNJsetting extends BaseActivity {
 
 
 
-            if(njszFragment == null){
+            if(farmFragment == null){
 
-                njszFragment = new njFragment();
+                farmFragment = new Farmingtool();
 
-                transaction.add(R.id.njsetting_frame,njszFragment);
+                transaction.add(R.id.njsetting_frame,farmFragment);
 
 
 
@@ -192,7 +181,7 @@ public class NJNJsetting extends BaseActivity {
 
             hideFragment(transaction);
 
-            transaction.show(njszFragment);
+            transaction.show(farmFragment);
 
 
 
@@ -261,9 +250,9 @@ public class NJNJsetting extends BaseActivity {
 
             }
 
-            if(njszFragment != null){
+            if(farmFragment != null){
 
-                transaction.hide(njszFragment);
+                transaction.hide(farmFragment);
 
             }
 
@@ -293,13 +282,6 @@ public class NJNJsetting extends BaseActivity {
         txszBtn.setBackgroundColor(Color.GREEN);
     }
 
-    public void leftSelected(View view) {
-        njszFragment.leftSelected();
-    }
-
-    public void rightSelected(View view) {
-        njszFragment.rightSelected();
-    }
     private void getRecord(){
         //TODO 获取历史信息
 
@@ -371,17 +353,7 @@ public class NJNJsetting extends BaseActivity {
         car.Backwheel = Integer.parseInt(clszFragment.back.getText().toString());
         car.Zhou = Integer.parseInt(clszFragment.zhouju.getText().toString());
         car.height = Integer.parseInt(clszFragment.chegao.getText().toString());
-        car.NJType = njszFragment.leixing.getText().toString();
-        car.NJBrand = njszFragment.pinpai.getText().toString();
-        car.NJXinhao = njszFragment.xinghao.getText().toString();
-        car.NJyear = njszFragment.nianfen.getText().toString();
-        car.NJWidth = Integer.parseInt(njszFragment.width.getText().toString());
-        car.NJBackdis= Integer.parseInt(njszFragment.back.getText().toString());
-        car.pianyi= Integer.parseInt(njszFragment.pianyi.getText().toString());
-        if (njszFragment.leftBtn.isChecked())
-            car.leftright = true;
-        else
-            car.leftright = false;
+
         car.TXHeight = Integer.parseInt(txszFragment.toGround.getText().toString());
         car.TXBackdis = Integer.parseInt(txszFragment.toBack.getText().toString());
         car.TXMiddis = Integer.parseInt(txszFragment.toMid.getText().toString());;
@@ -415,8 +387,7 @@ public class NJNJsetting extends BaseActivity {
             sendCarInfor();
 
     }
-    public void sendCarInfor()
-    {
+    public void sendCarInfor(){
         //TODO 添加下位机同步车辆信息
         byte[] id = new byte[4];
         id[0] = -64;

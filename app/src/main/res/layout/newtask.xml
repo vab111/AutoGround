@@ -85,18 +85,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="63dp"
-        android:text="农具宽度"
+        android:text="选择可用的AB线"
         app:layout_constraintStart_toStartOf="@+id/textView40"
         app:layout_constraintTop_toBottomOf="@+id/textView40" />
 
-    <EditText
+    <TextView
         android:id="@+id/editText32"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
         android:ems="10"
         android:inputType="number|textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/textView41"
-        app:layout_constraintStart_toStartOf="@+id/editText31" />
+        app:layout_constraintBottom_toBottomOf="@+id/editText31"
+        app:layout_constraintStart_toEndOf="@+id/button27" />
 
     <Button
         android:id="@+id/button18"
@@ -130,8 +130,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
         android:text="cm"
-        app:layout_constraintBottom_toBottomOf="@+id/textView41"
+        app:layout_constraintBottom_toBottomOf="@+id/editText31"
+        app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/editText32" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="71dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView41"
+        app:layout_constraintEnd_toStartOf="@+id/button3"
+        app:layout_constraintStart_toEndOf="@+id/textView41" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="88dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="24dp"
+        android:text="选择"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/button27"
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

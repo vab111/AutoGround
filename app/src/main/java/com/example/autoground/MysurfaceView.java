@@ -233,7 +233,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 break;
 
             case MotionEvent.ACTION_POINTER_DOWN:
-                if(motionEvent.getPointerCount() == 2) {
+                if(motionEvent.getPointerCount() >1 ) {
                     float downX1 = motionEvent.getX(0);
                     float downX2 = motionEvent.getX(1);
                     float downY1 = motionEvent.getY(0);
@@ -251,7 +251,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if(motionEvent.getPointerCount()==2&&isScaling) { //双指缩放图片
+                if(motionEvent.getPointerCount()>1&&isScaling) { //双指缩放图片
 
                     float moveX1 = motionEvent.getX(0);
                     float moveX2 = motionEvent.getX(1);
@@ -268,7 +268,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     zoomscale = (float) ((float) moveDistance / beginDistance);
                     beginDistance = moveDistance;
                     //控制缩放的最大、最小倍数
-                    if (scale*zoomscale>5 ||scale*zoomscale<2)
+                    if (scale*zoomscale>5 ||scale*zoomscale<1)
                         zoomscale = 1.0f;
                     else {
 
@@ -479,16 +479,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
         return resizedBitmap;
     }
-    public void setA(Point pointcur)
-    {
+    public void setA(Point pointcur)    {
 
             isA = true;
             pointA.x = pointcur.x;
             pointA.y = pointcur.y;
 
     }
-    public void setB(Point pointcur)
-    {
+    public void setB(Point pointcur)    {
         isB = true;
 
         pointB.x = pointcur.x;
@@ -503,8 +501,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
 
     }
-    public void setTaskOn()
-    {
+    public void setTaskOn()    {
         if (isTask)
         {
             isTask = false;
@@ -530,8 +527,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public void updateTrace(Point point)
-    {
+    public void updateTrace(Point point)    {
         //TODO 装载缓存图片
         int xiangxian;
 
@@ -802,8 +798,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
     }
-    public void updateTraceBack(Point point)
-    {
+    public void updateTraceBack(Point point)    {
         //TODO 装载缓存图片
         int xiangxian;
 
@@ -1074,8 +1069,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
     }
-    public void loadBuffer()
-    {
+    public void loadBuffer()    {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         int x = 0,y = 0;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -1132,8 +1126,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
     }
-    public void loadBufferBack()
-    {
+    public void loadBufferBack()    {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         int x = 0,y = 0;
         canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -1216,8 +1209,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         return name;
     }
 
-    public void ScreenCaculate(Point point)
-    {
+    public void ScreenCaculate(Point point)    {
         Point actrul = new Point();
         actrul.x = -point.y;
         actrul.y = -point.x;
@@ -1347,8 +1339,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
 
     }
-    public void drawTrace(Canvas canvas)
-    {
+    public void drawTrace(Canvas canvas)    {
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -1377,8 +1368,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @SuppressLint("WrongThread")
-    public void saveBitmap(int state)
-    {
+    public void saveBitmap(int state)    {
 
         int x = 0,y = 0;
         Canvas canvas = new Canvas();
@@ -1480,8 +1470,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
     @SuppressLint("WrongThread")
-    public void saveTask()
-    {
+    public void saveTask()    {
 
 //        int x = 0,y = 0;
 //        Canvas canvas = new Canvas();
@@ -1565,8 +1554,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         this.canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
-    public void copyBuffer()
-    {
+    public void copyBuffer()    {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
@@ -1649,13 +1637,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
 
     }
-    public void moveDerection(Point point)
-    {
+    public void moveDerection(Point point)    {
 
         moveDerection = (point.x-ex_Point.x)/width+(ex_Point.y-point.y)/height*3;
     }
-    public void updateEXP(Point point)
-    {
+    public void updateEXP(Point point){
         Point diker = new Point(-point.y,-point.x);
         if (diker.x>0)
             ex_Point.x = (diker.x/width-1)*width;
@@ -1667,8 +1653,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             ex_Point.y = (diker.y/height+1)*height;
     }
     @SuppressLint("WrongThread")
-    public void saveToImg()
-    {
+    public void saveToImg(){
         int curNum = 0;
         int backNum = 0;
         int x = 0,y = 0;

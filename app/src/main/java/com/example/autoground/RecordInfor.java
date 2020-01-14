@@ -10,4 +10,6 @@ public class RecordInfor {
     public String type = "播种";
     public boolean isA;
     public boolean isB;
+    public double square = 0;
+    public double distance = 0;
 }
