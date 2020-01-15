@@ -310,7 +310,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Point cur = transform(CurPoint);
         if ((ap.x-bp.x)*(ap.x-bp.x)>(ap.y-bp.y)*(ap.y-bp.y))
         {
-            int y = (int) (ap.y+ap.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu)+Moved.y+Moved.x*Math.cos(jiaodu));
+            int y = (int) (ap.y+ap.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu)+Moved.y+Moved.x*Math.tan(jiaodu));
             paint.setColor(Color.RED);
             paint.setStrokeWidth(0.5f/scale);
             //TODO y方向做等分

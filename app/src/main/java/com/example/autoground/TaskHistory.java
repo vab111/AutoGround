@@ -20,6 +20,7 @@ public class TaskHistory extends BaseActivity{
         surfaceView.taskname = getIntent().getStringExtra("filename");
         toolbar = findViewById(R.id.taskhistoryBar);
         setToolbar();
+        surfaceView.refresh = true;
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -31,6 +32,7 @@ public class TaskHistory extends BaseActivity{
             @Override
             public void onClick(View v) {
                 // finish();
+                surfaceView.refresh = false;
 
                 finish();
             }

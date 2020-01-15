@@ -192,7 +192,7 @@ public class SystemSetting extends BaseActivity {
                 }.getType());
             }
 
-        for (int j=1;j<fileList.size();j++) {
+        for (int j=1;j<fileList.size();) {
             recorder item = (recorder) fileList.get(j);
             appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname);
             if (appDir.exists()) {

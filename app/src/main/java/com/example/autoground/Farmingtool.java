@@ -25,6 +25,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 public class Farmingtool extends Fragment {
     public GridView item_pick;
     private List Avatarlist;
@@ -81,13 +83,10 @@ public class Farmingtool extends Fragment {
         item_pick.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (id<Avatarlist.size()) {
-                    FarmTool avatar = (FarmTool) Avatarlist.get(position);
-                }
+
                 Intent intent = new Intent(Farmingtool.this.getActivity(), FarmtoolDetail.class);
-//                intent.putExtra("Avatar", Avatarlist.get(position));
-//                intent.putExtra("file_name", Avatarlist.get(position).getDetailFileName());
-                startActivity(intent);
+                intent.putExtra("farmtoolid", String.format("%d", id));
+                startActivityForResult(intent,RESULT_CANCELED);
             }
         });
         return view;
@@ -119,5 +118,9 @@ public class Farmingtool extends Fragment {
 
 
     }
-
+    public void update()
+    {
+        initdata();
+        avatarAdapter.notifyDataSetChanged();
+    }
 }

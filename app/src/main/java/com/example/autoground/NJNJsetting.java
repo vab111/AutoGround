@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -414,23 +415,7 @@ public class NJNJsetting extends BaseActivity {
         order[7] = (byte) ((car.height%256)&0xff);
         mService.sendCan(id,order);
 
-        order[1] = 0x01;
-        order[3] = 0x00;
-        order[4] = (byte) ((car.NJWidth/256)&0xff);
-        order[5] = (byte) ((car.NJWidth%256)&0xff);
-        order[6] = (byte) ((car.NJBackdis/256)&0xff);
-        order[7] = (byte) ((car.NJBackdis%256)&0xff);
-        mService.sendCan(id,order);
 
-        order[3] = 0x01;
-        order[4] = (byte) ((car.pianyi/256)&0xff);
-        order[5] = (byte) ((car.pianyi%256)&0xff);
-        order[6] = 0x00;
-        if (car.leftright)
-            order[7] = 0x00;
-        else
-            order[7] = 0x01;
-        mService.sendCan(id,order);
 
         order[1] = 0x02;
         order[3] = 0x00;
@@ -447,6 +432,11 @@ public class NJNJsetting extends BaseActivity {
         order[7] = 0x00;
         mService.sendCan(id,order);
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        farmFragment.update();
     }
 }
 

@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/textView8"
         app:layout_constraintStart_toEndOf="@+id/textView8" />
 
@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/editText44"
         app:layout_constraintStart_toEndOf="@+id/textView162" />
 
@@ -144,7 +144,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/textView163"
         app:layout_constraintStart_toEndOf="@+id/textView163" />
 
@@ -172,8 +172,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="91dp"
         android:text="保存"
+        android:onClick="save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioButton12" />
+
+    <TextView
+        android:id="@+id/textView164"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:text="cm"
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+        app:layout_constraintStart_toEndOf="@+id/editText44" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,14 +9,6 @@ public class CarInfor {
     public int Backwheel;
     public int Zhou;
     public int height;
-    public String NJType = "平地铲";
-    public String NJBrand = "西风";
-    public String NJXinhao = "DF-5B";
-    public String NJyear = "2019";
-    public int NJWidth;
-    public int NJBackdis;
-    public int pianyi;
-    public boolean leftright;//左true右right
     public int TXHeight;
     public int TXBackdis;
     public int TXMiddis;

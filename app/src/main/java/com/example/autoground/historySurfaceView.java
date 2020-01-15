@@ -41,6 +41,7 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private int width=1024;
     private int height=552;
     private RecordInfor recordInfor;
+    public boolean refresh = true;
 
     public historySurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -76,7 +77,7 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
         Canvas canvas;
         long t = 0 ;
 
-        while(true){
+        while(refresh){
             canvas = this.getHolder().lockCanvas();
             if (canvas == null)
                 return;
@@ -85,8 +86,10 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
             drawBg(canvas,width,height);
             loadBitmap(canvas);
-            drawA(canvas);
-            drawB(canvas);
+            if (recordInfor.isA)
+                drawA(canvas);
+            if (recordInfor.isB)
+                drawB(canvas);
             this.getHolder().unlockCanvasAndPost(canvas);
             try {
                 Thread.sleep(Math.max(0, 50-(System.currentTimeMillis()-t)));
@@ -225,138 +228,138 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setFilterBitmap(true);
         File appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + taskname);
-        int centx = -Moved.x+width/2;
-        int centy = Moved.y-height/2;
-        List<String> sdf = new ArrayList();
-        sdf.add(caculateFileName(new Point(centx,centy)));
-        if (centx<0)
-        {
-            if (Math.abs(centx%width)<width/2)
-            {
-                sdf.add(caculateFileName(new Point(centx+width,centy)));
-                if (centy<0)
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
-                    }
-                }
-                else
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
-                    }
-                }
-
-            }
-            else
-            {
-                sdf.add(caculateFileName(new Point(centx-width,centy)));
-                if (centy<0)
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
-                    }
-                }
-                else
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (Math.abs(centx%width)<width/2)
-            {
-                sdf.add(caculateFileName(new Point(centx-width,centy)));
-                if (centy<0)
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
-                    }
-                }
-                else
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
-                    }
-                }
-            }
-            else
-            {
-                sdf.add(caculateFileName(new Point(centx+width,centy)));
-                if (centy<0)
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
-                    }
-                }
-                else
-                {
-                    if (Math.abs(centy%height)<height/2)
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy-height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
-                    }
-                    else
-                    {
-                        sdf.add(caculateFileName(new Point(centx,centy+height)));
-                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
-                    }
-                }
-            }
-
-        }
+//        int centx = -Moved.x+width/2;
+//        int centy = Moved.y-height/2;
+//        List<String> sdf = new ArrayList();
+//        sdf.add(caculateFileName(new Point(centx,centy)));
+//        if (centx<0)
+//        {
+//            if (Math.abs(centx%width)<width/2)
+//            {
+//                sdf.add(caculateFileName(new Point(centx+width,centy)));
+//                if (centy<0)
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+//                    }
+//                }
+//                else
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+//                    }
+//                }
+//
+//            }
+//            else
+//            {
+//                sdf.add(caculateFileName(new Point(centx-width,centy)));
+//                if (centy<0)
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+//                    }
+//                }
+//                else
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+//                    }
+//                }
+//            }
+//        }
+//        else
+//        {
+//            if (Math.abs(centx%width)<width/2)
+//            {
+//                sdf.add(caculateFileName(new Point(centx-width,centy)));
+//                if (centy<0)
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+//                    }
+//                }
+//                else
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy-height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx-width,centy+height)));
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                sdf.add(caculateFileName(new Point(centx+width,centy)));
+//                if (centy<0)
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+//                    }
+//                }
+//                else
+//                {
+//                    if (Math.abs(centy%height)<height/2)
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy-height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy-height)));
+//                    }
+//                    else
+//                    {
+//                        sdf.add(caculateFileName(new Point(centx,centy+height)));
+//                        sdf.add(caculateFileName(new Point(centx+width,centy+height)));
+//                    }
+//                }
+//            }
+//
+//        }
 
         if (appDir.exists()) {
             File[] files = appDir.listFiles();
@@ -365,19 +368,17 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
             Rect mSrcRect ;//第一个Rect 代表要绘制的bitmap 区域
             Rect mDestRect ;//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
             boolean flag = true;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < files.length; i++) {
                 // 删除子文件
-                File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/"+taskname+"/"+sdf.get(i)+".png");
-                if (fs.isFile()) {
+
+                if (files[i].isFile()) {
                     //TODO 获取bitmap加载到canvas
-                    String item = fs.getName();
-                    int dot = item.lastIndexOf('.');
-                    String mapname = item.substring(0, dot);
-                    String[] strArr = mapname.split("-");
+                    String item = files[i].getName();
+                    String[] strArr = item.split("-");
                     int xiangxian = Integer.parseInt(strArr[0]);
                     int hor = Integer.parseInt(strArr[1]);
                     int ver = Integer.parseInt(strArr[2]);
-                    Bitmap bitmap = BitmapFactory.decodeFile(fs.getAbsolutePath());
+                    Bitmap bitmap = BitmapFactory.decodeFile(files[i].getAbsolutePath());
                     switch (xiangxian)
                     {
                         case 1:
