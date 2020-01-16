@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="146dp"
+        android:layout_marginTop="132dp"
         android:text="1、本系统用于拖拉机农田作业，禁止用于其他车辆或非农田作业场合。"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,4 +93,16 @@
         android:onClick="accept"
         app:layout_constraintBottom_toBottomOf="@+id/button44"
         app:layout_constraintStart_toEndOf="@+id/button44" />
+
+    <TextView
+        android:id="@+id/textView166"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="作为此自动驾驶系统的操作人员，您按下了下面的“同意”按钮，您将负责其安全操作，您可以确认此自动驾驶系统是如何工作的，并对您的安全操作承担全部责任。"
+        android:textColor="#F44336"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView161"
+        app:layout_constraintTop_toBottomOf="@+id/textView161" />
 </androidx.constraintlayout.widget.ConstraintLayout>
