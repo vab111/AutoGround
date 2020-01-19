@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.security.cert.PolicyNode;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.jar.Attributes;
 
@@ -46,7 +47,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private double beginDistance;
     public float scale = 2.0f;
     private float zoomscale = 1.0f;
-    private float mapDerection = 0.0f;//地图本身方向角，正北为0，顺时针增长
+    private float mapDerection = 180.0f;//地图本身方向角，正北为0，顺时针增长
     private float pushDerection = 0.0f;
     private boolean ismoving=false;
     private int width=1024;
@@ -56,7 +57,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public Point pointA = new Point(0,0);
     public Point pointB = new Point(0,0);
     public Point CurPoint = new Point(0,0);
-    private float carDerection=45.0f;
+    private float carDerection=0.0f;
     public int ChanWidth = 30;
     public int ABpiancha = 0;
     public boolean isTask = false;
@@ -74,7 +75,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private String CurName;
     private String NameBack;
     public int bufferstate;
-    private Point ex_Point=new Point(0,0);
+    private Point ex_Point=new Point(0,0);//笛卡尔坐标系，当前缓存左上角坐标点位置
     private int moveDerection;
     private Point traceleft = new Point(0,0);
     private Point traceright = new Point(0,0);
@@ -113,8 +114,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void run() {
-        float distance = (float) (Math.sqrt(width*width+height*height))/4;
-        float angel = (float) Math.toDegrees( Math.atan2(height, width));
 
         long t = 0 ;
         Canvas canvas;
@@ -205,8 +204,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
                     //TODO 添加平移操作
                     if (ismoving) {
-                        Moved.x = (int) (Moved.x + (motionEvent.getX() - moveOrigin.x) *Math.cos(Math.toRadians(mapDerection))+(motionEvent.getY() - moveOrigin.y) *Math.sin(Math.toRadians(mapDerection)));
-                        Moved.y = (int) (Moved.y + (motionEvent.getY() - moveOrigin.y) *Math.cos(Math.toRadians(mapDerection))-(motionEvent.getX() - moveOrigin.x) *Math.sin(Math.toRadians(mapDerection)));
+                        Moved.x = (int) (Moved.x + ((int)motionEvent.getX() - moveOrigin.x) *Math.cos(Math.toRadians(mapDerection))+((int)motionEvent.getY() - moveOrigin.y) *Math.sin(Math.toRadians(mapDerection)));
+                        Moved.y = (int) (Moved.y + ((int)motionEvent.getY() - moveOrigin.y) *Math.cos(Math.toRadians(mapDerection))-((int)motionEvent.getX() - moveOrigin.x) *Math.sin(Math.toRadians(mapDerection)));
                         moveOrigin.x = (int) motionEvent.getX();
                         moveOrigin.y = (int) motionEvent.getY();
 
@@ -296,58 +295,136 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
-        Point ap = transform(pointA);
-        Point bp = transform(pointB);
+        Point ap = new Point(CurPoint.y-pointA.y+Moved.x,pointA.x-CurPoint.x+Moved.y);
+        Point bp = new Point(CurPoint.y-pointB.y+Moved.x,pointB.x-CurPoint.x+Moved.y);
 
-        double jiaodu = Math.atan2(ap.y-bp.y, bp.x-ap.x);
+        double jiaodu = 0.0f;
+        if ((ap.y-bp.y)*(bp.x-ap.x)<0)
+            jiaodu = Math.atan2(ap.y-bp.y, bp.x-ap.x);
+        else
+            jiaodu =Math.atan2(bp.y-ap.y, bp.x-ap.x);
 
+        //Log.e("AB线角度", String.format("%fCUR点：%d,%d", jiaodu,ap.y-bp.y,bp.x-ap.x));
 
-
-
-
-        Log.e("ABLine-角度", String.valueOf(jiaodu));
-
-        Point cur = transform(CurPoint);
         if ((ap.x-bp.x)*(ap.x-bp.x)>(ap.y-bp.y)*(ap.y-bp.y))
         {
-            int y = (int) (ap.y+ap.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu)+Moved.y+Moved.x*Math.tan(jiaodu));
+            int y = 0;//AB线与y轴的交点
+            int cury = 0;//当前位置在AB线方向上与Y轴的焦点
             paint.setColor(Color.RED);
             paint.setStrokeWidth(0.5f/scale);
             //TODO y方向做等分
-            int jianju = (int) Math.abs(ChanWidth/Math.cos(jiaodu));
-            int cury = (int) (cur.y+cur.x*Math.tan(jiaodu)+Moved.y+Moved.x*Math.cos(jianju));
-            for (int j=y-jianju*10;j<y+jianju*10;j+=jianju) {
-                if (Math.abs(cury-j)<=jianju/2)
-                {
-                    paint.setColor(Color.GRAY);
-                    Path curPath = new Path();
-                    curPath.moveTo(-width/2, (float) (j-Math.sin(jiaodu)*width/2-jianju/2));
-                    curPath.lineTo(-width/2, (float) (j-Math.sin(jiaodu)*width/2+jianju/2));
-                    curPath.lineTo(width/2,(float) (j+Math.sin(jiaodu)*width/2+jianju/2));
-                    curPath.lineTo(width/2, (float) (j+Math.sin(jiaodu)*width/2 -jianju/2));
-                    curPath.close();
-                    canvas.drawPath(curPath, paint);
+            float jianju = (float) Math.abs(ChanWidth/Math.cos(jiaodu));//AB线在Y轴上的间隔距离
+            if ((ap.y-bp.y)*(bp.x-ap.x)<0){
+                y = (int) (bp.y+bp.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu));
+                cury = (int) (Moved.y+Moved.x*Math.tan(jiaodu));
+                for (int j=y;j<width;j+=jianju) {
+                    if (Math.abs(cury-j)<=jianju/2)
+                    {
+                        paint.setColor(Color.GRAY);
+                        Path curPath = new Path();
+                        curPath.moveTo(-width/2, (float) (j+Math.tan(jiaodu)*width/2-jianju/2));
+                        curPath.lineTo(-width/2, (float) (j+Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2,(float) (j-Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2, (float) (j-Math.tan(jiaodu)*width/2 -jianju/2));
+                        curPath.close();
+                        canvas.drawPath(curPath, paint);
 
-                    paint.setColor(Color.RED);
-                    paint.setStrokeWidth(1.0f/scale);
-                    canvas.drawLine(-width/2, (float) (j-Math.sin(jiaodu)*width/2), width/2, (float) (j+Math.sin(jiaodu)*width/2), paint);
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(1.0f/scale);
+                        canvas.drawLine(-width/2, (float) (j+Math.tan(jiaodu)*width/2), width/2, (float) (j-Math.tan(jiaodu)*width/2), paint);
+                    }
+                    else {
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(0.5f / scale);
+                        canvas.drawLine(-width/2, (float) (j+Math.tan(jiaodu)*width/2), width/2, (float) (float) (j-Math.tan(jiaodu)*width/2), paint);
+                    }
                 }
-                else {
-                    paint.setColor(Color.RED);
-                    paint.setStrokeWidth(0.5f / scale);
-                    canvas.drawLine(-width/2, (float) (j-Math.sin(jiaodu)*width/2), width/2, (float) (float) (j+Math.sin(jiaodu)*width/2), paint);
+                for (int j = (int) (y-jianju); j>-width; j-=jianju) {
+                    if (Math.abs(cury-j)<=jianju/2)
+                    {
+                        paint.setColor(Color.GRAY);
+                        Path curPath = new Path();
+                        curPath.moveTo(-width/2, (float) (j+Math.tan(jiaodu)*width/2-jianju/2));
+                        curPath.lineTo(-width/2, (float) (j+Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2,(float) (j-Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2, (float) (j-Math.tan(jiaodu)*width/2 -jianju/2));
+                        curPath.close();
+                        canvas.drawPath(curPath, paint);
+
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(1.0f/scale);
+                        canvas.drawLine(-width/2, (float) (j+Math.tan(jiaodu)*width/2), width/2, (float) (j-Math.tan(jiaodu)*width/2), paint);
+                    }
+                    else {
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(0.5f / scale);
+                        canvas.drawLine(-width/2, (float) (j+Math.tan(jiaodu)*width/2), width/2, (float) (float) (j-Math.tan(jiaodu)*width/2), paint);
+                    }
                 }
             }
+            else{
+                y = (int) (bp.y-bp.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu));
+                cury = (int) (Moved.y-Moved.x*Math.tan(jiaodu));
+                for (int j=y;j<width;j+=jianju) {
+                    if (Math.abs(cury-j)<=jianju/2)
+                    {
+                        paint.setColor(Color.GRAY);
+                        Path curPath = new Path();
+                        curPath.moveTo(-width/2, (float) (j-Math.tan(jiaodu)*width/2-jianju/2));
+                        curPath.lineTo(-width/2, (float) (j-Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2,(float) (j+Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2, (float) (j+Math.tan(jiaodu)*width/2 -jianju/2));
+                        curPath.close();
+                        canvas.drawPath(curPath, paint);
+
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(1.0f/scale);
+                        canvas.drawLine(-width/2, (float) (j-Math.tan(jiaodu)*width/2), width/2, (float) (j+Math.tan(jiaodu)*width/2), paint);
+                    }
+                    else {
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(0.5f / scale);
+                        canvas.drawLine(-width/2, (float) (j-Math.tan(jiaodu)*width/2), width/2, (float) (float) (j+Math.tan(jiaodu)*width/2), paint);
+                    }
+                }
+                for (int j = (int) (y-jianju); j>-width; j-=jianju) {
+                    if (Math.abs(cury-j)<=jianju/2)
+                    {
+                        paint.setColor(Color.GRAY);
+                        Path curPath = new Path();
+                        curPath.moveTo(-width/2, (float) (j-Math.tan(jiaodu)*width/2-jianju/2));
+                        curPath.lineTo(-width/2, (float) (j-Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2,(float) (j+Math.tan(jiaodu)*width/2+jianju/2));
+                        curPath.lineTo(width/2, (float) (j+Math.tan(jiaodu)*width/2 -jianju/2));
+                        curPath.close();
+                        canvas.drawPath(curPath, paint);
+
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(1.0f/scale);
+                        canvas.drawLine(-width/2, (float) (j-Math.tan(jiaodu)*width/2), width/2, (float) (j+Math.tan(jiaodu)*width/2), paint);
+                    }
+                    else {
+                        paint.setColor(Color.RED);
+                        paint.setStrokeWidth(0.5f / scale);
+                        canvas.drawLine(-width/2, (float) (j-Math.tan(jiaodu)*width/2), width/2, (float) (float) (j+Math.tan(jiaodu)*width/2), paint);
+                    }
+                }
+            }
+
         }
         else
         {
+            jiaodu =Math.atan2(bp.y-ap.y, bp.x-ap.x);
             paint.setStrokeWidth(0.5f/scale);
-            int x = (int) (bp.x+bp.y/Math.tan(jiaodu)-ABpiancha/Math.sin(jiaodu)+Moved.y/Math.tan(jiaodu)+Moved.x);
-            int cury = (int) (cur.x-cur.y/Math.tan(jiaodu)-Moved.x);
-            //TODO x方向做等分
-            int jianju = (int) Math.abs(ChanWidth/Math.sin(jiaodu));
 
-                    for (int j = x-jianju*10; j <x+jianju*10; j += jianju) {
+
+            int x = (int) (bp.x-bp.y/Math.tan(jiaodu)-ABpiancha/Math.sin(jiaodu));
+            int cury = (int) (Moved.x-Moved.y/Math.tan(jiaodu));
+
+
+            //TODO x方向做等分
+            float jianju = (float) Math.abs(ChanWidth/Math.sin(jiaodu));
+            for (int j = x; j <width; j += jianju) {
                         if (Math.abs(cury - j) <= jianju/2) {
                             paint.setColor(Color.GRAY);
                             Path curPath = new Path();
@@ -367,7 +444,26 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             canvas.drawLine((float) (j- width/(2*Math.tan(jiaodu))), -width/2, (float) (j + width/(2*Math.tan(jiaodu))), width/2, paint);
                         }
                     }
+            for (int j = (int) (x-jianju); j >-width; j -= jianju) {
+                if (Math.abs(cury - j) <= jianju/2) {
+                    paint.setColor(Color.GRAY);
+                    Path curPath = new Path();
+                    curPath.moveTo((float) (j- width/(2*Math.tan(jiaodu)) - jianju / 2), -width/2);
+                    curPath.lineTo((float) (j- width/(2*Math.tan(jiaodu)) + jianju / 2), -width/2);
+                    curPath.lineTo((float) (j + width/(2*Math.tan(jiaodu))) + jianju / 2, width/2);
+                    curPath.lineTo((float) (j + width/(2*Math.tan(jiaodu))) - jianju / 2, width/2);
+                    curPath.close();
+                    canvas.drawPath(curPath, paint);
 
+                    paint.setColor(Color.RED);
+                    paint.setStrokeWidth(1.0f/scale);
+                    canvas.drawLine((float) (j- width/(2*Math.tan(jiaodu))), -width/2, (float) (j+ width/(2*Math.tan(jiaodu))), width/2, paint);
+                } else {
+                    paint.setColor(Color.RED);
+                    paint.setStrokeWidth(0.5f/scale);
+                    canvas.drawLine((float) (j- width/(2*Math.tan(jiaodu))), -width/2, (float) (j + width/(2*Math.tan(jiaodu))), width/2, paint);
+                }
+            }
 
 
         }
@@ -386,7 +482,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) carDerection-90, bmp);
+        bmp = rotaingImageView((int) (carDerection-90+mapDerection), bmp);
         Matrix matrix = new Matrix();		// 缩放原图
         matrix.postScale(0.8f, 0.8f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
         Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
@@ -523,7 +619,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             traceleft.x = (int) (start.x-Math.sin(jiaodu)*ChanWidth/2);
             traceleft.y = (int) (start.y-Math.cos(jiaodu)*ChanWidth/2);
             traceright.x = (int) (start.x+Math.sin(jiaodu)*ChanWidth/2);
-            traceright.y = (int) (start.y+Math.sin(jiaodu)*ChanWidth/2);
+            traceright.y = (int) (start.y+Math.cos(jiaodu)*ChanWidth/2);
         }
     }
 
@@ -1316,8 +1412,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         Log.e("路径角度", String.format("%f",jiaodu));
         Path curPath = new Path();
-        curPath.moveTo(traceleft.x,traceleft.y);
-        curPath.lineTo(traceright.x,traceright.y);
+        curPath.moveTo(traceright.x,traceright.y);
+        curPath.lineTo(traceleft.x,traceleft.y);
         curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
         curPath.close();
@@ -1348,9 +1444,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, width*3, height*3);//第一个Rect 代表要绘制的bitmap 区域
         Point location = new Point();
-        Point result = transform(CurPoint);
-        location.x = ex_Point.x - CurPoint.x+Moved.x;
-        location.y = -ex_Point.y-CurPoint.y + Moved.y;
+        location.x = ex_Point.x + CurPoint.y+Moved.x;
+        location.y = -ex_Point.y-CurPoint.x+Moved.y;
+
+        Log.e("轨迹:", String.format("%d,%dCUR点：%d,%d", ex_Point.x,ex_Point.y,CurPoint.x,CurPoint.y));
         Rect mDestRect = new Rect(location.x, location.y,location.x+width*3, location.y+height*3);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
         switch (bufferstate)
         {
@@ -1726,59 +1823,60 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+NameBack+".png";
-            mBitmap = createBitmap(width,height, Config.ARGB_8888);
-            canvas.setBitmap(mBitmap);
-            switch (backNum)
-            {
-                case 0:
-                    x=0;
-                    y=0;
-                    break;
-                case 1:
-                    x=width;
-                    y=0;
-                    break;
-                case 2:
-                    x=width*2;
-                    y=0;
-                    break;
-                case 3:
-                    x=0;
-                    y=height;
-                    break;
-                case 4:
-                    x=width;
-                    y=height;
-                    break;
-                case 5:
-                    x=width*2;
-                    y=height;
-                    break;
-                case 6:
-                    x=0;
-                    y=height*2;
-                    break;
-                case 7:
-                    x=width;
-                    y=height*2;
-                    break;
-                case 8:
-                    x=width*2;
-                    y=height*2;
-                    break;
+            if (NameBack!=null) {
+                fileName = Environment.getExternalStorageDirectory() + "/AutoGround/" + CurrentTask + "/" + NameBack + ".png";
+                mBitmap = createBitmap(width, height, Config.ARGB_8888);
+                canvas.setBitmap(mBitmap);
+                switch (backNum) {
+                    case 0:
+                        x = 0;
+                        y = 0;
+                        break;
+                    case 1:
+                        x = width;
+                        y = 0;
+                        break;
+                    case 2:
+                        x = width * 2;
+                        y = 0;
+                        break;
+                    case 3:
+                        x = 0;
+                        y = height;
+                        break;
+                    case 4:
+                        x = width;
+                        y = height;
+                        break;
+                    case 5:
+                        x = width * 2;
+                        y = height;
+                        break;
+                    case 6:
+                        x = 0;
+                        y = height * 2;
+                        break;
+                    case 7:
+                        x = width;
+                        y = height * 2;
+                        break;
+                    case 8:
+                        x = width * 2;
+                        y = height * 2;
+                        break;
 
-            }
-            mSrcRect = new Rect(x, y, width+x, height+y);
-            canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
-            try {
-                File file = new File(fileName);
-                FileOutputStream out = new FileOutputStream(file);
-                mBitmap.compress(CompressFormat.PNG, 100, out);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                }
+                mSrcRect = new Rect(x, y, width + x, height + y);
+                canvas.drawBitmap(Trace, mSrcRect, mDestRect, paint);
+                try {
+                    File file = new File(fileName);
+                    FileOutputStream out = new FileOutputStream(file);
+                    mBitmap.compress(CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         else

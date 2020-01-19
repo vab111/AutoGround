@@ -374,7 +374,8 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 if (files[i].isFile()) {
                     //TODO 获取bitmap加载到canvas
                     String item = files[i].getName();
-                    String[] strArr = item.split("-");
+                    String name = item.substring(0, item.length()-4);
+                    String[] strArr = name.split("-");
                     int xiangxian = Integer.parseInt(strArr[0]);
                     int hor = Integer.parseInt(strArr[1]);
                     int ver = Integer.parseInt(strArr[2]);

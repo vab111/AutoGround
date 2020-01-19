@@ -82,7 +82,7 @@ public class history extends BaseActivity  {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG_SERVICE, "xuanzhong !");
+                Log.e(TAG_SERVICE, "选中!");
                 if (position>0)
                     actionRecord(position);
             }

@@ -304,6 +304,46 @@ public class Azjz extends BaseActivity {
     }
     private void saveJZ()
     {
+        AzjzData item = (AzjzData) azjzData.get(0);
+        String data = txxz.getText().toString();
+        String[] strArr = data.split("°");
+        int num = (int) (10*Float.parseFloat(strArr[0]));
+        item.txxz = num;
+
+        data = AngleFix.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.AngleFix = num;
+
+        data = zxDerection.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.zxDerection = num;
+
+        data = avgAngle.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.avgAngle = num;
+
+        data = avgHead.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.avgHead = num;
+
+        data = avgHang.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.avgHang = num;
+
+        data = headDerection.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.headDerection = num;
+
+        data = wheelAngle.getText().toString();
+        strArr = data.split("°");
+        num = (int) (10*Float.parseFloat(strArr[0]));
+        item.wheelAngle = num;
         File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/Azjzdata.json");
         try {
             FileOutputStream outputStream =new FileOutputStream(fs);
@@ -349,5 +389,7 @@ public class Azjz extends BaseActivity {
         order[6] = (byte) ((item.AngleFix/256)&0xff);
         order[7] = (byte) ((item.AngleFix%256)&0xff);
         mService.sendCan(id,order);
+        saveJZ();
+
     }
 }
