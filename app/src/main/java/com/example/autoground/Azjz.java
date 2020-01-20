@@ -3,6 +3,7 @@ package com.example.autoground;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -17,6 +18,11 @@ import com.android.guard.CommunicationService;
 import com.android.guard.DataType;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kongqw.serialportlibrary.Device;
+import com.kongqw.serialportlibrary.SerialPortFinder;
+import com.kongqw.serialportlibrary.SerialPortManager;
+import com.kongqw.serialportlibrary.listener.OnOpenSerialPortListener;
+import com.kongqw.serialportlibrary.listener.OnSerialPortDataListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +49,10 @@ public class Azjz extends BaseActivity {
     private EditText AngleFix;
     private CommunicationService mService;
     private List azjzData;
+    private SerialPortManager mSerialPortManager;
+    private File serialDevice;
+    private String buffer="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +69,7 @@ public class Azjz extends BaseActivity {
         AngleFix= findViewById(R.id.editText9);
 
         setToolbar();
+        initSerialPort();
         try {
             mService = CommunicationService.getInstance(this);
             mService.setShutdownCountTime(12);//setting shutdownCountTime
@@ -98,6 +109,7 @@ public class Azjz extends BaseActivity {
             public void onClick(View v) {
                 // finish();
                 saveJZ();
+                mSerialPortManager.closeSerialPort();
                 finish();
             }
         });
@@ -367,7 +379,75 @@ public class Azjz extends BaseActivity {
             e.printStackTrace();
         }
     }
+    private void initSerialPort()
+    {
+        mSerialPortManager = new SerialPortManager();
+        SerialPortFinder serialPortFinder = new SerialPortFinder();
+        ArrayList<Device> devices = serialPortFinder.getDevices();
+        for (int i=0;i<devices.size();i++)
+        {
+            Device item = devices.get(i);
+            if (item.getName().equals("ttyS4")) {
+                serialDevice = item.getFile();
+                mSerialPortManager.openSerialPort(item.getFile(), 115200);
+            }
+        }
 
+
+        mSerialPortManager.setOnOpenSerialPortListener(new OnOpenSerialPortListener() {
+            @Override
+            public void onSuccess(File device) {
+
+            }
+
+            @Override
+            public void onFail(File device, Status status) {
+
+            }
+        });
+        mSerialPortManager.setOnSerialPortDataListener(new OnSerialPortDataListener() {
+            @Override
+            public void onDataReceived(byte[] bytes) {
+                String s = new String(bytes);
+                String[] subStringArr = s.split(",");
+                if (subStringArr[0].equals("$KSXT")||subStringArr[0].equals("$GPYBM"))
+                {
+
+
+                    String[] strArr = buffer.split(",");
+                    if((strArr.length == 15)&&((strArr[0].equals("$KSXT")||subStringArr[0].equals("$GPYBM")))) {
+
+                        final float disu = (float) Double.parseDouble(strArr[4]);
+                        if (!strArr[4].equals("")) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    curSpeed.setText(String.format("%.1fKm/h",disu));
+                                }
+                            });
+                        }
+
+
+                    }
+                    buffer = s;
+                }
+                else {
+
+                    buffer+=s;
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onDataSent(byte[] bytes) {
+
+            }
+        });
+    }
     public void sendJZ(View view) {
         AzjzData item = (AzjzData) azjzData.get(0);
         mService = CommunicationService.getInstance(this);

@@ -545,6 +545,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         isCenter = true;
         Moved.x = 0;
         Moved.y = 0;
+        mapDerection = 180.0f;
     }
     public void handleData(Point curPoint,double jiaodu)
     {
@@ -611,15 +612,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             startP.y = CurPoint.y;
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
-            Point start = new Point();
-            start.x = -CurPoint.y-ex_Point.x;
-            start.y = ex_Point.y+CurPoint.x;
 
-            double jiaodu = Math.atan2(pointA.x-pointB.x,pointA.y-pointB.y);
-            traceleft.x = (int) (start.x-Math.sin(jiaodu)*ChanWidth/2);
-            traceleft.y = (int) (start.y-Math.cos(jiaodu)*ChanWidth/2);
-            traceright.x = (int) (start.x+Math.sin(jiaodu)*ChanWidth/2);
-            traceright.y = (int) (start.y+Math.cos(jiaodu)*ChanWidth/2);
         }
     }
 
@@ -1399,8 +1392,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         end.x = endp.x - ex_Point.x;
         end.y = ex_Point.y-endp.y;
 
+        if ((start.x == end.x)&&(start.y == end.y))
+            return;
 
-
+//绘制轨迹
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.YELLOW);
@@ -1412,8 +1407,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         Log.e("路径角度", String.format("%f",jiaodu));
         Path curPath = new Path();
-        curPath.moveTo(traceright.x,traceright.y);
-        curPath.lineTo(traceleft.x,traceleft.y);
+        curPath.moveTo((float)(start.x-Math.sin(jiaodu)*ChanWidth/2), (float) (start.y-Math.cos(jiaodu)*ChanWidth/2));
+        curPath.lineTo((float)(start.x+Math.sin(jiaodu)*ChanWidth/2), (float) (start.y+Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
         curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
         curPath.close();
@@ -1428,10 +1423,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         startP.x = endP.x;
         startP.y = endP.y;
 
-        traceleft.x = (int) (end.x-Math.sin(jiaodu)*ChanWidth/2);
-        traceleft.y = (int) (end.y-Math.cos(jiaodu)*ChanWidth/2);
-        traceright.x = (int) (end.x+Math.sin(jiaodu)*ChanWidth/2);
-        traceright.y = (int) (end.y+Math.cos(jiaodu)*ChanWidth/2);
 
 
     }
@@ -1447,7 +1438,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         location.x = ex_Point.x + CurPoint.y+Moved.x;
         location.y = -ex_Point.y-CurPoint.x+Moved.y;
 
-        Log.e("轨迹:", String.format("%d,%dCUR点：%d,%d", ex_Point.x,ex_Point.y,CurPoint.x,CurPoint.y));
+        //Log.e("轨迹:", String.format("%d,%dCUR点：%d,%d", ex_Point.x,ex_Point.y,CurPoint.x,CurPoint.y));
         Rect mDestRect = new Rect(location.x, location.y,location.x+width*3, location.y+height*3);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
         switch (bufferstate)
         {
