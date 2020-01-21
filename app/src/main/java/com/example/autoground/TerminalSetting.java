@@ -233,8 +233,8 @@ public class TerminalSetting extends BaseActivity {
         order[3] = 0x01;
         order[4] = (byte) ((car.Zhou/256)&0xff);
         order[5] = (byte) ((car.Zhou%256)&0xff);
-        order[6] = (byte) ((car.height/256)&0xff);
-        order[7] = (byte) ((car.height%256)&0xff);
+        order[6] = (byte) ((car.TXHeight/256)&0xff);
+        order[7] = (byte) ((car.TXHeight%256)&0xff);
         mService.sendCan(id,order);
 
 

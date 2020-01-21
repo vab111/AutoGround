@@ -34,15 +34,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NJNJsetting extends BaseActivity {
-    private clFragment clszFragment;
+    private CarSetFragment clszFragment;
     private Farmingtool farmFragment;
-    private txFragment txszFragment;
     private Toolbar toolbar;
     private CarInfor car;
     private CommunicationService mService;
     private Button clszBtn;
     private Button njszBtn;
-    private Button txszBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +49,8 @@ public class NJNJsetting extends BaseActivity {
         toolbar = findViewById(R.id.njnjbar);
         clszBtn = findViewById(R.id.button14);
         njszBtn = findViewById(R.id.button15);
-        txszBtn = findViewById(R.id.button16);
         setToolbar();
-        getRecord();
         initFragment2();
-        initFragment3();
         initFragment1();
         btnGray();
         clszBtn.setBackgroundColor(Color.GREEN);
@@ -65,17 +60,6 @@ public class NJNJsetting extends BaseActivity {
     public void onStart()
     {
         super.onStart();
-        clszFragment.zhouju.setText(String.format("%d", car.Zhou));
-        clszFragment.back.setText(String.format("%d", car.Backwheel));
-        clszFragment.front.setText(String.format("%d", car.Frontwheel));
-        clszFragment.nianfen.setText(car.year);
-        clszFragment.xinghao.setText(car.Xinhao);
-        clszFragment.pinpai.setText(car.brand);
-        clszFragment.chegao.setText(String.format("%d", car.height));
-        clszFragment.chepai.setText(car.lisence);
-        txszFragment.toMid.setText(String.format("%d", car.TXMiddis));
-        txszFragment.toBack.setText(String.format("%d", car.TXBackdis));
-        txszFragment.toGround.setText(String.format("%d", car.TXHeight));
 
         mService = CommunicationService.getInstance(this);
         mService.setShutdownCountTime(12);//setting shutdownCountTime
@@ -91,7 +75,6 @@ public class NJNJsetting extends BaseActivity {
     {
         clszBtn.setBackgroundColor(Color.GRAY);
         njszBtn.setBackgroundColor(Color.GRAY);
-        txszBtn.setBackgroundColor(Color.GRAY);
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -125,7 +108,7 @@ public class NJNJsetting extends BaseActivity {
 
             if(clszFragment == null){
 
-                clszFragment = new clFragment();
+                clszFragment = new CarSetFragment();
 
                 transaction.add(R.id.njsetting_frame, clszFragment);
 
@@ -202,42 +185,7 @@ public class NJNJsetting extends BaseActivity {
 
 
 
-        //显示第三个fragment
 
-    private void initFragment3(){
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-
-
-            if(txszFragment == null){
-
-                txszFragment = new txFragment();
-
-                transaction.add(R.id.njsetting_frame,txszFragment);
-
-
-            }
-
-            hideFragment(transaction);
-
-            transaction.show(txszFragment);
-
-
-
-//        if(f3 == null) {
-
-//            f3 = new MyFragment("动态");
-
-//        }
-
-//        transaction.replace(R.id.main_frame_layout, f3);
-
-
-
-            transaction.commit();
-
-        }
 
 
 
@@ -257,10 +205,7 @@ public class NJNJsetting extends BaseActivity {
 
             }
 
-            if(txszFragment != null){
 
-                transaction.hide(txszFragment);
-            }
 
         }
 
@@ -277,119 +222,13 @@ public class NJNJsetting extends BaseActivity {
         njszBtn.setBackgroundColor(Color.GREEN);
     }
 
-    public void txSetting(View view) {
-        initFragment3();
-        btnGray();
-        txszBtn.setBackgroundColor(Color.GREEN);
-    }
-
-    private void getRecord(){
-        //TODO 获取历史信息
-
-        List fileList = new ArrayList();
-        File appDir = new File(Environment.getExternalStorageDirectory()+"/AutoGround");   //自定义的目录
-        if (!appDir.exists()) {
-            boolean isSuccess = appDir.mkdir();
-            Log.d("MsgId:" ,"----------0------------------"+isSuccess);
-        }
-        else
-            Log.d("MsgId:" ,"----------0------------------目录已经存在:"+Environment.getExternalStorageDirectory()+"/AutoGround");
-
-        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarInfor.json");
-        if (fs.exists()) {
-            String result = "";
-            try {
-                FileInputStream f = new FileInputStream(fs);
-                BufferedReader bis = new BufferedReader(new InputStreamReader(f));
-                String line = "";
-                while ((line = bis.readLine()) != null) {
-                    result += line;
-                }
-                bis.close();
-                f.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (result.length()>0) {
-                Gson gson = new Gson();
-                fileList = gson.fromJson(result, new TypeToken<List<CarInfor>>() {
-                }.getType());
-            }
-        }
-        else {
-            try {
-                FileOutputStream outputStream =new FileOutputStream(fs);
-                OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
-
-                CarInfor header = new CarInfor();
-
-                fileList.add(header);
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(fileList);
-                outStream.write(jsonString);
-
-                outputStream.flush();
-                outStream.flush();
-                outputStream.close();
-                outputStream.close();
 
 
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        }
-        car = (CarInfor) fileList.get(0);
-    }
-
-    public void save(View view) {
-        car.brand = clszFragment.pinpai.getText().toString();
-        car.Xinhao = clszFragment.xinghao.getText().toString();
-        car.year = clszFragment.nianfen.getText().toString();
-        car.lisence = clszFragment.chepai.getText().toString();
-        car.Frontwheel =  Integer.parseInt(clszFragment.front.getText().toString());
-        car.Backwheel = Integer.parseInt(clszFragment.back.getText().toString());
-        car.Zhou = Integer.parseInt(clszFragment.zhouju.getText().toString());
-        car.height = Integer.parseInt(clszFragment.chegao.getText().toString());
-
-        car.TXHeight = Integer.parseInt(txszFragment.toGround.getText().toString());
-        car.TXBackdis = Integer.parseInt(txszFragment.toBack.getText().toString());
-        car.TXMiddis = Integer.parseInt(txszFragment.toMid.getText().toString());;
-
-        List fileList = new ArrayList();
-        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarInfor.json");
-
-            try {
-                FileOutputStream outputStream =new FileOutputStream(fs);
-                OutputStreamWriter outStream = new OutputStreamWriter(outputStream);
-
-
-
-                fileList.add(car);
-                Gson gson = new Gson();
-                String jsonString = gson.toJson(fileList);
-                outStream.write(jsonString);
-
-                outputStream.flush();
-                outStream.flush();
-                outputStream.close();
-                outputStream.close();
-
-
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sendCarInfor();
-
-    }
     public void sendCarInfor(){
         //TODO 添加下位机同步车辆信息
+        car = clszFragment.car;
         byte[] id = new byte[4];
         id[0] = -64;
         id[1] = 32;
@@ -411,8 +250,8 @@ public class NJNJsetting extends BaseActivity {
         order[3] = 0x01;
         order[4] = (byte) ((car.Zhou/256)&0xff);
         order[5] = (byte) ((car.Zhou%256)&0xff);
-        order[6] = (byte) ((car.height/256)&0xff);
-        order[7] = (byte) ((car.height%256)&0xff);
+        order[6] = (byte) ((car.TXHeight/256)&0xff);
+        order[7] = (byte) ((car.TXHeight%256)&0xff);
         mService.sendCan(id,order);
 
 
@@ -437,6 +276,27 @@ public class NJNJsetting extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         farmFragment.update();
+    }
+
+    public void exClicked(View view) {
+        clszFragment.saveSetting();
+        if (clszFragment.state>1) {
+            clszFragment.state--;
+            clszFragment.updateView();
+        }
+
+    }
+
+    public void saveCar(View view) {
+        clszFragment.savaData();
+        sendCarInfor();
+    }
+
+    public void nextClicked(View view) {
+        clszFragment.saveSetting();
+        if (clszFragment.state<6){
+            clszFragment.state++;
+        clszFragment.updateView();}
     }
 }
 
