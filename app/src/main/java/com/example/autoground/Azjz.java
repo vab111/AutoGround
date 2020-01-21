@@ -370,7 +370,7 @@ public class Azjz extends BaseActivity {
             outStream.flush();
             outputStream.close();
             outputStream.close();
-            Toast.makeText(getBaseContext(), "File created successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "数据保存成功！", Toast.LENGTH_LONG).show();
 
 
         } catch (FileNotFoundException e) {
