@@ -166,25 +166,29 @@ public class CarSetFragment extends Fragment {
     }
     public void saveSetting()
     {
+        String numstr = data.getText().toString();
+        int num = 0;
+        if (numstr.length()>0)
+            num = Integer.parseInt(numstr);
         switch (state)
         {
             case 1:
-                car.TXHeight = Integer.parseInt(data.getText().toString());
+                car.TXHeight = num;
                 break;
             case 2:
-                car.TXMiddis= Integer.parseInt(data.getText().toString());
+                car.TXMiddis= num;
                 break;
             case 3:
-                car.TXBackdis= Integer.parseInt(data.getText().toString());
+                car.TXBackdis= num;
                 break;
             case 4:
-                car.Backwheel= Integer.parseInt(data.getText().toString());
+                car.Backwheel= num;
                 break;
             case 5:
-                car.Zhou= Integer.parseInt(data.getText().toString());
+                car.Zhou= num;
                 break;
             case 6:
-                car.Frontwheel= Integer.parseInt(data.getText().toString());
+                car.Frontwheel= num;
                 break;
             default:
                 break;
