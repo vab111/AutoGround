@@ -154,6 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:text="左"
+        android:onClick="leftClicked"
         app:layout_constraintBottom_toBottomOf="@+id/textView163"
         app:layout_constraintStart_toEndOf="@+id/editText46" />
 
@@ -163,6 +164,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="右"
+        android:onClick="rightClicked"
         app:layout_constraintBottom_toBottomOf="@+id/radioButton11"
         app:layout_constraintStart_toEndOf="@+id/radioButton11" />
 

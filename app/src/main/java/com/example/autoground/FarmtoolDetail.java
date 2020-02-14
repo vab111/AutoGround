@@ -210,4 +210,14 @@ public class FarmtoolDetail extends AppCompatActivity {
         }
         return false;
     }
+
+    public void rightClicked(View view) {
+        rightBtn.setChecked(true);
+        leftBtn.setChecked(false);
+    }
+
+    public void leftClicked(View view) {
+        rightBtn.setChecked(false);
+        leftBtn.setChecked(true);
+    }
 }

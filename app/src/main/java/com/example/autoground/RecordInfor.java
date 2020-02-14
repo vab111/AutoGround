@@ -8,8 +8,8 @@ public class RecordInfor {
     public Point pointB = new Point(0,0);
     public int Kuan;
     public String type = "播种";
-    public boolean isA;
-    public boolean isB;
+    public boolean isA=false;
+    public boolean isB=false;
     public double square = 0;
     public double distance = 0;
 }
