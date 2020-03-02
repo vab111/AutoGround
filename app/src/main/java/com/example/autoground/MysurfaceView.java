@@ -79,6 +79,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int moveDerection;
     private Point traceleft = new Point(0,0);
     private Point traceright = new Point(0,0);
+    private boolean isRunning = false;
     public boolean isCenter = true;
     public MysurfaceView(Context context, AttributeSet attrs){
         super(context,attrs);
@@ -130,7 +131,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             drawBg(canvas);
 
 
-            drawTrace(canvas);
+
 
             if (isB) {
 
@@ -482,7 +483,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) (carDerection-90+mapDerection), bmp);
+        bmp = rotaingImageView((int) (carDerection+mapDerection), bmp);
         Matrix matrix = new Matrix();		// 缩放原图
         matrix.postScale(0.8f, 0.8f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
         Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
@@ -602,7 +603,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (isTask)
         {
             isTask = false;
-
+            isRunning = false;
 
         }
         else
@@ -1407,11 +1408,30 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         Log.e("路径角度", String.format("%f",jiaodu));
         Path curPath = new Path();
-        curPath.moveTo((float)(start.x-Math.sin(jiaodu)*ChanWidth/2), (float) (start.y-Math.cos(jiaodu)*ChanWidth/2));
-        curPath.lineTo((float)(start.x+Math.sin(jiaodu)*ChanWidth/2), (float) (start.y+Math.cos(jiaodu)*ChanWidth/2));
-        curPath.lineTo((float)(end.x+Math.sin(jiaodu)*ChanWidth/2), (float) (end.y+Math.cos(jiaodu)*ChanWidth/2));
-        curPath.lineTo((float)(end.x-Math.sin(jiaodu)*ChanWidth/2), (float) (end.y-Math.cos(jiaodu)*ChanWidth/2));
-        curPath.close();
+        if (!isRunning) {
+            curPath.moveTo((float) (start.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y - Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.lineTo((float) (start.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y + Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.close();
+            traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
+            traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
+            traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
+            traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+        }
+        else
+        {
+            curPath.moveTo(traceleft.x,traceleft.y);
+            curPath.lineTo(traceright.x,traceright.y);
+            curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
+            curPath.close();
+            traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
+            traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
+            traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
+            traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+            isRunning = true;
+        }
         switch (bufferstate) {
             case 1:
                 canvas.drawPath(curPath, paint);
