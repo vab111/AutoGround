@@ -266,11 +266,11 @@ public class history extends BaseActivity  {
             outStream.flush();
             outStream.close();
             fileOut.close();
-            Toast.makeText(history.this,"保存成功！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(history.this,"删除成功！",Toast.LENGTH_SHORT).show();
         }
         catch(Exception e)
         {
-            Toast.makeText(history.this,"保存失败！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(history.this,"删除失败！",Toast.LENGTH_SHORT).show();
         }
         finally
         {

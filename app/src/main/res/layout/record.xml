@@ -7,11 +7,12 @@
     <RelativeLayout
         android:id="@+id/recorditem"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:clickable="false">
 
         <TextView
             android:id="@+id/textView18"
-            android:layout_width="400dp"
+            android:layout_width="256dp"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
@@ -21,7 +22,7 @@
 
         <TextView
             android:id="@+id/textView19"
-            android:layout_width="152dp"
+            android:layout_width="256dp"
             android:layout_height="match_parent"
             android:layout_marginStart="0dp"
             android:layout_toEndOf="@+id/textView18"
@@ -31,12 +32,10 @@
 
         <TextView
             android:id="@+id/editText10"
-            android:layout_width="wrap_content"
+            android:layout_width="256dp"
             android:layout_height="match_parent"
             android:layout_marginStart="0dp"
             android:layout_toEndOf="@+id/textView19"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:text="作业面积"
             android:textAlignment="center"
             android:textSize="30sp" />
@@ -47,8 +46,6 @@
             android:layout_height="match_parent"
             android:layout_marginStart="0dp"
             android:layout_toEndOf="@+id/editText10"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:text="作业时间"
             android:textAlignment="center"
             android:textSize="30sp" />

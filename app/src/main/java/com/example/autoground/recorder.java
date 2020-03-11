@@ -5,5 +5,4 @@ public class recorder {
     public String type;
     public String mianji;
     public String time;
-    public boolean abLine = false;
 }

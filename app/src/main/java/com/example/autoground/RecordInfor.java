@@ -12,4 +12,5 @@ public class RecordInfor {
     public boolean isB=false;
     public double square = 0;
     public double distance = 0;
+    public long time = 0;
 }

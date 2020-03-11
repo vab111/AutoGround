@@ -129,16 +129,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             canvas.scale(scale,scale);
 
             drawBg(canvas);
-
-
-
-
             if (isB) {
-
                 drawABlines(canvas);
+                drawTrace(canvas);
                 drawA(canvas);
                 drawB(canvas);
-                drawTrace(canvas);
             }
             else
             {
@@ -558,9 +553,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
             drawBuffer();
-        }
-        if (isB)
             ScreenCaculate(curPoint);
+        }
         carDerection = (float) jiaodu;
     }
     public static Bitmap rotaingImageView(int angle, Bitmap bitmap)
@@ -1308,10 +1302,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (bufferstate == 1)
         {
             if (name.equals(CurName))
-            {
-
-
-            }
+            {}
             else
             {
                 if (name.equals(NameBack))
@@ -1322,12 +1313,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         Log.e("绘制轨迹：", "切换缓存");
                         copyBuffer();
                         updateEXP(point);
-                        bufferstate = 2;
-                        //saveBitmap(1);
-
-
-
-                    }
+                        bufferstate = 2;}
                 }
                 else
                 {
@@ -1343,10 +1329,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         else
         {
             if (name.equals(NameBack))
-            {
-
-
-            }
+            {}
             else
             {
                 if (name.equals(CurName))
@@ -1358,7 +1341,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         copyBuffer();
                         updateEXP(point);
                         bufferstate = 1;
-                        //saveBitmap(2);
                     }
 
                 }
@@ -1393,7 +1375,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         end.x = endp.x - ex_Point.x;
         end.y = ex_Point.y-endp.y;
 
-        if ((start.x == end.x)&&(start.y == end.y))
+        if((start.x-end.x)*(start.x-end.x)+(start.y-end.y)*(start.y-end.y)>100)
             return;
 
 //绘制轨迹
