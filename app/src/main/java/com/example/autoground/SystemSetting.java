@@ -192,8 +192,8 @@ public class SystemSetting extends BaseActivity {
                 }.getType());
             }
 
-        for (int j=1;j<fileList.size();) {
-            recorder item = (recorder) fileList.get(j);
+        while(fileList.size()>0) {
+            recorder item = (recorder) fileList.get(0);
             appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname);
             if (appDir.exists()) {
                 File[] files = appDir.listFiles();
@@ -213,8 +213,14 @@ public class SystemSetting extends BaseActivity {
             }
             String abline = Environment.getExternalStorageDirectory() + "/AutoGround/" + item.taskname + ".json";
             deleteFile(abline);
-            fileList.remove(j);
+            fileList.remove(0);
         }
+        recorder header = new recorder();
+        header.taskname = "作业名称";
+        header.type = "作业类型";
+        header.mianji = "任务面积";
+        header.time = "作业时间";
+        fileList.add(header);
         Gson gson = new Gson();
         String jsonString = gson.toJson(fileList);
 

@@ -35,7 +35,9 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="68dp"
+        android:duplicateParentState="false"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/azjzbar" />
@@ -56,6 +58,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/editText"
         app:layout_constraintStart_toEndOf="@+id/textView10" />
@@ -76,6 +79,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/editText2"
         app:layout_constraintStart_toEndOf="@+id/textView11" />
@@ -97,6 +101,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/textView12"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
@@ -117,6 +122,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/editText4"
         app:layout_constraintStart_toEndOf="@+id/textView13" />
@@ -158,6 +164,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/textView15"
         app:layout_constraintTop_toBottomOf="@+id/editText4" />
@@ -178,6 +185,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:ems="10"
+        android:enabled="false"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/editText7"
         app:layout_constraintStart_toEndOf="@+id/textView16" />

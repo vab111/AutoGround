@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="theme">#E22426</color>
+    <color name="default_text">#ff454545</color>
+    <color name="item_abstract_normal">#ff444444</color>
+    <color name="item_abstract_disabled">#ff929292</color>
+    <color name="item_title_normal">#ff444444</color>
+    <color name="item_title_disabled">#ff888888</color>
+    <color name="setting_alt_text_normal">#ff666666</color>
+    <color name="setting_alt_text_selected">#ffff0000</color>
+    <color name="subscribe_item_text_color_pressed">#ffb9b9b9</color>
+    <color name="subscribe_item_selected_stroke">#ffcc3131</color>
+    <color name="left_drawer_item_text_normal">#ffd4d4d4</color>
+    <color name="left_drawer_item_text_pressed">#ff4e4e4e</color>
+    <color name="common_botton_bar_blue">#2ea7e0</color>
+    <!-- headerlayout -->
+    <color name="title_bg">#1E6EC0</color>
+    <!-- ff5454 -->
+    <color name="white">#ffffff</color>
+    <color name="item_press">#edfaff</color>
+    <color name="item_press_grey">#efefef</color>
+    <color name="btn_delete_normal">#99cc66</color>
+    <color name="btn_delete_press">#339933</color>
+
+</resources>

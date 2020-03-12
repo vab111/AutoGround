@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">莱赛BLE调试助手</string>
+    <string name="action_settings">设置</string>
+    <string name="title_activity_help">帮助</string>
+</resources>

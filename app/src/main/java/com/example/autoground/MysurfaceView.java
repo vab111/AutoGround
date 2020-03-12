@@ -40,7 +40,7 @@ import static android.graphics.Bitmap.*;
 public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback,Runnable, View.OnTouchListener {
 
     private Point moveOrigin = new Point(0,0);
-    private Point Moved = new Point(0,0);
+    public Point Moved = new Point(0,0);
     private boolean isScaling = false;
     private float xMid=0.0f;
     private float yMid=0.0f;
@@ -59,7 +59,6 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public Point CurPoint = new Point(0,0);
     private float carDerection=0.0f;
     public int ChanWidth = 30;
-    public int ABpiancha = 0;
     public boolean isTask = false;
     private Point startP = new Point(0,0);
     private Point endP = new Point(0,0);
@@ -285,8 +284,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
         return true;
     }
-    public void drawABlines(Canvas canvas)
-    {
+    public void drawABlines(Canvas canvas){
         //TODO 绘制AB线，红色
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -301,19 +299,22 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             jiaodu =Math.atan2(bp.y-ap.y, bp.x-ap.x);
 
         //Log.e("AB线角度", String.format("%fCUR点：%d,%d", jiaodu,ap.y-bp.y,bp.x-ap.x));
+        int i = 0;
 
         if ((ap.x-bp.x)*(ap.x-bp.x)>(ap.y-bp.y)*(ap.y-bp.y))
         {
-            int y = 0;//AB线与y轴的交点
+            double y = 0;//AB线与y轴的交点
             int cury = 0;//当前位置在AB线方向上与Y轴的焦点
             paint.setColor(Color.RED);
             paint.setStrokeWidth(0.5f/scale);
             //TODO y方向做等分
             float jianju = (float) Math.abs(ChanWidth/Math.cos(jiaodu));//AB线在Y轴上的间隔距离
             if ((ap.y-bp.y)*(bp.x-ap.x)<0){
-                y = (int) (bp.y+bp.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu));
+                y = bp.y+bp.x*Math.tan(jiaodu);
                 cury = (int) (Moved.y+Moved.x*Math.tan(jiaodu));
-                for (int j=y;j<width;j+=jianju) {
+                i=0;
+                for (double j=y;j<width;i++) {
+                    j = y+Math.abs((i*ChanWidth)/Math.cos(jiaodu));
                     if (Math.abs(cury-j)<=jianju/2)
                     {
                         paint.setColor(Color.GRAY);
@@ -335,7 +336,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         canvas.drawLine(-width/2, (float) (j+Math.tan(jiaodu)*width/2), width/2, (float) (float) (j-Math.tan(jiaodu)*width/2), paint);
                     }
                 }
-                for (int j = (int) (y-jianju); j>-width; j-=jianju) {
+                i=1;
+                for (double j = y-jianju; j>-width; i++) {
+                    j = y-Math.abs((i*ChanWidth)/Math.cos(jiaodu));
                     if (Math.abs(cury-j)<=jianju/2)
                     {
                         paint.setColor(Color.GRAY);
@@ -359,9 +362,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
             }
             else{
-                y = (int) (bp.y-bp.x*Math.tan(jiaodu)-ABpiancha/Math.cos(jiaodu));
+                y = bp.y-bp.x*Math.tan(jiaodu);
                 cury = (int) (Moved.y-Moved.x*Math.tan(jiaodu));
-                for (int j=y;j<width;j+=jianju) {
+                i=0;
+                for (double j=y;j<width;i++) {
+                    j = y + Math.abs((i*ChanWidth)/Math.cos(jiaodu));
                     if (Math.abs(cury-j)<=jianju/2)
                     {
                         paint.setColor(Color.GRAY);
@@ -383,7 +388,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         canvas.drawLine(-width/2, (float) (j-Math.tan(jiaodu)*width/2), width/2, (float) (float) (j+Math.tan(jiaodu)*width/2), paint);
                     }
                 }
-                for (int j = (int) (y-jianju); j>-width; j-=jianju) {
+                i=1;
+                for (double j = y-jianju; j>-width; i++) {
+                    j =y - Math.abs((i*ChanWidth)/Math.cos(jiaodu));
                     if (Math.abs(cury-j)<=jianju/2)
                     {
                         paint.setColor(Color.GRAY);
@@ -414,13 +421,15 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             paint.setStrokeWidth(0.5f/scale);
 
 
-            int x = (int) (bp.x-bp.y/Math.tan(jiaodu)-ABpiancha/Math.sin(jiaodu));
+            double x = bp.x-bp.y/Math.tan(jiaodu);
             int cury = (int) (Moved.x-Moved.y/Math.tan(jiaodu));
 
 
             //TODO x方向做等分
             float jianju = (float) Math.abs(ChanWidth/Math.sin(jiaodu));
-            for (int j = x; j <width; j += jianju) {
+            i=0;
+            for (double j = x; j <width; i++) {
+                j = x+Math.abs((i*ChanWidth)/Math.sin(jiaodu));
                         if (Math.abs(cury - j) <= jianju/2) {
                             paint.setColor(Color.GRAY);
                             Path curPath = new Path();
@@ -440,7 +449,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                             canvas.drawLine((float) (j- width/(2*Math.tan(jiaodu))), -width/2, (float) (j + width/(2*Math.tan(jiaodu))), width/2, paint);
                         }
                     }
-            for (int j = (int) (x-jianju); j >-width; j -= jianju) {
+            i=1;
+            for (double j = x-jianju; j >-width; i++) {
+                j = x -Math.abs((i*ChanWidth)/Math.sin(jiaodu));
                 if (Math.abs(cury - j) <= jianju/2) {
                     paint.setColor(Color.GRAY);
                     Path curPath = new Path();
@@ -474,15 +485,16 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         paint.setDither(true);
         Point car = Moved;
-        Rect mSrcRect = new Rect(0, 0, 200, 200);
+
         Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
         bmp = rotaingImageView((int) (carDerection+mapDerection), bmp);
         Matrix matrix = new Matrix();		// 缩放原图
-        matrix.postScale(0.8f, 0.8f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
+        matrix.postScale(1.0f, 1.0f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
+        matrix.setTranslate(100, 100);
         Bitmap dstbmp = createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),				matrix, true);
-
+        Rect mSrcRect = new Rect(0, 0, dstbmp.getWidth(), dstbmp.getHeight());
         canvas.drawBitmap(dstbmp,mSrcRect,mDestRect,paint);
 
     }
@@ -549,12 +561,14 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Point result = transform(curPoint);
 
         CurPoint = curPoint;
+
         if (isTask) {
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
             drawBuffer();
-            ScreenCaculate(curPoint);
         }
+        if (isB)
+            ScreenCaculate(curPoint);
         carDerection = (float) jiaodu;
     }
     public static Bitmap rotaingImageView(int angle, Bitmap bitmap)
@@ -583,15 +597,11 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         pointB.x = pointcur.x;
         pointB.y = pointcur.y;
-        updateTrace(pointB);
+        updateTrace(CurPoint);
         bufferstate = 1;
-        updateEXP(pointcur);
-        Point dika = new Point(-pointcur.y,-pointcur.x);
+        updateEXP(CurPoint);
+        Point dika = new Point(-CurPoint.y,-CurPoint.x);
         CurName = caculateFileName(dika);
-
-
-
-
     }
     public void setTaskOn()    {
         if (isTask)
@@ -615,18 +625,18 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         //TODO 装载缓存图片
         int xiangxian;
 
-        int hor = -point.y/width;
-        int ver = -point.x/height;
-        if (-point.x>0)
+        int hor = Math.abs(point.y/width);
+        int ver = Math.abs(point.x/height);
+        if (-point.y>0)
         {
-            if (-point.y>0)
+            if (-point.x>0)
                 xiangxian =1;
             else
                 xiangxian = 4;
         }
         else
         {
-            if (-point.y>0)
+            if (-point.x>0)
                 xiangxian = 2;
             else
                 xiangxian = 3;
@@ -634,9 +644,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         switch (xiangxian)
         {
             case 1:
-                if (-point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (-point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第一象限 （0，0）块，9宫格全4象限
                         mapbufferFile[0]= "2-0-1";
@@ -667,7 +677,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (-point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 一、四象限
 
                         mapbufferFile[0] = String.format("1-%d-1",hor-1 );
@@ -697,9 +707,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 2:
-                if (point.x/width == 0)
+
+                if (hor==0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第二象限 （0，0）块，9宫格全4象限
                         mapbufferFile[0] = "2-1-1";
@@ -728,12 +739,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 二、三象限
 
                         mapbufferFile[0] = String.format("2-%d-1", hor+1);
                         mapbufferFile[1] = String.format("2-%d-1", hor);
-                        mapbufferFile[2] = String.format("2-%d-1", hor+1);
+                        mapbufferFile[2] = String.format("2-%d-1", hor-1);
                         mapbufferFile[3] = String.format("2-%d-0", hor+1);
                         mapbufferFile[4] = String.format("2-%d-0", hor);
                         mapbufferFile[5] = String.format("2-%d-0", hor-1);
@@ -757,9 +768,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 3:
-                if (point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第三象限 （0，0）块，9宫格全4象限
                         mapbufferFile[0] ="2-1-0";
@@ -769,26 +780,26 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         mapbufferFile[4] ="3-0-0";
                         mapbufferFile[5] ="4-0-0";
                         mapbufferFile[6] ="3-1-1";
-                        mapbufferFile[7] ="4-0-1";
+                        mapbufferFile[7] ="3-0-1";
                         mapbufferFile[8] ="4-0-1";
                     }
                     else
                     {
                         //TODO 第三象限，三、四象限
-                        mapbufferFile[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFile[0] = String.format("3-1-%d",ver-1 );
                         mapbufferFile[1] = String.format("3-0-%d",ver-1);
-                        mapbufferFile[2] = String.format("4-1-%d",ver-1 );
-                        mapbufferFile[3] = String.format("3-0-%d",ver );
+                        mapbufferFile[2] = String.format("4-0-%d",ver-1 );
+                        mapbufferFile[3] = String.format("3-1-%d",ver );
                         mapbufferFile[4] = String.format("3-0-%d",ver );
-                        mapbufferFile[5] = String.format("4-1-%d",ver );
-                        mapbufferFile[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFile[5] = String.format("4-0-%d",ver );
+                        mapbufferFile[6] = String.format("3-1-%d",ver+1 );
                         mapbufferFile[7] = String.format("3-0-%d",ver+1 );
-                        mapbufferFile[8] = String.format("4-1-%d",ver+1 );
+                        mapbufferFile[8] = String.format("4-0-%d",ver+1 );
                     }
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 二、三象限
                         mapbufferFile[0] = String.format("2-%d-0",hor+1 );
                         mapbufferFile[1] = String.format("2-%d-0",hor );
@@ -817,9 +828,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 4:
-                if (point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第四象限 （0，0）块，9宫格全4象限
                         mapbufferFile[0] = "2-0-0";
@@ -828,7 +839,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         mapbufferFile[0] = "3-0-0";
                         mapbufferFile[0] = "4-0-0";
                         mapbufferFile[0] = "4-1-0";
-                        mapbufferFile[0] = "3-1-1";
+                        mapbufferFile[0] = "3-0-1";
                         mapbufferFile[0] = "4-0-1";
                         mapbufferFile[0] = "4-1-1";
                     }
@@ -849,7 +860,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 一、四象限
 
                         mapbufferFile[0] = String.format("1-%d-0",hor-1 );
@@ -886,18 +897,18 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         //TODO 装载缓存图片
         int xiangxian;
 
-        int hor = -point.y/width;
-        int ver = -point.x/height;
-        if (-point.x>0)
+        int hor = Math.abs(point.y/width);
+        int ver = Math.abs(point.x/height);
+        if (-point.y>0)
         {
-            if (-point.y>0)
+            if (-point.x>0)
                 xiangxian =1;
             else
                 xiangxian = 4;
         }
         else
         {
-            if (-point.y>0)
+            if (-point.x>0)
                 xiangxian = 2;
             else
                 xiangxian = 3;
@@ -905,9 +916,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         switch (xiangxian)
         {
             case 1:
-                if (-point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (-point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第一象限 （0，0）块，9宫格全4象限
                         mapbufferFileBack[0]= "2-0-1";
@@ -938,7 +949,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (-point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 一、四象限
 
                         mapbufferFileBack[0] = String.format("1-%d-1",hor-1 );
@@ -968,9 +979,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 2:
-                if (point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第二象限 （0，0）块，9宫格全4象限
                         mapbufferFileBack[0] = "2-1-1";
@@ -999,12 +1010,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 二、三象限
 
                         mapbufferFileBack[0] = String.format("2-%d-1", hor+1);
                         mapbufferFileBack[1] = String.format("2-%d-1", hor);
-                        mapbufferFileBack[2] = String.format("2-%d-1", hor+1);
+                        mapbufferFileBack[2] = String.format("2-%d-1", hor-1);
                         mapbufferFileBack[3] = String.format("2-%d-0", hor+1);
                         mapbufferFileBack[4] = String.format("2-%d-0", hor);
                         mapbufferFileBack[5] = String.format("2-%d-0", hor-1);
@@ -1028,9 +1039,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 3:
-                if (point.x/width == 0)
+                if (hor== 0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第三象限 （0，0）块，9宫格全4象限
                         mapbufferFileBack[0] ="2-1-0";
@@ -1040,26 +1051,26 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         mapbufferFileBack[4] ="3-0-0";
                         mapbufferFileBack[5] ="4-0-0";
                         mapbufferFileBack[6] ="3-1-1";
-                        mapbufferFileBack[7] ="4-0-1";
+                        mapbufferFileBack[7] ="3-0-1";
                         mapbufferFileBack[8] ="4-0-1";
                     }
                     else
                     {
                         //TODO 第三象限，三、四象限
-                        mapbufferFileBack[0] = String.format("3-0-%d",ver-1 );
+                        mapbufferFileBack[0] = String.format("3-1-%d",ver-1 );
                         mapbufferFileBack[1] = String.format("3-0-%d",ver-1);
-                        mapbufferFileBack[2] = String.format("4-1-%d",ver-1 );
-                        mapbufferFileBack[3] = String.format("3-0-%d",ver );
+                        mapbufferFileBack[2] = String.format("4-0-%d",ver-1 );
+                        mapbufferFileBack[3] = String.format("3-1-%d",ver );
                         mapbufferFileBack[4] = String.format("3-0-%d",ver );
-                        mapbufferFileBack[5] = String.format("4-1-%d",ver );
-                        mapbufferFileBack[6] = String.format("3-0-%d",ver+1 );
+                        mapbufferFileBack[5] = String.format("4-0-%d",ver );
+                        mapbufferFileBack[6] = String.format("3-1-%d",ver+1 );
                         mapbufferFileBack[7] = String.format("3-0-%d",ver+1 );
-                        mapbufferFileBack[8] = String.format("4-1-%d",ver+1 );
+                        mapbufferFileBack[8] = String.format("4-0-%d",ver+1 );
                     }
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 二、三象限
                         mapbufferFileBack[0] = String.format("2-%d-0",hor+1 );
                         mapbufferFileBack[1] = String.format("2-%d-0",hor );
@@ -1088,9 +1099,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 break;
             case 4:
-                if (point.x/width == 0)
+                if (hor == 0)
                 {
-                    if (point.y/height==0)
+                    if (ver==0)
                     {
                         //TODO 第四象限 （0，0）块，9宫格全4象限
                         mapbufferFileBack[0] = "2-0-0";
@@ -1099,7 +1110,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         mapbufferFileBack[0] = "3-0-0";
                         mapbufferFileBack[0] = "4-0-0";
                         mapbufferFileBack[0] = "4-1-0";
-                        mapbufferFileBack[0] = "3-1-1";
+                        mapbufferFileBack[0] = "3-0-1";
                         mapbufferFileBack[0] = "4-0-1";
                         mapbufferFileBack[0] = "4-1-1";
                     }
@@ -1120,7 +1131,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else
                 {
-                    if (point.y/height == 0)
+                    if (ver == 0)
                     {//TODO 一、四象限
 
                         mapbufferFileBack[0] = String.format("1-%d-0",hor-1 );
@@ -1375,7 +1386,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         end.x = endp.x - ex_Point.x;
         end.y = ex_Point.y-endp.y;
 
-        if((start.x-end.x)*(start.x-end.x)+(start.y-end.y)*(start.y-end.y)>100)
+        int distance = (start.x-end.x)*(start.x-end.x)+(start.y-end.y)*(start.y-end.y);
+        if(distance>100000)
             return;
 
 //绘制轨迹
@@ -1383,48 +1395,46 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(1.0f);
+        if (distance>0) {
+            double jiaodu = Math.atan2(endp.y - st.y, endp.x - st.x);
 
-        double jiaodu = Math.atan2(endp.y-st.y,endp.x-st.x);
 
+            Log.e("路径角度", String.format("%f", jiaodu));
+            Path curPath = new Path();
+            if (!isRunning) {
+                curPath.moveTo((float) (start.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y - Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.lineTo((float) (start.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y + Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.close();
+                traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
+                traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
+                traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
+                traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+                isRunning = true;
+            } else {
+                curPath.moveTo(traceleft.x, traceleft.y);
+                curPath.lineTo(traceright.x, traceright.y);
+                curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
+                curPath.close();
+                traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
+                traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
+                traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
+                traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
 
+            }
+            switch (bufferstate) {
+                case 1:
+                    canvas.drawPath(curPath, paint);
+                    break;
+                case 2:
+                    canvasBack.drawPath(curPath, paint);
 
-        Log.e("路径角度", String.format("%f",jiaodu));
-        Path curPath = new Path();
-        if (!isRunning) {
-            curPath.moveTo((float) (start.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y - Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.lineTo((float) (start.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (start.y + Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.close();
-            traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
-            traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
-            traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
-            traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+            }
+            startP.x = endP.x;
+            startP.y = endP.y;
         }
-        else
-        {
-            curPath.moveTo(traceleft.x,traceleft.y);
-            curPath.lineTo(traceright.x,traceright.y);
-            curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
-            curPath.close();
-            traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
-            traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
-            traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
-            traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
-            isRunning = true;
-        }
-        switch (bufferstate) {
-            case 1:
-                canvas.drawPath(curPath, paint);
-                break;
-            case 2:
-                canvasBack.drawPath(curPath, paint);
-
-        }
-        startP.x = endP.x;
-        startP.y = endP.y;
-
 
 
     }

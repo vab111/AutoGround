@@ -361,7 +361,7 @@ public class CanshuJZ extends AppCompatActivity {
         else
             Log.d("MsgId:" ,"----------0------------------目录已经存在:"+Environment.getExternalStorageDirectory()+"/AutoGround");
 
-        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarInfor.json");
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarsInfor.json");
         if (fs.exists()) {
             String result = "";
             try {
@@ -413,7 +413,7 @@ public class CanshuJZ extends AppCompatActivity {
     private void saveRecord()
     {
         List fileList = new ArrayList();
-        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarInfor.json");
+        File fs = new File(Environment.getExternalStorageDirectory()+"/AutoGround/CarsInfor.json");
         try {
             FileOutputStream outputStream =new FileOutputStream(fs);
             OutputStreamWriter outStream = new OutputStreamWriter(outputStream);

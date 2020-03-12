@@ -260,8 +260,8 @@ public class NJNJsetting extends BaseActivity {
         order[3] = 0x00;
         order[4] = (byte) ((car.TXHeight/256)&0xff);
         order[5] = (byte) ((car.TXHeight%256)&0xff);
-        order[6] = (byte) ((car.TXBackdis/256)&0xff);
-        order[7] = (byte) ((car.TXBackdis%256)&0xff);
+        order[6] = (byte) ((car.Backwheel/256)&0xff);
+        order[7] = (byte) ((car.Backwheel%256)&0xff);
         mService.sendCan(id,order);
 
         order[3] = 0x01;

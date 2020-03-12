@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@id/scanning_start"
+        android:orderInCategory="3"
+        android:showAsAction="always|withText"
+        android:title="扫描"/>
+    <item
+        android:id="@id/scanning_stop"
+        android:orderInCategory="4"
+        android:showAsAction="always|withText"
+        android:title="停止"/>
+    <item
+        android:id="@id/scanning_indicator"
+        android:orderInCategory="2"
+        android:title=""
+        android:showAsAction="ifRoom"/>
+
+</menu>
