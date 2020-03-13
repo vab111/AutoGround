@@ -215,6 +215,21 @@ public class SystemSetting extends BaseActivity {
             deleteFile(abline);
             fileList.remove(0);
         }
+        appDir = new File(Environment.getExternalStorageDirectory() + "/AutoGround/ABLine");
+        if (appDir.exists()) {
+            File[] files = appDir.listFiles();
+
+            boolean flag = true;
+            for (int i = 0; i < files.length; i++) {
+                // 删除子文件
+                if (files[i].isFile()) {
+                    flag = deleteFile(files[i].getAbsolutePath());
+                    if (!flag)
+                        break;
+                }
+
+            }
+        }
         recorder header = new recorder();
         header.taskname = "作业名称";
         header.type = "作业类型";

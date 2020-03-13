@@ -489,7 +489,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) (carDerection+mapDerection), bmp);
+        bmp = rotaingImageView((int) (carDerection+mapDerection+90), bmp);
         Matrix matrix = new Matrix();		// 缩放原图
         matrix.postScale(1.0f, 1.0f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
         matrix.setTranslate(100, 100);
@@ -617,7 +617,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
             startP.y = CurPoint.y;
             endP.x = CurPoint.x;
             endP.y = CurPoint.y;
-
+            isRunning = false;
         }
     }
 
@@ -1329,7 +1329,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 else
                 {
                     //
-                    saveToImg();
+                    saveBuffer();
                     NameBack = name;
                     moveDerection(actrul);
                     updateTraceBack(point);
@@ -1357,7 +1357,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 else {
                     //
-                    saveToImg();
+                    saveBuffer();
                     CurName = name;
                     moveDerection(actrul);
                     updateTrace(point);
@@ -1389,7 +1389,12 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         int distance = (start.x-end.x)*(start.x-end.x)+(start.y-end.y)*(start.y-end.y);
         if(distance>100000)
             return;
-
+//        double abAngle = Math.atan2(pointA.x-pointB.x,pointA.y-pointB.y);
+//        double pathAngle = Math.atan2(endp.y - st.y, endp.x - st.x);
+//        double result = Math.abs(abAngle-pathAngle)%Math.PI;
+//        Log.e("航向偏角", String.format("%f", result));
+//        if ((result>Math.PI/6)&&(result<5*Math.PI/2))
+//            return;
 //绘制轨迹
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -1572,85 +1577,85 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @SuppressLint("WrongThread")
     public void saveTask()    {
 
-//        int x = 0,y = 0;
-//        Canvas canvas = new Canvas();
-//        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        paint.setFilterBitmap(true);
-//
-//        for (int i=0;i<9;i++) {
-//            String fileName = null;
-//            switch (bufferstate)
-//            {
-//                case 1:
-//                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
-//                    break;
-//                case 2:
-//                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
-//            }
-//            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
-//            canvas.setBitmap(mBitmap);
-//            switch (i)
-//            {
-//                case 0:
-//                    x=0;
-//                    y=0;
-//                    break;
-//                case 1:
-//                    x=width;
-//                    y=0;
-//                    break;
-//                case 2:
-//                    x=width*2;
-//                    y=0;
-//                    break;
-//                case 3:
-//                    x=0;
-//                    y=height;
-//                    break;
-//                case 4:
-//                    x=width;
-//                    y=height;
-//                    break;
-//                case 5:
-//                    x=width*2;
-//                    y=height;
-//                    break;
-//                case 6:
-//                    x=0;
-//                    y=height*2;
-//                    break;
-//                case 7:
-//                    x=width;
-//                    y=height*2;
-//                    break;
-//                case 8:
-//                    x=width*2;
-//                    y=height*2;
-//                    break;
-//
-//            }
-//            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
-//            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
-//            switch (bufferstate)
-//            {
-//                case 1:
-//                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
-//                    break;
-//                case 2:
-//                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
-//                    break;
-//            }
-//            try {
-//                File file = new File(fileName);
-//                FileOutputStream out = new FileOutputStream(file);
-//                mBitmap.compress(CompressFormat.PNG, 100, out);
-//                out.flush();
-//                out.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        saveToImg();
+        int x = 0,y = 0;
+        Canvas canvas = new Canvas();
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setFilterBitmap(true);
+
+        for (int i=0;i<9;i++) {
+            String fileName = null;
+            switch (bufferstate)
+            {
+                case 1:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
+                    break;
+                case 2:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
+            }
+            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (i)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
+
+            }
+            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+            switch (bufferstate)
+            {
+                case 1:
+                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                    break;
+                case 2:
+                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+                    break;
+            }
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         this.canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
@@ -2003,5 +2008,140 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 e.printStackTrace();
             }
         }
+    }
+    @SuppressLint("WrongThread")
+    public void saveBuffer()
+    {
+        int x = 0,y = 0;
+        Canvas canvas = new Canvas();
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setFilterBitmap(true);
+        ArrayList bufferIndex = new ArrayList();
+        switch (moveDerection)
+        {
+            case 0:
+                bufferIndex.add(2);
+                bufferIndex.add(5);
+                bufferIndex.add(6);
+                bufferIndex.add(7);
+                bufferIndex.add(8);
+                break;
+            case 1:
+                bufferIndex.add(6);
+                bufferIndex.add(7);
+                bufferIndex.add(8);
+                break;
+            case 2:
+                bufferIndex.add(2);
+                bufferIndex.add(5);
+                bufferIndex.add(6);
+                bufferIndex.add(7);
+                bufferIndex.add(8);
+                break;
+            case 3:
+                bufferIndex.add(2);
+                bufferIndex.add(5);
+                bufferIndex.add(8);
+                break;
+            case 5:
+                bufferIndex.add(0);
+                bufferIndex.add(3);
+                bufferIndex.add(6);
+                break;
+            case 6:
+                bufferIndex.add(1);
+                bufferIndex.add(1);
+                bufferIndex.add(2);
+                bufferIndex.add(5);
+                bufferIndex.add(8);
+                break;
+            case 7:
+                bufferIndex.add(0);
+                bufferIndex.add(1);
+                bufferIndex.add(2);
+                break;
+            case 8:
+                bufferIndex.add(0);
+                bufferIndex.add(1);
+                bufferIndex.add(2);
+                bufferIndex.add(3);
+                bufferIndex.add(6);
+                break;
+        }
+        for (int j=0;j<bufferIndex.size();j++) {
+            int i = (int) bufferIndex.get(j);
+            String fileName = null;
+            switch (bufferstate)
+            {
+                case 1:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFile[i]+".png";
+                    break;
+                case 2:
+                    fileName = Environment.getExternalStorageDirectory()+"/AutoGround/"+CurrentTask+"/"+mapbufferFileBack[i]+".png";
+            }
+            Bitmap mBitmap = createBitmap(width,height, Config.ARGB_8888);
+            canvas.setBitmap(mBitmap);
+            switch (i)
+            {
+                case 0:
+                    x=0;
+                    y=0;
+                    break;
+                case 1:
+                    x=width;
+                    y=0;
+                    break;
+                case 2:
+                    x=width*2;
+                    y=0;
+                    break;
+                case 3:
+                    x=0;
+                    y=height;
+                    break;
+                case 4:
+                    x=width;
+                    y=height;
+                    break;
+                case 5:
+                    x=width*2;
+                    y=height;
+                    break;
+                case 6:
+                    x=0;
+                    y=height*2;
+                    break;
+                case 7:
+                    x=width;
+                    y=height*2;
+                    break;
+                case 8:
+                    x=width*2;
+                    y=height*2;
+                    break;
+
+            }
+            Rect mDestRect = new Rect(0, 0, width, height);//第一个Rect 代表要绘制的bitmap 区域
+            Rect mSrcRect = new Rect(x, y, width+x, height+y);//第二个 Rect 代表的是要将bitmap 绘制在屏幕的什么地方
+            switch (bufferstate)
+            {
+                case 1:
+                    canvas.drawBitmap(Trace,mSrcRect,mDestRect,paint);
+                    break;
+                case 2:
+                    canvas.drawBitmap(TraceBack,mSrcRect,mDestRect,paint);
+                    break;
+            }
+            try {
+                File file = new File(fileName);
+                FileOutputStream out = new FileOutputStream(file);
+                mBitmap.compress(CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
