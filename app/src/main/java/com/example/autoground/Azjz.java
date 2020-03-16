@@ -415,7 +415,7 @@ public class Azjz extends BaseActivity {
 
 
                     String[] strArr = buffer.split(",");
-                    if((strArr.length == 13)&&((strArr[0].equals("$KSXT")||subStringArr[0].equals("$GPYBM")))) {
+                    if((strArr.length == 14)&&((strArr[0].equals("$KSXT")||subStringArr[0].equals("$GPYBM")))) {
 
                         final float disu = (float) Double.parseDouble(strArr[4]);
                         if (!strArr[4].equals("")) {

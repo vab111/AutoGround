@@ -1389,12 +1389,17 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         int distance = (start.x-end.x)*(start.x-end.x)+(start.y-end.y)*(start.y-end.y);
         if(distance>100000)
             return;
-//        double abAngle = Math.atan2(pointA.x-pointB.x,pointA.y-pointB.y);
-//        double pathAngle = Math.atan2(endp.y - st.y, endp.x - st.x);
-//        double result = Math.abs(abAngle-pathAngle)%Math.PI;
-//        Log.e("航向偏角", String.format("%f", result));
-//        if ((result>Math.PI/6)&&(result<5*Math.PI/2))
-//            return;
+        double abAngle = Math.atan2(pointA.x-pointB.x,pointA.y-pointB.y);
+        abAngle = (abAngle+2*Math.PI)%(2*Math.PI);
+        double pathAngle = Math.atan2(endp.y - st.y, endp.x - st.x);
+        pathAngle = (pathAngle+2*Math.PI)%(2*Math.PI);
+        double result = Math.abs(abAngle-pathAngle);
+        Log.e("航向偏角", String.format("%f", result));
+
+        if ((result>Math.PI/9)&&(result<8*Math.PI/9))
+            return;
+        if ((result>10*Math.PI/9)&&(result<17*Math.PI/9))
+            return;
 //绘制轨迹
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
