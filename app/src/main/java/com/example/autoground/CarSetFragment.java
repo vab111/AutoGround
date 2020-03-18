@@ -194,6 +194,6 @@ public class CarSetFragment extends Fragment {
             default:
                 break;
         }
-        Toast.makeText(getContext(),"删保存成功！",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"保存成功！",Toast.LENGTH_SHORT).show();
     }
 }

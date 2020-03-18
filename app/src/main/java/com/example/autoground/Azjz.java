@@ -466,6 +466,13 @@ public class Azjz extends BaseActivity {
 
         order[4] = (byte) ((item.txxz/256)&0xff);
         order[5] = (byte) ((item.txxz%256)&0xff);
+        int num = item.txxz;
+        if (num<0)
+        {
+            order[5] = (byte) ((num % 256) & 0xff);
+            num /= 256;
+            order[4] = (byte) ((num % 256-1) & 0xff);
+        }
         order[6] = (byte) ((item.AngleFix/256)&0xff);
         order[7] = (byte) ((item.AngleFix%256)&0xff);
         mService.sendCan(id,order);

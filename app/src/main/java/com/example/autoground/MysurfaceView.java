@@ -489,7 +489,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Rect mDestRect = new Rect((int) (car.x-15/scale), (int) (car.y-15/scale), (int) (car.x+15/scale), (int) (car.y+15/scale));
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.daohangjiantou);		// 设置canvas画布背景为白色	// 定义矩阵对象
-        bmp = rotaingImageView((int) (carDerection+mapDerection+90), bmp);
+        bmp = rotaingImageView((int) (carDerection+mapDerection), bmp);
         Matrix matrix = new Matrix();		// 缩放原图
         matrix.postScale(1.0f, 1.0f);		//bmp.getWidth(), bmp.getHeight()分别表示缩放后的位图宽高
         matrix.setTranslate(100, 100);
