@@ -52,6 +52,7 @@ public class Azjz extends BaseActivity {
     private SerialPortManager mSerialPortManager;
     private File serialDevice;
     private String buffer="";
+    private TextView alertText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class Azjz extends BaseActivity {
         wheelAngle= findViewById(R.id.editText7);
         avgAngle= findViewById(R.id.editText8);
         AngleFix= findViewById(R.id.editText9);
-
+        alertText = findViewById(R.id.textView175);
         setToolbar();
         initSerialPort();
         try {
@@ -108,7 +109,7 @@ public class Azjz extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // finish();
-                saveJZ();
+
                 mSerialPortManager.closeSerialPort();
                 finish();
             }
@@ -260,6 +261,7 @@ public class Azjz extends BaseActivity {
         order[2] = 0x00;
         order[3] = 0x00;
         mService.sendCan(order, heartData.heart);
+        alertText.setText("正在校准中...");
     }
 
     public void endJZ(View view) {
@@ -270,6 +272,7 @@ public class Azjz extends BaseActivity {
         order[2] = 0x00;
         order[3] = 0x00;
         mService.sendCan(order, heartData.heart);
+        alertText.setText(null);
     }
 
     public void loadData()

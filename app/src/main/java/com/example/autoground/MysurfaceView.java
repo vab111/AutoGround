@@ -1312,6 +1312,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Log.e("绘制轨迹：", String.valueOf(bufferstate));
         if (bufferstate == 1)
         {
+
             if (name.equals(CurName))
             {}
             else
@@ -1324,7 +1325,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         Log.e("绘制轨迹：", "切换缓存");
                         copyBuffer();
                         updateEXP(point);
-                        bufferstate = 2;}
+                        bufferstate = 2;
+                        CurName = "";
+                    }
                 }
                 else
                 {
@@ -1352,6 +1355,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         copyBuffer();
                         updateEXP(point);
                         bufferstate = 1;
+                        NameBack = "";
                     }
 
                 }
@@ -1359,6 +1363,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     //
                     saveBuffer();
                     CurName = name;
+                    Log.e("MoveDecrection", name);
                     moveDerection(actrul);
                     updateTrace(point);
                     loadBuffer();
@@ -1404,7 +1409,9 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.YELLOW);
+        paint.setAntiAlias(true);
         paint.setStrokeWidth(1.0f);
+        paint.setDither(true);
         if (distance>0) {
             double jiaodu = Math.atan2(endp.y - st.y, endp.x - st.x);
 
@@ -1417,10 +1424,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
                 curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
                 curPath.close();
-                traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
-                traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
-                traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
-                traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+                traceleft.x = (int) ((end.x - Math.sin(jiaodu) * ChanWidth / 2+start.x - Math.sin(jiaodu) * ChanWidth / 2)/2);
+                traceleft.y = (int) ((end.y - Math.cos(jiaodu) * ChanWidth / 2+start.y - Math.cos(jiaodu) * ChanWidth / 2)/2);
+                traceright.x = (int) ((end.x + Math.sin(jiaodu) * ChanWidth / 2+start.x + Math.sin(jiaodu) * ChanWidth / 2)/2);
+                traceright.y = (int) ((end.y + Math.cos(jiaodu) * ChanWidth / 2+start.y + Math.cos(jiaodu) * ChanWidth / 2)/2);
                 isRunning = true;
             } else {
                 curPath.moveTo(traceleft.x, traceleft.y);
@@ -1428,10 +1435,10 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 curPath.lineTo((float) (end.x + Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y + Math.cos(jiaodu) * ChanWidth / 2));
                 curPath.lineTo((float) (end.x - Math.sin(jiaodu) * ChanWidth / 2), (float) (end.y - Math.cos(jiaodu) * ChanWidth / 2));
                 curPath.close();
-                traceleft.x = (int) (end.x - Math.sin(jiaodu) * ChanWidth / 2);
-                traceleft.y = (int) (end.y - Math.cos(jiaodu) * ChanWidth / 2);
-                traceright.x = (int) (end.x + Math.sin(jiaodu) * ChanWidth / 2);
-                traceright.y = (int) (end.y + Math.cos(jiaodu) * ChanWidth / 2);
+                traceleft.x = (int) ((end.x - Math.sin(jiaodu) * ChanWidth / 2+start.x - Math.sin(jiaodu) * ChanWidth / 2)/2);
+                traceleft.y = (int) ((end.y - Math.cos(jiaodu) * ChanWidth / 2+start.y - Math.cos(jiaodu) * ChanWidth / 2)/2);
+                traceright.x = (int) ((end.x + Math.sin(jiaodu) * ChanWidth / 2+start.x + Math.sin(jiaodu) * ChanWidth / 2)/2);
+                traceright.y = (int) ((end.y + Math.cos(jiaodu) * ChanWidth / 2+start.y + Math.cos(jiaodu) * ChanWidth / 2)/2);
 
             }
             switch (bufferstate) {
@@ -1665,6 +1672,8 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.canvasBack.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
     public void copyBuffer()    {
+        Log.e("当前Name",CurName);
+        Log.e("缓存切换方向",String.format("%d", moveDerection));
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
@@ -1749,7 +1758,15 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
     public void moveDerection(Point point)    {
 
+
+        Log.e("绘制轨迹：", String.format("ex_Point(%d,%d),actrul(%d,%d),x方向=%d，y方向%d" , ex_Point.x,ex_Point.y,point.x,point.y,point.x-ex_Point.x,ex_Point.y-point.y));
         moveDerection = (point.x-ex_Point.x)/width+(ex_Point.y-point.y)/height*3;
+        if ((point.x-ex_Point.x)==width)
+            moveDerection--;
+        if (moveDerection<0)
+            moveDerection=0;
+
+        Log.e("缓存切换方向",String.format("%d", moveDerection));
     }
     public void updateEXP(Point point){
         Point diker = new Point(-point.y,-point.x);

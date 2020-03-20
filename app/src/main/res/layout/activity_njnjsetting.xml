@@ -39,6 +39,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/njnjbar" />
 
+    <Button
+        android:id="@+id/button67"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="交接行设置"
+        android:onClick="jjhSetting"
+        app:layout_constraintBottom_toBottomOf="@+id/button15"
+        app:layout_constraintStart_toEndOf="@+id/button15" />
+
     <FrameLayout
         android:id="@+id/njsetting_frame"
         android:layout_width="0dp"

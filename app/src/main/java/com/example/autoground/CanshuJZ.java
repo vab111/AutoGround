@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.guard.CommunicationService;
 import com.android.guard.DataType;
@@ -28,7 +29,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CanshuJZ extends AppCompatActivity {
+public class CanshuJZ extends BaseActivity {
 
     private Toolbar toolbar;
     private zhuanjiaohuan zjhFragment;
@@ -43,6 +44,9 @@ public class CanshuJZ extends AppCompatActivity {
     private Button hxhBtn;
     private Button jlhBtn;
     private Button sdhBtn;
+    private boolean isEdit = false;
+    private SoftKeyBoardListener softKeyBoardListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +82,19 @@ public class CanshuJZ extends AppCompatActivity {
                 }
             }
         });
+        softKeyBoardListener = new SoftKeyBoardListener(this);        //软键盘状态监听
+        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                //软键盘已经显示，做逻辑
+                isEdit = true;
+                 }
+                 @Override
+                 public void keyBoardHide(int height) {                //软键盘已经隐藏,做逻辑
+                     isEdit = false;
+                 }
+        });
+
     }
     public void onStart()
     {
@@ -151,7 +168,7 @@ public class CanshuJZ extends AppCompatActivity {
                     @Override
                     public void run() {
                         zjhFragment.actDianliu.setText(String.format("%.2f°", (float)txxiuzheng/100));
-                        if (!zjhFragment.amiDianliu.isFocused()) {
+                        if (!isEdit) {
                             int x = (int) (100 * (Float.parseFloat(zjhFragment.amiDianliu.getText().toString())));
                             zjhFragment.dianliuWucha.setText(String.format("%.2f°", (float) (txxiuzheng - x) / 100));
                         }
@@ -164,7 +181,7 @@ public class CanshuJZ extends AppCompatActivity {
                     @Override
                     public void run() {
                         hxhFragment.actDianliu.setText(String.format("%.2f°", (float)hxCheck/100));
-                        if (!hxhFragment.amiDianliu.isFocused()) {
+                        if (!isEdit) {
                             int x = (int) (100 * (Float.parseFloat(hxhFragment.amiDianliu.getText().toString())));
                             hxhFragment.dianliuWucha.setText(String.format("%.2f°", (float) (hxCheck - x) / 100));
                         }

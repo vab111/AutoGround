@@ -36,12 +36,13 @@ import java.util.List;
 public class NJNJsetting extends BaseActivity {
     private CarSetFragment clszFragment;
     private Farmingtool farmFragment;
+    private JjhFragment jjhFragment;
     private Toolbar toolbar;
     private CarInfor car;
     private CommunicationService mService;
     private Button clszBtn;
     private Button njszBtn;
-
+    private Button jjhBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,9 @@ public class NJNJsetting extends BaseActivity {
         toolbar = findViewById(R.id.njnjbar);
         clszBtn = findViewById(R.id.button14);
         njszBtn = findViewById(R.id.button15);
+        jjhBtn = findViewById(R.id.button67);
         setToolbar();
+        initFragment3();
         initFragment2();
         initFragment1();
         btnGray();
@@ -75,6 +78,7 @@ public class NJNJsetting extends BaseActivity {
     {
         clszBtn.setBackgroundColor(Color.GRAY);
         njszBtn.setBackgroundColor(Color.GRAY);
+        jjhBtn.setBackgroundColor(Color.GRAY);
     }
     private void setToolbar() {
         setSupportActionBar(toolbar);
@@ -182,7 +186,33 @@ public class NJNJsetting extends BaseActivity {
             transaction.commit();
 
         }
+    private void initFragment3(){
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+
+
+        if(jjhFragment == null){
+
+            jjhFragment = new JjhFragment();
+
+            transaction.add(R.id.njsetting_frame,jjhFragment);
+
+
+
+        }
+
+        hideFragment(transaction);
+
+        transaction.show(jjhFragment);
+
+
+
+
+
+        transaction.commit();
+
+    }
 
 
 
@@ -204,7 +234,11 @@ public class NJNJsetting extends BaseActivity {
                 transaction.hide(farmFragment);
 
             }
+            if(jjhFragment != null){
 
+                transaction.hide(jjhFragment);
+
+            }
 
 
         }
@@ -297,6 +331,17 @@ public class NJNJsetting extends BaseActivity {
         if (clszFragment.state<6){
             clszFragment.state++;
         clszFragment.updateView();}
+    }
+
+    public void jjhSetting(View view) {
+        initFragment3();
+        btnGray();
+        jjhBtn.setBackgroundColor(Color.GREEN);
+    }
+
+    public void sendJjh(View view) {
+        int left = Integer.parseInt(jjhFragment.leftEdit.getText().toString());
+        int right = Integer.parseInt(jjhFragment.rightEdit.getText().toString());
     }
 }
 

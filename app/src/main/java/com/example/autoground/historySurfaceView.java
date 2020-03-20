@@ -39,7 +39,7 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private float carDerection;
     public String taskname;
     private int width=1024;
-    private int height=552;
+    private int height=600;
     private RecordInfor recordInfor;
     public boolean refresh = true;
 
@@ -86,10 +86,11 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
             drawBg(canvas,width,height);
             loadBitmap(canvas);
-            if (recordInfor.isA)
+
+            if (recordInfor.isB) {
                 drawA(canvas);
-            if (recordInfor.isB)
                 drawB(canvas);
+            }
             this.getHolder().unlockCanvasAndPost(canvas);
             try {
                 Thread.sleep(Math.max(0, 50-(System.currentTimeMillis()-t)));
