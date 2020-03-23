@@ -148,7 +148,7 @@ public class CarSetFragment extends Fragment {
                 break;
             case 4:
                 img.setImageResource(R.drawable.car_txfdis);
-                discription.setText("天线到前轴距离");
+                discription.setText("天线到后轴距离");
                 data.setText(String.format("%d", car.Backwheel));
                 break;
             case 5:

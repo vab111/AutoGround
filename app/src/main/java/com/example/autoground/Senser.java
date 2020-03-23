@@ -142,62 +142,62 @@ public class Senser extends AppCompatActivity {
             }
         });
     }
-    public void reset(View view) {
-        final Dialog bottomDialog = new Dialog(this, R.style.BottomDialog);
-        final View contentView = LayoutInflater.from(this).inflate(R.layout.resetsensor, null);
-        bottomDialog.setContentView(contentView);
-
-        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
-        bottomDialog.setCanceledOnTouchOutside(false);
-        bottomDialog.show();
-        Button cancelBtn = contentView.findViewById(R.id.button60);
-        final Button confirmBtn = contentView.findViewById(R.id.button62);
-        final TextView stateText = contentView.findViewById(R.id.textView78);
-        final TextView discription = contentView.findViewById(R.id.textView79);
-        final EditText input = contentView.findViewById(R.id.editText41);
-        input.setVisibility(View.INVISIBLE);
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomDialog.dismiss();
-            }
-        });
-         state = 1;
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO 添加新的任务
-            state++;
-            stateText.setText(String.format("%d/4", state));
-
-            switch (state)
-            {
-                case 1:
-                    discription.setText("");
-                    break;
-                case 2:
-                    discription.setText("请输入准确值");
-                    input.setVisibility(View.VISIBLE);
-                    break;
-                case 3:
-                    discription.setText("请再次输入准确值");
-                    break;
-                case 4:
-                    discription.setText("校准完成");
-                    confirmBtn.setText("完成");
-                    input.setVisibility(View.INVISIBLE);
-                    break;
-                case 5:
-                    bottomDialog.dismiss();
-                    break;
-
-            }
-
-
-            }
-
-
-        });
-    }
+//    public void reset(View view) {
+//        final Dialog bottomDialog = new Dialog(this, R.style.BottomDialog);
+//        final View contentView = LayoutInflater.from(this).inflate(R.layout.resetsensor, null);
+//        bottomDialog.setContentView(contentView);
+//
+//        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+//        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+//        bottomDialog.setCanceledOnTouchOutside(false);
+//        bottomDialog.show();
+//        Button cancelBtn = contentView.findViewById(R.id.button60);
+//        final Button confirmBtn = contentView.findViewById(R.id.button62);
+//        final TextView stateText = contentView.findViewById(R.id.textView78);
+//        final TextView discription = contentView.findViewById(R.id.textView79);
+//        final EditText input = contentView.findViewById(R.id.editText41);
+//        input.setVisibility(View.INVISIBLE);
+//        cancelBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                bottomDialog.dismiss();
+//            }
+//        });
+//         state = 1;
+//        confirmBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //TODO 添加新的任务
+//            state++;
+//            stateText.setText(String.format("%d/4", state));
+//
+//            switch (state)
+//            {
+//                case 1:
+//                    discription.setText("");
+//                    break;
+//                case 2:
+//                    discription.setText("请输入准确值");
+//                    input.setVisibility(View.VISIBLE);
+//                    break;
+//                case 3:
+//                    discription.setText("请再次输入准确值");
+//                    break;
+//                case 4:
+//                    discription.setText("校准完成");
+//                    confirmBtn.setText("完成");
+//                    input.setVisibility(View.INVISIBLE);
+//                    break;
+//                case 5:
+//                    bottomDialog.dismiss();
+//                    break;
+//
+//            }
+//
+//
+//            }
+//
+//
+//        });
+//    }
 }

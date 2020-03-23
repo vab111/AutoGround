@@ -86,15 +86,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView76" />
 
-    <Button
-        android:id="@+id/button60"
+    <TextView
+        android:id="@+id/textView176"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="重新设置"
-        android:onClick="reset"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="74dp"
+        android:text="方向盘转动测试时，数值会出现连续变换。如果出现非连续变化，请重新校正。"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView77" />
 </androidx.constraintlayout.widget.ConstraintLayout>

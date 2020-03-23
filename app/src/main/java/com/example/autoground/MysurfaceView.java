@@ -2071,7 +2071,7 @@ public class MysurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 bufferIndex.add(6);
                 break;
             case 6:
-                bufferIndex.add(1);
+                bufferIndex.add(0);
                 bufferIndex.add(1);
                 bufferIndex.add(2);
                 bufferIndex.add(5);
