@@ -260,7 +260,15 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
-        Point ap = transform(pointA);
+        Point ap = new Point();
+        ap.x = -recordInfor.pointB.y;
+        ap.y = -recordInfor.pointB.x;
+        ap.x = -(ap.x%width);
+        ap.y = -(ap.y%height);
+        ap.x+=(recordInfor.pointB.y-recordInfor.pointA.y);
+        ap.y+=(recordInfor.pointA.x-recordInfor.pointB.x);
+        ap.x = ap.x+(-recordInfor.pointB.y-location.x)+Moved.x;
+        ap.y = ap.y+(location.y+recordInfor.pointB.x)+Moved.y;
         Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.adian);		// 设置canvas画布背景为白色	// 定义矩阵对象
@@ -279,7 +287,14 @@ public class historySurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         paint.setDither(true);
         Rect mSrcRect = new Rect(0, 0, 200, 200);
-        Point ap = transform(pointB);
+        Point ap = new Point();
+        ap.x = -recordInfor.pointB.y;
+        ap.y = -recordInfor.pointB.x;
+        ap.x = -ap.x%width;
+        ap.y = -ap.y%height;
+        ap.x = ap.x+(-recordInfor.pointB.y-location.x)+Moved.x;
+        ap.y = ap.y+(location.y+recordInfor.pointB.x)+Moved.y;
+
         Rect mDestRect = new Rect(ap.x-15, ap.y-15, ap.x+65, ap.y+65);
 
         Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bdian);		// 设置canvas画布背景为白色	// 定义矩阵对象

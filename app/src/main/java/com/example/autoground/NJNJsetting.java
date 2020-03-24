@@ -342,6 +342,11 @@ public class NJNJsetting extends BaseActivity {
     public void sendJjh(View view) {
         int left = Integer.parseInt(jjhFragment.leftEdit.getText().toString());
         int right = Integer.parseInt(jjhFragment.rightEdit.getText().toString());
+        CarAcess carAcess = new CarAcess();
+        carAcess.getCar();
+        carAcess.car.pianyi = (left-right)/2;
+        carAcess.savaCar();
+
     }
 }
 

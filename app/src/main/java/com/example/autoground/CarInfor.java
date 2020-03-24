@@ -4,7 +4,7 @@ public class CarInfor {
     public int Frontwheel;
     public int Backwheel;
     public int Zhou;
-    public int height;
+    public int pianyi;
     public int TXHeight;
     public int TXBackdis;
     public int TXMiddis;
