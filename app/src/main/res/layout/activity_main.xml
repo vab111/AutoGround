@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.example.autoground.MysurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/sysSetting"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/setting_artist"
+        android:onClick="Setting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signal" />
+
+    <Button
+        android:id="@+id/history"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/history_artist"
+        android:onClick="history"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newTask" />
+
+    <Button
+        android:id="@+id/signal"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/state_artist"
+        android:onClick="signalTest"
+        app:layout_constraintEnd_toEndOf="@+id/sysSetting"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/piontA"
+        android:layout_width="72dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/setap_gray"
+        android:onClick="setA"
+        app:layout_constraintEnd_toStartOf="@+id/button13"
+        app:layout_constraintTop_toBottomOf="@+id/history" />
+
+    <Button
+        android:id="@+id/button13"
+        android:layout_width="72dp"
+        android:layout_height="71dp"
+        android:background="@drawable/setbp_gray"
+        android:onClick="setB"
+        app:layout_constraintEnd_toEndOf="@+id/history"
+        app:layout_constraintTop_toTopOf="@+id/piontA" />
+
+    <TextView
+        android:id="@+id/pointState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="新建作业后才能设置AB点"
+        app:layout_constraintBottom_toBottomOf="@+id/surfaceView"
+        app:layout_constraintEnd_toStartOf="@+id/surfaceView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/surfaceView" />
+
+    <Button
+        android:id="@+id/Mode"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="60dp"
+
+        android:background="@drawable/at"
+        android:onClick="taskChange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/getBig"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/zoomout_artist"
+        android:onClick="zoomOut"
+        app:layout_constraintBottom_toBottomOf="@+id/getSmal"
+        app:layout_constraintEnd_toStartOf="@+id/getSmal" />
+
+    <Button
+        android:id="@+id/getSmal"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/zoomin_artist"
+        android:onClick="zoomIn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/Mode" />
+
+    <Button
+        android:id="@+id/newTask"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:background="@drawable/newtast_artist"
+        android:onClick="newTask"
+        app:layout_constraintEnd_toEndOf="@+id/history"
+        app:layout_constraintTop_toTopOf="@+id/signal" />
+
+    <ImageView
+        android:id="@+id/stateImg"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/signal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/state_gray" />
+
+    <ImageView
+        android:id="@+id/stateImg2"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="100dp"
+        app:layout_constraintStart_toEndOf="@+id/textView66"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi" />
+
+    <ImageView
+        android:id="@+id/stateImg3"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg2"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi" />
+
+    <ImageView
+        android:id="@+id/stateImg4"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg3"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi" />
+
+    <ImageView
+        android:id="@+id/stateImg5"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/textView67"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi_1" />
+
+    <ImageView
+        android:id="@+id/stateImg6"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg5"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi_1" />
+
+    <ImageView
+        android:id="@+id/stateImg7"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg6"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/pianyi_1" />
+
+    <TextView
+        android:id="@+id/textView65"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:text="未定位"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@+id/textView65"
+        app:layout_constraintTop_toTopOf="@+id/stateImg"
+        app:srcCompat="@drawable/satellite" />
+
+    <TextView
+        android:id="@+id/textView66"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView67"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="00"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg4"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button37"
+        style="@android:style/Widget.Button"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/tomid_artist"
+        android:onClick="tomid"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/getBig"
+        app:layout_constraintEnd_toStartOf="@+id/getBig" />
+
+    <TextView
+        android:id="@+id/textView68"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="28dp"
+        android:text="作业："
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/signal"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/textView69"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:text="面积："
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView68"
+        app:layout_constraintTop_toBottomOf="@+id/textView68" />
+
+    <TextView
+        android:id="@+id/textView70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:text="长度："
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView69"
+        app:layout_constraintTop_toBottomOf="@+id/textView69" />
+
+    <TextView
+        android:id="@+id/textView71"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView68"
+        app:layout_constraintStart_toEndOf="@+id/textView68" />
+
+    <TextView
+        android:id="@+id/textView72"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView69"
+        app:layout_constraintStart_toStartOf="@+id/textView71" />
+
+    <TextView
+        android:id="@+id/textView73"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView70"
+        app:layout_constraintStart_toStartOf="@+id/textView72" />
+
+    <TextView
+        android:id="@+id/textView74"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="0km/h"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView82"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="手动"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="@+id/Mode"
+        app:layout_constraintStart_toStartOf="@+id/Mode"
+        app:layout_constraintTop_toBottomOf="@+id/Mode" />
+
+    <Button
+        android:id="@+id/button28"
+        android:layout_width="72dp"
+        android:layout_height="71dp"
+        android:background="@drawable/moveab"
+        android:onClick="setabpy"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/piontA"
+        app:layout_constraintStart_toStartOf="@+id/piontA"
+        app:layout_constraintTop_toTopOf="@+id/piontA" />
+
+    <Button
+        android:id="@+id/button55"
+        android:layout_width="72dp"
+        android:layout_height="71dp"
+        android:background="@drawable/localab_artist"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/button13"
+        app:layout_constraintStart_toStartOf="@+id/button13"
+        app:layout_constraintTop_toTopOf="@+id/button13" />
+
+    <TextView
+        android:id="@+id/textView152"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="频道：8"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView65"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toEndOf="@+id/stateImg7"
+        app:layout_constraintTop_toTopOf="@+id/stateImg7"
+        app:srcCompat="@drawable/speed" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pointState"
+        app:layout_constraintStart_toEndOf="@+id/sysSetting"
+        app:srcCompat="@drawable/ruler" />
+
+    <TextView
+        android:id="@+id/textView165"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7M"
+        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3" />
+
+    <Button
+        android:id="@+id/button16"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="400dp"
+        android:background="@drawable/jinggao"
+        android:onClick="showWarning"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/sysSetting"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView169"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:text="累计作业时长："
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView70"
+        app:layout_constraintTop_toBottomOf="@+id/textView70" />
+
+    <TextView
+        android:id="@+id/textView170"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/textView169"
+        app:layout_constraintTop_toTopOf="@+id/textView169" />
+
+    <TextView
+        android:id="@+id/textView173"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView169"
+        app:layout_constraintTop_toBottomOf="@+id/textView169" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

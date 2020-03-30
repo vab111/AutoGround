@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f48905</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorGray">#B6B6B6</color>
+    <color name="colorYellow">#FFEB3B</color>
+    <color name="mediumaquamarine">#48D1CC</color><!--中绿宝石 -->
+</resources>
