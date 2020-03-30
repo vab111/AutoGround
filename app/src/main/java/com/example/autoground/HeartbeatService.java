@@ -32,7 +32,7 @@ public class HeartbeatService extends Service implements Runnable {
                 order[2] = 0x00;
                 order[3] = 0x00;
                 mService.sendCan(order, heartData.heart);
-                Thread.sleep(100);
+                Thread.sleep(20);
             }
             catch (InterruptedException e)
             {
